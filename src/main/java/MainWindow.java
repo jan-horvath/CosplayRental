@@ -1,9 +1,16 @@
+import com.google.common.collect.ImmutableList;
 import javax.swing.*;
+import javax.swing.table.TableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.List;
 
 public class MainWindow extends JFrame {
+
+    private static final List<CatalogueEntry> CATALOG_TEST_DATA = ImmutableList.of(
+            new CatalogueEntry("Asterix helmet", 17.80),
+            new CatalogueEntry("Poseidon trident", 21.90),
+            new CatalogueEntry("Deadpool suit", 42.20)
+    );
 
     public MainWindow() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -45,6 +52,16 @@ public class MainWindow extends JFrame {
         tb.add(formButton);
 
         add(tb, BorderLayout.BEFORE_FIRST_LINE);
+
+        TableModel catalogTableModel = new CatalogueTableModel(CATALOG_TEST_DATA);
+        JTable catalogTable = new JTable(catalogTableModel);
+        catalogTable.setRowHeight(50);
+        add(new JScrollPane(catalogTable));
+
+        JButton createOrderButton = new JButton("Create order");
+        createOrderButton.setPreferredSize(new Dimension(20, 30));
+        add(createOrderButton, BorderLayout.PAGE_END);
+
         pack();
     }
 
