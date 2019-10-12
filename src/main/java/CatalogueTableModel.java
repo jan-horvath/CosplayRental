@@ -1,4 +1,5 @@
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
 public class CatalogueTableModel extends AbstractTableModel {

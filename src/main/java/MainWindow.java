@@ -1,7 +1,10 @@
 import com.google.common.collect.ImmutableList;
 import javax.swing.*;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 public class MainWindow extends JFrame {
@@ -53,14 +56,46 @@ public class MainWindow extends JFrame {
 
         add(tb, BorderLayout.BEFORE_FIRST_LINE);
 
-        TableModel catalogTableModel = new CatalogueTableModel(CATALOG_TEST_DATA);
-        JTable catalogTable = new JTable(catalogTableModel);
-        catalogTable.setRowHeight(50);
-        add(new JScrollPane(catalogTable));
+        TableModel catalogueTableModel = new CatalogueTableModel(CATALOG_TEST_DATA);
+        JTable catalogueTable = new JTable(catalogueTableModel);
+
+        TableModel orderTableModel = new OrderTableModel(CATALOG_TEST_DATA);
+        JTable orderTable = new JTable(orderTableModel);
 
         JButton createOrderButton = new JButton("Create order");
-        createOrderButton.setPreferredSize(new Dimension(20, 30));
+        CardLayout c1 = new CardLayout();
+        JPanel cards = new JPanel(c1);
+        add(cards);
+        cards.add(new JScrollPane(catalogueTable), "Catalogue");
+        cards.add(new JScrollPane(orderTable), "Order");
+
         add(createOrderButton, BorderLayout.PAGE_END);
+
+        ActionListener goToOrder = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                c1.show(cards, "Order");
+                createOrderButton.setVisible(false);
+            }
+        };
+
+        ActionListener goToCatalogue = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                c1.show(cards, "Catalogue");
+                createOrderButton.setVisible(true);
+            }
+        };
+
+        catalogueButton.addActionListener(goToCatalogue);
+        orderCatalogueButton.addActionListener(goToOrder);
+        createOrderButton.addActionListener((goToOrder));
+
+
+
+
+
+
 
         pack();
     }
