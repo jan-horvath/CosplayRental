@@ -1,3 +1,5 @@
+import cz.muni.fi.pb168.FormPanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -5,11 +7,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
+
 public class MainWindow extends JFrame {
 
     public MainWindow() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-
+        setDefaultLookAndFeelDecorated(true);
         setTitle("CoReS: Cosplay Rental Service ©");
 
         JMenuBar menuBar = new JMenuBar();
@@ -49,34 +52,19 @@ public class MainWindow extends JFrame {
         tb.add(formButton);
 
         add(tb, BorderLayout.BEFORE_FIRST_LINE);
-        pack();
 
-        //just testing stuff
-
-        JButton button1 = new JButton("Button1");
-        JButton button2 = new JButton("Button2");
-        JButton button3 = new JButton("Button3");
-
-        JPanel card1 = new JPanel();
-        card1.add(button1);
+        // panels defined for possible future usage
         JPanel card2 = new JPanel();
-        card2.add(button2);
         JPanel card3 = new JPanel();
-        card3.add(button3);
+        JPanel card4 = new FormPanel();
 
         JPanel cards = new JPanel(new CardLayout());
-        cards.add(card1, "card1");
         cards.add(card2, "card2");
         cards.add(card3, "card3");
+        cards.add(card4, "card4");
         getContentPane().add(cards);
 
-        formButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) cards.getLayout();
-                cardLayout.show(cards, "card1");
-            }
-        });
+        pack();
 
         catalogueButton.addActionListener(new ActionListener() {
             @Override
@@ -93,7 +81,16 @@ public class MainWindow extends JFrame {
                 cardLayout.show(cards, "card3");
             }
         });
-        //TODO: resizable height but set width
+
+        formButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cardLayout = (CardLayout) cards.getLayout();
+                cardLayout.show(cards, "card4");
+            }
+        });
+
+
         addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent event) {
                 setSize(
