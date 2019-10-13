@@ -1,11 +1,15 @@
+import cz.muni.fi.pb168.FormPanel;
+
 import com.google.common.collect.ImmutableList;
 import javax.swing.*;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.List;
+
 
 public class MainWindow extends JFrame {
 
@@ -14,9 +18,11 @@ public class MainWindow extends JFrame {
             new CatalogueEntry("Poseidon trident", 21.90),
             new CatalogueEntry("Deadpool suit", 42.20)
     );
+    private static final JPanel BLANK = new JPanel();
 
     public MainWindow() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setTitle("CoReS: Cosplay Rental Service ©");
 
         JMenuBar menuBar = new JMenuBar();
         JMenu menuCatalogue = new JMenu("Catalogue");
@@ -66,16 +72,17 @@ public class MainWindow extends JFrame {
         CardLayout c1 = new CardLayout();
         JPanel cards = new JPanel(c1);
         add(cards);
+        cards.add(new JScrollPane(BLANK), "Home");
         cards.add(new JScrollPane(catalogueTable), "Catalogue");
         cards.add(new JScrollPane(orderTable), "Order");
+        cards.add(new JScrollPane(new FormPanel()), "Form");
 
         add(createOrderButton, BorderLayout.PAGE_END);
 
-        ActionListener goToOrder = new ActionListener() {
+        ActionListener goToHomepage = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                c1.show(cards, "Order");
-                createOrderButton.setVisible(false);
+                c1.show(cards, "Home");
             }
         };
 
@@ -87,19 +94,38 @@ public class MainWindow extends JFrame {
             }
         };
 
+        ActionListener goToOrder = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                c1.show(cards, "Order");
+                createOrderButton.setVisible(false);
+            }
+        };
+
+        ActionListener goToForm = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                c1.show(cards, "Form");
+                createOrderButton.setVisible(false);
+            }
+        };
+
+        addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent event) {
+                setSize(
+                        Math.max(Integer.MIN_VALUE, getWidth()),
+                        Math.max(700, getHeight()));
+            }
+        });
+
+        homeButton.addActionListener(goToHomepage);
         catalogueButton.addActionListener(goToCatalogue);
         orderCatalogueButton.addActionListener(goToOrder);
         createOrderButton.addActionListener((goToOrder));
-
-
-
-
-
-
+        formButton.addActionListener(goToForm);
 
         pack();
     }
-
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
