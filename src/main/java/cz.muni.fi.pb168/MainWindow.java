@@ -53,43 +53,17 @@ public class MainWindow extends JFrame {
 
         add(tb, BorderLayout.BEFORE_FIRST_LINE);
 
-        // panels defined for possible future usage
-        JPanel card2 = new JPanel();
-        JPanel card3 = new JPanel();
-        JPanel card4 = new FormPanel();
+        CardLayout c1 = new CardLayout();
+        JPanel cards = new JPanel(c1);
+        add(cards);
+        cards.add(new JScrollPane(new FormPanel()), "Form");
 
-        JPanel cards = new JPanel(new CardLayout());
-        cards.add(card2, "card2");
-        cards.add(card3, "card3");
-        cards.add(card4, "card4");
-        getContentPane().add(cards);
-
-        pack();
-
-        catalogueButton.addActionListener(new ActionListener() {
+        ActionListener goToForm = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) cards.getLayout();
-                cardLayout.show(cards, "card2");
+                c1.show(cards, "Form");
             }
-        });
-
-        orderCatalogueButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) cards.getLayout();
-                cardLayout.show(cards, "card3");
-            }
-        });
-
-        formButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) cards.getLayout();
-                cardLayout.show(cards, "card4");
-            }
-        });
-
+        };
 
         addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent event) {
@@ -98,6 +72,10 @@ public class MainWindow extends JFrame {
                         Math.max(700, getHeight()));
             }
         });
+
+        formButton.addActionListener(goToForm);
+
+        pack();
     }
 
     public static void main(String[] args) {
