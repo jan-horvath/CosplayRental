@@ -1,3 +1,5 @@
+package cz.muni.fi.pv168.cosplayrental;
+
 public class CatalogueEntry {
     private final String name;
     private final double price;

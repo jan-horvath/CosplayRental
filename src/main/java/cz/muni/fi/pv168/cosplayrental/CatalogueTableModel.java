@@ -1,5 +1,6 @@
+package cz.muni.fi.pv168.cosplayrental;
+
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
 public class CatalogueTableModel extends AbstractTableModel {

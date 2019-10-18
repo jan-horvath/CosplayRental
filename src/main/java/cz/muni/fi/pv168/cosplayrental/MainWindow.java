@@ -1,4 +1,4 @@
-import cz.muni.fi.pb168.FormPanel;
+package cz.muni.fi.pv168.cosplayrental;
 
 import com.google.common.collect.ImmutableList;
 import javax.swing.*;
