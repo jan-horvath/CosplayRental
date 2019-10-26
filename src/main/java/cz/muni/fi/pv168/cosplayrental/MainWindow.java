@@ -1,6 +1,8 @@
 package cz.muni.fi.pv168.cosplayrental;
 
 import com.google.common.collect.ImmutableList;
+import cz.muni.fi.pv168.cosplayrental.actions.ExitAction;
+
 import javax.swing.*;
 import javax.swing.table.TableModel;
 import java.awt.*;
@@ -25,6 +27,7 @@ public class MainWindow extends JFrame {
         setTitle("CoReS: Cosplay Rental Service ©");
 
         JMenuBar menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("File");
         JMenu menuCatalogue = new JMenu("Catalogue");
         JMenu menuOrderCatalogue = new JMenu("Order catalogue");
         JMenu menuForm = new JMenu("Form");
@@ -34,11 +37,13 @@ public class MainWindow extends JFrame {
         JMenuItem contact = new JMenuItem("Contact us");
         JMenuItem howTo = new JMenuItem("How to fill in the form?");
 
+        menuBar.add(fileMenu);
         menuBar.add(menuCatalogue);
         menuBar.add(menuOrderCatalogue);
         menuBar.add(menuForm);
         menuBar.add(menuHelp);
 
+        fileMenu.add(new ExitAction());
         menuHelp.add(terms);
         menuHelp.add(contact);
         menuForm.add(howTo);
