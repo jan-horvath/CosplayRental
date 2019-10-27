@@ -77,7 +77,7 @@ public class MainWindow extends JFrame {
         CardLayout c1 = new CardLayout();
         JPanel cards = new JPanel(c1);
         add(cards);
-        cards.add(new JScrollPane(BLANK), "Home");
+        cards.add(new JLabel(new ImageIcon(MainWindow.class.getResource("warmup.png"))), "Home");
         cards.add(new JScrollPane(catalogueTable), "Catalogue");
         cards.add(new JScrollPane(orderTable), "Order");
         cards.add(new JScrollPane(new FormPanel()), "Form");

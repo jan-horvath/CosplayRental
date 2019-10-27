@@ -3,8 +3,26 @@ package cz.muni.fi.pv168.cosplayrental;
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class OrderTableModel extends AbstractTableModel {
+
+    private enum Column {
+
+        PRODUCTNAME("Product name", String.class, OrderTableEntry::getName),
+        PRICE("Price", Double.class, OrderTableEntry::getPrice),
+        ISADDEDTOCART("Add to cart", Boolean.class, OrderTableEntry::isAddedToCart);
+
+        private <T> Column(String name, Class<T> columnClass, Function<OrderTableEntry, T> extractor) {
+            this.name = name;
+            this.columnClass = columnClass;
+            this.extractor = extractor;
+        }
+
+        private final String name;
+        private final Class<?> columnClass;
+        private final Function<OrderTableEntry, ?> extractor;
+    }
 
     private List<OrderTableEntry> entries;
 
@@ -22,65 +40,35 @@ public class OrderTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 3;
+        return Column.values().length;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         OrderTableEntry entry = entries.get(rowIndex);
-
-        switch (columnIndex) {
-            case 0:
-                return entry.getName();
-            case 1:
-                return entry.getPrice();
-            case 2:
-                return entry.isMarked();
-            default:
-                throw new IndexOutOfBoundsException();
-        }
+        return Column.values()[columnIndex].extractor.apply(entry);
     }
 
     @Override
     public String getColumnName(int column) {
-        switch (column) {
-            case 0:
-                return "Item name";
-            case 1:
-                return "Price";
-            case 2:
-                return "Add to cart";
-            default:
-                throw new IndexOutOfBoundsException();
-        }
+        return Column.values()[column].name;
     }
 
     @Override
     public boolean isCellEditable(int row, int column) {
-        if (column > 2) {
-            throw new IndexOutOfBoundsException();
-        }
-        return true;
+        return Column.values()[column] == Column.ISADDEDTOCART;
     }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        switch (columnIndex) {
-            case 0:
-                return String.class;
-            case 1:
-                return Double.class;
-            case 2:
-                return Boolean.class;
-            default:
-                throw new IndexOutOfBoundsException();
-        }
+        return Column.values()[columnIndex].columnClass;
     }
 
     @Override
+    //TODO Can I remove "if" and do something like entries.get(rowIndex).setAddedToCart( (getColumnClass(columnIndex)) aValue); (generic casting)
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        if (columnIndex == 2) {
-            entries.get(rowIndex).flipMarked();
+        if (Column.values()[columnIndex] == Column.ISADDEDTOCART) {
+            entries.get(rowIndex).setAddedToCart((Boolean) aValue);
         }
     }
 }
