@@ -1,7 +1,8 @@
-package cz.muni.fi.pv168.cosplayrental;
+package cz.muni.fi.pv168.cosplayrental.tablemodels;
+
+import cz.muni.fi.pv168.cosplayrental.tableentries.CatalogueEntry;
 
 import javax.swing.table.AbstractTableModel;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -9,11 +10,11 @@ public class OrderTableModel extends AbstractTableModel {
 
     private enum Column {
 
-        PRODUCTNAME("Product name", String.class, OrderTableEntry::getName),
-        PRICE("Price", Double.class, OrderTableEntry::getPrice),
-        ISADDEDTOCART("Add to cart", Boolean.class, OrderTableEntry::isAddedToCart);
+        PRODUCTNAME("Product name", String.class, CatalogueEntry::getName),
+        PRICE("Price", Double.class, CatalogueEntry::getPrice),
+        ISADDEDTOCART("Add to cart", Boolean.class, CatalogueEntry::isAddedToCart);
 
-        private <T> Column(String name, Class<T> columnClass, Function<OrderTableEntry, T> extractor) {
+        private <T> Column(String name, Class<T> columnClass, Function<CatalogueEntry, T> extractor) {
             this.name = name;
             this.columnClass = columnClass;
             this.extractor = extractor;
@@ -21,16 +22,13 @@ public class OrderTableModel extends AbstractTableModel {
 
         private final String name;
         private final Class<?> columnClass;
-        private final Function<OrderTableEntry, ?> extractor;
+        private final Function<CatalogueEntry, ?> extractor;
     }
 
-    private List<OrderTableEntry> entries;
+    private List<CatalogueEntry> entries;
 
     public OrderTableModel(List<CatalogueEntry> entries) {
-        this.entries = new ArrayList<>();
-        for (CatalogueEntry ce : entries) {
-            this.entries.add(new OrderTableEntry(ce));
-        }
+        this.entries = entries;
     }
 
     @Override
@@ -45,7 +43,7 @@ public class OrderTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        OrderTableEntry entry = entries.get(rowIndex);
+        CatalogueEntry entry = entries.get(rowIndex);
         return Column.values()[columnIndex].extractor.apply(entry);
     }
 

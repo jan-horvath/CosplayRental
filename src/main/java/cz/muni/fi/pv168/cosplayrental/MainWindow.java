@@ -2,6 +2,9 @@ package cz.muni.fi.pv168.cosplayrental;
 
 import com.google.common.collect.ImmutableList;
 import cz.muni.fi.pv168.cosplayrental.actions.ExitAction;
+import cz.muni.fi.pv168.cosplayrental.tableentries.CatalogueEntry;
+import cz.muni.fi.pv168.cosplayrental.tablemodels.CatalogueTableModel;
+import cz.muni.fi.pv168.cosplayrental.tablemodels.OrderTableModel;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
