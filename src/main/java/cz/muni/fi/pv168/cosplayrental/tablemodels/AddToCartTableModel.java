@@ -6,7 +6,8 @@ import javax.swing.table.AbstractTableModel;
 import java.util.List;
 import java.util.function.Function;
 
-public class OrderTableModel extends AbstractTableModel {
+//TODO Is it possible to merge Catalogue and Order table models? The only difference is the modifiable add-to-cart option
+public class AddToCartTableModel extends AbstractTableModel {
 
     private enum Column {
 
@@ -27,7 +28,7 @@ public class OrderTableModel extends AbstractTableModel {
 
     private List<CatalogueEntry> entries;
 
-    public OrderTableModel(List<CatalogueEntry> entries) {
+    public AddToCartTableModel(List<CatalogueEntry> entries) {
         this.entries = entries;
     }
 

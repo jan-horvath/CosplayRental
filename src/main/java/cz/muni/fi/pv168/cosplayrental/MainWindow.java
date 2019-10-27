@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import cz.muni.fi.pv168.cosplayrental.actions.ExitAction;
 import cz.muni.fi.pv168.cosplayrental.tableentries.CatalogueEntry;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.CatalogueTableModel;
-import cz.muni.fi.pv168.cosplayrental.tablemodels.OrderTableModel;
+import cz.muni.fi.pv168.cosplayrental.tablemodels.AddToCartTableModel;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -73,7 +73,7 @@ public class MainWindow extends JFrame {
         TableModel catalogueTableModel = new CatalogueTableModel(CATALOG_TEST_DATA);
         JTable catalogueTable = new JTable(catalogueTableModel);
 
-        TableModel orderTableModel = new OrderTableModel(CATALOG_TEST_DATA);
+        TableModel orderTableModel = new AddToCartTableModel(CATALOG_TEST_DATA);
         JTable orderTable = new JTable(orderTableModel);
 
         JButton createOrderButton = new JButton("Create order");
