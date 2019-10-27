@@ -2,10 +2,27 @@ package cz.muni.fi.pv168.cosplayrental;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
+import java.util.function.Function;
 
 public class CatalogueTableModel extends AbstractTableModel {
 
-    private final List<CatalogueEntry> entries;
+    private enum Column {
+
+        PRODUCTNAME("Product name", String.class, CatalogueEntry::getName),
+        PRICE("Price", Double.class, CatalogueEntry::getPrice);
+
+        private <T> Column(String name, Class<T> columnClass, Function<CatalogueEntry, T> extractor) {
+            this.name = name;
+            this.columnClass = columnClass;
+            this.extractor = extractor;
+        }
+
+        private final String name;
+        private final Class<?> columnClass;
+        private final Function<CatalogueEntry, ?> extractor;
+    }
+
+    private List<CatalogueEntry> entries;
 
     public CatalogueTableModel(List<CatalogueEntry> entries) {
         this.entries = entries;
@@ -18,32 +35,17 @@ public class CatalogueTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 2;
+        return Column.values().length;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         CatalogueEntry entry = entries.get(rowIndex);
-
-        switch (columnIndex) {
-            case 0:
-                return entry.getName();
-            case 1:
-                return entry.getPrice();
-            default:
-                throw new IndexOutOfBoundsException();
-        }
+        return Column.values()[columnIndex].extractor.apply(entry);
     }
 
     @Override
     public String getColumnName(int column) {
-        switch (column) {
-            case 0:
-                return "Item name";
-            case 1:
-                return "Price";
-            default:
-                throw new IndexOutOfBoundsException();
-        }
+        return Column.values()[column].name;
     }
 }
