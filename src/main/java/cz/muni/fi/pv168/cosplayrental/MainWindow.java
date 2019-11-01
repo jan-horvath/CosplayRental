@@ -27,35 +27,7 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("CoReS: Cosplay Rental Service ©");
 
-        JMenuBar menuBar = new JMenuBar();
-        JMenu fileMenu = new JMenu("File");
-        JMenu menuCatalogue = new JMenu("Catalogue");
-        JMenu menuOrderCatalogue = new JMenu("Order catalogue");
-        JMenu menuForm = new JMenu("Form");
-        JMenu menuHelp = new JMenu("Help");
-
-        JMenuItem terms = new JMenuItem("Terms of use");
-        JMenuItem contact = new JMenuItem("Contact us");
-        JMenuItem howTo = new JMenuItem("How to fill in the form?");
-
-        menuBar.add(fileMenu);
-        menuBar.add(menuCatalogue);
-        menuBar.add(menuOrderCatalogue);
-        menuBar.add(menuForm);
-        menuBar.add(menuHelp);
-
-        fileMenu.add(new ExitAction());
-        menuHelp.add(terms);
-        menuHelp.add(contact);
-        menuForm.add(howTo);
-
-        setJMenuBar(menuBar);
-
-        JToolBar tb = new JToolBar();
-
-
-        add(tb, BorderLayout.BEFORE_FIRST_LINE);
-
+        //Tables and windows
         TableModel catalogueTableModel = new CatalogueTableModel(CATALOG_TEST_DATA);
         JTable catalogueTable = new JTable(catalogueTableModel);
 
@@ -82,25 +54,29 @@ public class MainWindow extends JFrame {
             }
         });
 
+        //Toolbar
+        JToolBar tb = new JToolBar();
+        add(tb, BorderLayout.BEFORE_FIRST_LINE);
+
         GoToAction gotoHome = new GoToAction(() -> {
                 c1.show(cards, "Home");
                 createOrderButton.setVisible(false);
-            }, "Home", "homeIcon.png", KeyEvent.VK_1);
+            }, "Home", "homeIcon.png", KeyEvent.VK_W);
 
         GoToAction gotoCatalogue = new GoToAction(() -> {
                 c1.show(cards, "Catalogue");
                 createOrderButton.setVisible(false);
-            }, "Catalogue", "catalogueIcon.png", KeyEvent.VK_2);
+            }, "Catalogue", "catalogueIcon.png", KeyEvent.VK_E);
 
         GoToAction gotoOrder = new GoToAction(() -> {
                 c1.show(cards, "Order");
                 createOrderButton.setVisible(true);
-            }, "Order", "orderIcon.png", KeyEvent.VK_3);
+            }, "Order", "orderIcon.png", KeyEvent.VK_R);
 
         GoToAction gotoForm = new GoToAction(() -> {
                 c1.show(cards, "Form");
                 createOrderButton.setVisible(false);
-            }, "Form", "formIcon.png", KeyEvent.VK_4);
+            }, "Form", "formIcon.png", KeyEvent.VK_T);
 
         JButton listOrdersButton = new JButton("List orders",
                 new ImageIcon(MainWindow.class.getResource("listOrdersIcon.png")));
@@ -141,6 +117,32 @@ public class MainWindow extends JFrame {
             listOrdersButton.setEnabled(true);
             customerToggleButton.setEnabled(true);
         });
+
+        //Menubar
+        JMenu fileMenu = new JMenu("File");
+        fileMenu.add(new ExitAction());
+
+        JMenu gotoMenu = new JMenu("Go to");
+        gotoMenu.add(gotoHome);
+        gotoMenu.add(gotoCatalogue);
+        gotoMenu.add(gotoOrder);
+        gotoMenu.add(gotoForm);
+
+        JMenu helpMenu = new JMenu("Help");
+
+        JMenuItem terms = new JMenuItem("Terms of use");
+        JMenuItem contact = new JMenuItem("Contact us");
+        JMenuItem howTo = new JMenuItem("How to fill in the form?");
+        helpMenu.add(terms);
+        helpMenu.add(contact);
+        helpMenu.add(howTo);
+
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.add(fileMenu);
+        menuBar.add(gotoMenu);
+        menuBar.add(helpMenu);
+
+        setJMenuBar(menuBar);
 
         pack();
     }
