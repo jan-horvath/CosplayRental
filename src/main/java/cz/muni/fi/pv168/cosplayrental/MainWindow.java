@@ -61,22 +61,22 @@ public class MainWindow extends JFrame {
         GoToAction gotoHome = new GoToAction(() -> {
                 c1.show(cards, "Home");
                 createOrderButton.setVisible(false);
-            }, "Home", "homeIcon.png", KeyEvent.VK_W);
+            }, "Home", "homeIcon.png", KeyEvent.VK_1);
 
         GoToAction gotoCatalogue = new GoToAction(() -> {
                 c1.show(cards, "Catalogue");
                 createOrderButton.setVisible(false);
-            }, "Catalogue", "catalogueIcon.png", KeyEvent.VK_E);
+            }, "Catalogue", "catalogueIcon.png", KeyEvent.VK_2);
 
         GoToAction gotoOrder = new GoToAction(() -> {
                 c1.show(cards, "Order");
                 createOrderButton.setVisible(true);
-            }, "Order", "orderIcon.png", KeyEvent.VK_R);
+            }, "Order", "orderIcon.png", KeyEvent.VK_3);
 
         GoToAction gotoForm = new GoToAction(() -> {
                 c1.show(cards, "Form");
                 createOrderButton.setVisible(false);
-            }, "Form", "formIcon.png", KeyEvent.VK_T);
+            }, "Form", "formIcon.png", KeyEvent.VK_4);
 
         JButton listOrdersButton = new JButton("List orders",
                 new ImageIcon(MainWindow.class.getResource("listOrdersIcon.png")));
