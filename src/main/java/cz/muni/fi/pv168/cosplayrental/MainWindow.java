@@ -62,11 +62,18 @@ public class MainWindow extends JFrame {
                 new ImageIcon(MainWindow.class.getResource("orderCatalogueIcon.png")));
         JButton formButton = new JButton("Form",
                 new ImageIcon(MainWindow.class.getResource("formIcon.png")));
+        JButton listOrdersButton = new JButton("List orders");
+        JButton userToggleButton = new JButton("User");
+        JButton staffToggleButton = new JButton("Staff");
 
         tb.add(homeButton);
         tb.add(catalogueButton);
         tb.add(orderCatalogueButton);
         tb.add(formButton);
+        tb.add(listOrdersButton);
+        tb.add(Box.createHorizontalGlue());
+        tb.add(userToggleButton);
+        tb.add(staffToggleButton);
 
         add(tb, BorderLayout.BEFORE_FIRST_LINE);
 
@@ -125,6 +132,30 @@ public class MainWindow extends JFrame {
                         Math.max(700, getHeight()));
             }
         });
+
+        userToggleButton.addActionListener(e -> {
+            c1.show(cards, "Home");
+            catalogueButton.setEnabled(true);
+            orderCatalogueButton.setEnabled(true);
+            formButton.setEnabled(true);
+            staffToggleButton.setEnabled(true);
+
+            listOrdersButton.setEnabled(false);
+            userToggleButton.setEnabled(false);
+        });
+
+        staffToggleButton.addActionListener(e -> {
+            c1.show(cards, "Home");
+            catalogueButton.setEnabled(false);
+            orderCatalogueButton.setEnabled(false);
+            formButton.setEnabled(false);
+            staffToggleButton.setEnabled(false);
+
+            listOrdersButton.setEnabled(true);
+            userToggleButton.setEnabled(true);
+        });
+
+
 
         homeButton.addActionListener(goToHomepage);
         catalogueButton.addActionListener(goToCatalogue);
