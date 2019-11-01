@@ -2,6 +2,7 @@ package cz.muni.fi.pv168.cosplayrental;
 
 import com.google.common.collect.ImmutableList;
 import cz.muni.fi.pv168.cosplayrental.actions.ExitAction;
+import cz.muni.fi.pv168.cosplayrental.actions.GoToAction;
 import cz.muni.fi.pv168.cosplayrental.tableentries.CatalogueEntry;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.AddToCartTableModel;
@@ -9,10 +10,7 @@ import cz.muni.fi.pv168.cosplayrental.tablemodels.AddToCartTableModel;
 import javax.swing.*;
 import javax.swing.table.TableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.awt.event.*;
 import java.util.List;
 
 
@@ -54,31 +52,7 @@ public class MainWindow extends JFrame {
         setJMenuBar(menuBar);
 
         JToolBar tb = new JToolBar();
-        JButton homeButton = new JButton("HomePage",
-                new ImageIcon(MainWindow.class.getResource("homeIcon.png")));
-        JButton catalogueButton = new JButton("Catalogue",
-                new ImageIcon(MainWindow.class.getResource("catalogueIcon.png")));
-        JButton orderCatalogueButton = new JButton("Order Catalogue",
-                new ImageIcon(MainWindow.class.getResource("orderCatalogueIcon.png")));
-        JButton formButton = new JButton("Form",
-                new ImageIcon(MainWindow.class.getResource("formIcon.png")));
-        JButton listOrdersButton = new JButton("List orders",
-                new ImageIcon(MainWindow.class.getResource("listOrdersIcon.png")));
-        JButton customerToggleButton = new JButton("",
-                new ImageIcon(MainWindow.class.getResource("customerIcon.png")));
-        JButton staffToggleButton = new JButton("",
-                new ImageIcon(MainWindow.class.getResource("staffIcon.png")));
 
-        tb.add(homeButton);
-        tb.add(catalogueButton);
-        tb.add(orderCatalogueButton);
-        tb.add(formButton);
-        tb.add(listOrdersButton);
-        listOrdersButton.setEnabled(false);
-        tb.add(Box.createHorizontalGlue());
-        tb.add(customerToggleButton);
-        customerToggleButton.setEnabled(false);
-        tb.add(staffToggleButton);
 
         add(tb, BorderLayout.BEFORE_FIRST_LINE);
 
@@ -89,6 +63,7 @@ public class MainWindow extends JFrame {
         JTable orderTable = new JTable(orderTableModel);
 
         JButton createOrderButton = new JButton("Create order");
+        createOrderButton.setVisible(false);
         CardLayout c1 = new CardLayout();
         JPanel cards = new JPanel(c1);
         add(cards);
@@ -99,37 +74,6 @@ public class MainWindow extends JFrame {
 
         add(createOrderButton, BorderLayout.PAGE_END);
 
-        ActionListener goToHomepage = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                c1.show(cards, "Home");
-            }
-        };
-
-        ActionListener goToCatalogue = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                c1.show(cards, "Catalogue");
-                createOrderButton.setVisible(true);
-            }
-        };
-
-        ActionListener goToOrder = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                c1.show(cards, "Order");
-                createOrderButton.setVisible(false);
-            }
-        };
-
-        ActionListener goToForm = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                c1.show(cards, "Form");
-                createOrderButton.setVisible(false);
-            }
-        };
-
         addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent event) {
                 setSize(
@@ -138,11 +82,49 @@ public class MainWindow extends JFrame {
             }
         });
 
+        GoToAction gotoHome = new GoToAction(() -> {
+                c1.show(cards, "Home");
+                createOrderButton.setVisible(false);
+            }, "Home", "homeIcon.png", KeyEvent.VK_1);
+
+        GoToAction gotoCatalogue = new GoToAction(() -> {
+                c1.show(cards, "Catalogue");
+                createOrderButton.setVisible(false);
+            }, "Catalogue", "catalogueIcon.png", KeyEvent.VK_2);
+
+        GoToAction gotoOrder = new GoToAction(() -> {
+                c1.show(cards, "Order");
+                createOrderButton.setVisible(true);
+            }, "Order", "orderIcon.png", KeyEvent.VK_3);
+
+        GoToAction gotoForm = new GoToAction(() -> {
+                c1.show(cards, "Form");
+                createOrderButton.setVisible(false);
+            }, "Form", "formIcon.png", KeyEvent.VK_4);
+
+        JButton listOrdersButton = new JButton("List orders",
+                new ImageIcon(MainWindow.class.getResource("listOrdersIcon.png")));
+        JButton customerToggleButton = new JButton("",
+                new ImageIcon(MainWindow.class.getResource("customerIcon.png")));
+        JButton staffToggleButton = new JButton("",
+                new ImageIcon(MainWindow.class.getResource("staffIcon.png")));
+
+        tb.add(gotoHome);
+        tb.add(gotoCatalogue);
+        tb.add(gotoOrder);
+        tb.add(gotoForm);
+        tb.add(listOrdersButton);
+        listOrdersButton.setEnabled(false);
+        tb.add(Box.createHorizontalGlue());
+        tb.add(customerToggleButton);
+        customerToggleButton.setEnabled(false);
+        tb.add(staffToggleButton);
+
         customerToggleButton.addActionListener(e -> {
             c1.show(cards, "Home");
-            catalogueButton.setEnabled(true);
-            orderCatalogueButton.setEnabled(true);
-            formButton.setEnabled(true);
+            gotoCatalogue.setEnabled(true);
+            gotoOrder.setEnabled(true);
+            gotoForm.setEnabled(true);
             staffToggleButton.setEnabled(true);
 
             listOrdersButton.setEnabled(false);
@@ -151,22 +133,14 @@ public class MainWindow extends JFrame {
 
         staffToggleButton.addActionListener(e -> {
             c1.show(cards, "Home");
-            catalogueButton.setEnabled(false);
-            orderCatalogueButton.setEnabled(false);
-            formButton.setEnabled(false);
+            gotoCatalogue.setEnabled(false);
+            gotoOrder.setEnabled(false);
+            gotoForm.setEnabled(false);
             staffToggleButton.setEnabled(false);
 
             listOrdersButton.setEnabled(true);
             customerToggleButton.setEnabled(true);
         });
-
-
-
-        homeButton.addActionListener(goToHomepage);
-        catalogueButton.addActionListener(goToCatalogue);
-        orderCatalogueButton.addActionListener(goToOrder);
-        createOrderButton.addActionListener((goToOrder));
-        formButton.addActionListener(goToForm);
 
         pack();
     }
