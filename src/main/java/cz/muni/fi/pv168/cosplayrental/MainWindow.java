@@ -62,17 +62,22 @@ public class MainWindow extends JFrame {
                 new ImageIcon(MainWindow.class.getResource("orderCatalogueIcon.png")));
         JButton formButton = new JButton("Form",
                 new ImageIcon(MainWindow.class.getResource("formIcon.png")));
-        JButton listOrdersButton = new JButton("List orders");
-        JButton userToggleButton = new JButton("User");
-        JButton staffToggleButton = new JButton("Staff");
+        JButton listOrdersButton = new JButton("List orders",
+                new ImageIcon(MainWindow.class.getResource("listOrdersIcon.png")));
+        JButton customerToggleButton = new JButton("",
+                new ImageIcon(MainWindow.class.getResource("customerIcon.png")));
+        JButton staffToggleButton = new JButton("",
+                new ImageIcon(MainWindow.class.getResource("staffIcon.png")));
 
         tb.add(homeButton);
         tb.add(catalogueButton);
         tb.add(orderCatalogueButton);
         tb.add(formButton);
         tb.add(listOrdersButton);
+        listOrdersButton.setEnabled(false);
         tb.add(Box.createHorizontalGlue());
-        tb.add(userToggleButton);
+        tb.add(customerToggleButton);
+        customerToggleButton.setEnabled(false);
         tb.add(staffToggleButton);
 
         add(tb, BorderLayout.BEFORE_FIRST_LINE);
@@ -133,7 +138,7 @@ public class MainWindow extends JFrame {
             }
         });
 
-        userToggleButton.addActionListener(e -> {
+        customerToggleButton.addActionListener(e -> {
             c1.show(cards, "Home");
             catalogueButton.setEnabled(true);
             orderCatalogueButton.setEnabled(true);
@@ -141,7 +146,7 @@ public class MainWindow extends JFrame {
             staffToggleButton.setEnabled(true);
 
             listOrdersButton.setEnabled(false);
-            userToggleButton.setEnabled(false);
+            customerToggleButton.setEnabled(false);
         });
 
         staffToggleButton.addActionListener(e -> {
@@ -152,7 +157,7 @@ public class MainWindow extends JFrame {
             staffToggleButton.setEnabled(false);
 
             listOrdersButton.setEnabled(true);
-            userToggleButton.setEnabled(true);
+            customerToggleButton.setEnabled(true);
         });
 
 
