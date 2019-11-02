@@ -1,48 +1,44 @@
 package cz.muni.fi.pv168.cosplayrental.tablemodels;
 
+import cz.muni.fi.pv168.cosplayrental.entities.ProductStack;
 import cz.muni.fi.pv168.cosplayrental.tableentries.CatalogueEntry;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 import java.util.function.Function;
 
-//TODO Is it possible to merge Catalogue and Order table models? The only difference is the modifiable add-to-cart option
-public class AddToCartTableModel extends AbstractTableModel {
+public class CommonTableModel extends AbstractTableModel  {
 
-    private enum Column {
+    public List<CatalogueEntry> entries;
+    public boolean showAddToCartColumn;
+
+    public CommonTableModel(List<CatalogueEntry> entries, boolean showAddToCartColumn) {
+        this.entries = entries;
+        this.showAddToCartColumn = showAddToCartColumn;
+    }
+
+    public enum Column {
 
         PRODUCTNAME("Product name", String.class, CatalogueEntry::getName),
         PRICE("Price", Double.class, CatalogueEntry::getPrice),
         ISADDEDTOCART("Add to cart", Boolean.class, CatalogueEntry::isAddedToCart);
+
+        private final String name;
+        private final Class<?> columnClass;
+        private final Function<CatalogueEntry, ?> extractor;
 
         private <T> Column(String name, Class<T> columnClass, Function<CatalogueEntry, T> extractor) {
             this.name = name;
             this.columnClass = columnClass;
             this.extractor = extractor;
         }
-
-        private final String name;
-        private final Class<?> columnClass;
-        private final Function<CatalogueEntry, ?> extractor;
-    }
-
-    //private List<ProductStack> entries;
-    //privae List<Integer> addedToCartCounts;
-    private List<CatalogueEntry> entries;
-
-    public AddToCartTableModel(List<CatalogueEntry> entries) {
-        this.entries = entries;
     }
 
     @Override
-    public int getRowCount() {
-        return entries.size();
-    }
+    public int getRowCount() { return entries.size(); }
 
     @Override
-    public int getColumnCount() {
-        return Column.values().length;
-    }
+    public int getColumnCount() { return Column.values().length; }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {

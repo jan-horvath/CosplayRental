@@ -6,6 +6,7 @@ import cz.muni.fi.pv168.cosplayrental.actions.GoToAction;
 import cz.muni.fi.pv168.cosplayrental.tableentries.CatalogueEntry;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.AddToCartTableModel;
+import cz.muni.fi.pv168.cosplayrental.tablemodels.CommonTableModel;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -28,10 +29,13 @@ public class MainWindow extends JFrame {
         setTitle("CoReS: Cosplay Rental Service ©");
 
         //Tables and windows
-        TableModel catalogueTableModel = new CatalogueTableModel(CATALOG_TEST_DATA);
+        TableModel catalogueTableModel = new CommonTableModel(CATALOG_TEST_DATA, false);
         JTable catalogueTable = new JTable(catalogueTableModel);
+        catalogueTable.removeColumn(
+                catalogueTable.getColumnModel().getColumn(CommonTableModel.Column.valueOf("ISADDEDTOCART").ordinal())
+        );
 
-        TableModel orderTableModel = new AddToCartTableModel(CATALOG_TEST_DATA);
+        TableModel orderTableModel = new CommonTableModel(CATALOG_TEST_DATA, true);
         JTable orderTable = new JTable(orderTableModel);
 
         JButton createOrderButton = new JButton("Create order");

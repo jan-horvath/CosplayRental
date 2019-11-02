@@ -3,16 +3,17 @@ package cz.muni.fi.pv168.cosplayrental.entities;
 import java.util.Objects;
 
 public class ProductStack {
+
     public enum Size {
         NA,XS,S,M,L,XL,XXL
     }
 
     private final String name;
     private final Size size;
-    private int price;
+    private double price;
     private int stackSize;
 
-    public ProductStack(String name, Size size, int price, int stackSize) {
+    public ProductStack(String name, Size size, double price, int stackSize) {
         this.name = name;
         this.size = size;
         this.price = price;
@@ -27,7 +28,7 @@ public class ProductStack {
         return size;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
