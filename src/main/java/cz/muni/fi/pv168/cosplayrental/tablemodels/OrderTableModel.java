@@ -1,8 +1,6 @@
 package cz.muni.fi.pv168.cosplayrental.tablemodels;
 
 import cz.muni.fi.pv168.cosplayrental.entities.Order;
-import cz.muni.fi.pv168.cosplayrental.entities.ProductStack;
-import cz.muni.fi.pv168.cosplayrental.tableentries.CatalogueEntry;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
