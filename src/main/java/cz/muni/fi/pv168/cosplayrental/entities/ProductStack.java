@@ -53,4 +53,9 @@ public class ProductStack {
     public int hashCode() {
         return Objects.hash(name, size);
     }
+
+    @Override
+    public String toString() {
+        return  name + " (" + size + "):  " + stackSize + " pc" + ((stackSize > 1) ? "s" : "");
+    }
 }
