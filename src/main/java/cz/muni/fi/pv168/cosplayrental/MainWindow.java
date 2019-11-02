@@ -9,6 +9,7 @@ import cz.muni.fi.pv168.cosplayrental.tableentries.CatalogueEntry;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.AddToCartTableModel;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.OrderTableModel;
+import cz.muni.fi.pv168.cosplayrental.tablemodels.ProductStackListRenderer;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -66,6 +67,8 @@ public class MainWindow extends JFrame {
 
         TableModel orderTableModel = new OrderTableModel(ORDER_TEST_DATA);
         JTable orderTable = new JTable(orderTableModel);
+        orderTable.setDefaultRenderer(List.class, new ProductStackListRenderer());
+        orderTable.setRowHeight(50);
 
         JButton createOrderButton = new JButton("Create order");
         createOrderButton.setVisible(false);
