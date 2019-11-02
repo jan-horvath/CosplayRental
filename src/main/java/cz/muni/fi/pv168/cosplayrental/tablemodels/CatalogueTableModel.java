@@ -1,53 +1,85 @@
 package cz.muni.fi.pv168.cosplayrental.tablemodels;
 
-import cz.muni.fi.pv168.cosplayrental.tableentries.CatalogueEntry;
+import cz.muni.fi.pv168.cosplayrental.entities.ProductStack;
 
 import javax.swing.table.AbstractTableModel;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-public class CatalogueTableModel extends AbstractTableModel {
+public class CatalogueTableModel extends AbstractTableModel  {
 
-    private enum Column {
+    public List<ProductStack> entries;
+    public List<Integer> piecesOrdered;
 
-        PRODUCTNAME("Product name", String.class, CatalogueEntry::getName),
-        PRICE("Price", Double.class, CatalogueEntry::getPrice);
+    public CatalogueTableModel(List<ProductStack> entries) {
+        this.entries = entries;
+        this.piecesOrdered = new ArrayList<>(Arrays.asList(new Integer[entries.size()]));
+    }
 
-        private <T> Column(String name, Class<T> columnClass, Function<CatalogueEntry, T> extractor) {
+    public enum Column {
+
+        PRODUCTNAME("Product name", String.class, ProductStack::getName),
+        PRODUCTSIZE("Product size", Enum.class, ProductStack::getSize),
+        PRICE("Price", Double.class, ProductStack::getPrice),
+        AVAILABLEITEMS("Available items", Integer.class, ProductStack::getStackSize);
+
+        private final String name;
+        private final Class<?> columnClass;
+        private final Function<ProductStack, ?> extractor;
+
+        <T> Column(String name, Class<T> columnClass, Function<ProductStack, T> extractor) {
             this.name = name;
             this.columnClass = columnClass;
             this.extractor = extractor;
         }
-
-        private final String name;
-        private final Class<?> columnClass;
-        private final Function<CatalogueEntry, ?> extractor;
-    }
-
-    private List<CatalogueEntry> entries;
-
-    public CatalogueTableModel(List<CatalogueEntry> entries) {
-        this.entries = entries;
     }
 
     @Override
-    public int getRowCount() {
-        return entries.size();
-    }
+    public int getRowCount() { return entries.size(); }
 
     @Override
-    public int getColumnCount() {
-        return Column.values().length;
-    }
+    public int getColumnCount() { return Column.values().length + 1; }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        CatalogueEntry entry = entries.get(rowIndex);
+        if (columnIndex == Column.values().length) {
+            return piecesOrdered.get(rowIndex);
+        }
+        ProductStack entry = entries.get(rowIndex);
         return Column.values()[columnIndex].extractor.apply(entry);
     }
 
     @Override
     public String getColumnName(int column) {
+        if (column == Column.values().length ) {
+            return "Ordered items";
+        }
         return Column.values()[column].name;
+    }
+
+    @Override
+    public boolean isCellEditable(int row, int column) {
+         return column == Column.values().length;
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        if (columnIndex == Column.values().length) {
+            return Integer.class;
+        }
+        return Column.values()[columnIndex].columnClass;
+    }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        if (columnIndex == Column.values().length) {
+            piecesOrdered.set(rowIndex, (Integer) aValue);
+        }
+
+        if ((Integer) aValue > entries.get(rowIndex).getStackSize()) {
+            piecesOrdered.set(rowIndex, (Integer) 0);
+        }
     }
 }

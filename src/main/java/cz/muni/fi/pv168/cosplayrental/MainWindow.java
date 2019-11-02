@@ -5,7 +5,7 @@ import cz.muni.fi.pv168.cosplayrental.actions.ExitAction;
 import cz.muni.fi.pv168.cosplayrental.actions.GoToAction;
 import cz.muni.fi.pv168.cosplayrental.entities.Order;
 import cz.muni.fi.pv168.cosplayrental.entities.ProductStack;
-import cz.muni.fi.pv168.cosplayrental.tablemodels.CommonTableModel;
+import cz.muni.fi.pv168.cosplayrental.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.OrderTableModel;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.ProductStackListRenderer;
 
@@ -55,13 +55,13 @@ public class MainWindow extends JFrame {
         setTitle("CoReS: Cosplay Rental Service ©");
 
         //Tables and windows
-        TableModel catalogueTableModel = new CommonTableModel(CATALOG_TEST_DATA);
+        TableModel catalogueTableModel = new CatalogueTableModel(CATALOG_TEST_DATA);
         JTable catalogueTable = new JTable(catalogueTableModel);
         catalogueTable.removeColumn(
-                catalogueTable.getColumnModel().getColumn(CommonTableModel.Column.valueOf("ADDTOCART").ordinal())
+                catalogueTable.getColumnModel().getColumn(CatalogueTableModel.Column.values().length)
         );
 
-        TableModel addToCartTableModel = new CommonTableModel(CATALOG_TEST_DATA);
+        TableModel addToCartTableModel = new CatalogueTableModel(CATALOG_TEST_DATA);
         JTable addToCartTable = new JTable(addToCartTableModel);
 
         TableModel orderTableModel = new OrderTableModel(ORDER_TEST_DATA);
