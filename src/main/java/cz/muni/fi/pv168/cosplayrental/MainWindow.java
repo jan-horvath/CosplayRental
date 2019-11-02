@@ -3,14 +3,20 @@ package cz.muni.fi.pv168.cosplayrental;
 import com.google.common.collect.ImmutableList;
 import cz.muni.fi.pv168.cosplayrental.actions.ExitAction;
 import cz.muni.fi.pv168.cosplayrental.actions.GoToAction;
+import cz.muni.fi.pv168.cosplayrental.entities.Order;
+import cz.muni.fi.pv168.cosplayrental.entities.ProductStack;
 import cz.muni.fi.pv168.cosplayrental.tableentries.CatalogueEntry;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.AddToCartTableModel;
+import cz.muni.fi.pv168.cosplayrental.tablemodels.OrderTableModel;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
 import java.awt.*;
+import java.awt.color.ProfileDataException;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -21,6 +27,30 @@ public class MainWindow extends JFrame {
             new CatalogueEntry("Poseidon trident", 21.90),
             new CatalogueEntry("Deadpool suit", 42.20)
     );
+
+    private static final List<ProductStack> ps1 = Arrays.asList(
+            new ProductStack("Witcher silver sword", ProductStack.Size.NA, 29, 3),
+            new ProductStack("Portal gun", ProductStack.Size.NA, 42, 2),
+            new ProductStack("BFG9000", ProductStack.Size.NA, 65, 1)
+    );
+
+    private static final List<ProductStack> ps2 = Arrays.asList(
+            new ProductStack("Ironman suit", ProductStack.Size.L, 120, 1),
+            new ProductStack("Captain America suit", ProductStack.Size.L, 109, 1)
+    );
+
+    private static final List<ProductStack> ps3 = Arrays.asList(
+            new ProductStack("Batman suit", ProductStack.Size.S, 100, 1),
+            new ProductStack("Batarang set", ProductStack.Size.NA, 25, 2)
+    );
+
+
+    private static final List<Order> ORDER_TEST_DATA = ImmutableList.of(
+            new Order(ps1, "weaponreplica@enthusiast.org", "9184345167789991", "No Name", "+658291912994"),
+            new Order(ps2, "fred.kirby@gmail.org", "9184345161019991", "Fred Kirby", "+929123456994"),
+            new Order(ps3, "marc.blake@batmanfan.org", "4116852067789991", "Marc Blake", "+444291912994")
+    );
+
     private static final JPanel BLANK = new JPanel();
 
     public MainWindow() {
@@ -31,7 +61,10 @@ public class MainWindow extends JFrame {
         TableModel catalogueTableModel = new CatalogueTableModel(CATALOG_TEST_DATA);
         JTable catalogueTable = new JTable(catalogueTableModel);
 
-        TableModel orderTableModel = new AddToCartTableModel(CATALOG_TEST_DATA);
+        TableModel addToCartTableModel = new AddToCartTableModel(CATALOG_TEST_DATA);
+        JTable addToCartTable = new JTable(addToCartTableModel);
+
+        TableModel orderTableModel = new OrderTableModel(ORDER_TEST_DATA);
         JTable orderTable = new JTable(orderTableModel);
 
         JButton createOrderButton = new JButton("Create order");
@@ -41,8 +74,9 @@ public class MainWindow extends JFrame {
         add(cards);
         cards.add(new JLabel(new ImageIcon(MainWindow.class.getResource("warmup.png"))), "Home");
         cards.add(new JScrollPane(catalogueTable), "Catalogue");
-        cards.add(new JScrollPane(orderTable), "Order");
+        cards.add(new JScrollPane(addToCartTable), "Order");
         cards.add(new JScrollPane(new FormPanel()), "Form");
+        cards.add(new JScrollPane(orderTable), "Orders list");
 
         add(createOrderButton, BorderLayout.PAGE_END);
 
@@ -78,8 +112,13 @@ public class MainWindow extends JFrame {
                 createOrderButton.setVisible(false);
             }, "Form", "formIcon.png", KeyEvent.VK_4);
 
-        JButton listOrdersButton = new JButton("List orders",
-                new ImageIcon(MainWindow.class.getResource("listOrdersIcon.png")));
+        GoToAction gotoListOrders = new GoToAction(() -> {
+            c1.show(cards, "Orders list");
+            createOrderButton.setVisible(false);
+        }, "Orders list", "listOrdersIcon.png", KeyEvent.VK_5);
+
+        /*JButton listOrdersButton = new JButton("List orders",
+                new ImageIcon(MainWindow.class.getResource("listOrdersIcon.png")));*/
         JButton customerToggleButton = new JButton("",
                 new ImageIcon(MainWindow.class.getResource("customerIcon.png")));
         JButton staffToggleButton = new JButton("",
@@ -89,8 +128,8 @@ public class MainWindow extends JFrame {
         tb.add(gotoCatalogue);
         tb.add(gotoOrder);
         tb.add(gotoForm);
-        tb.add(listOrdersButton);
-        listOrdersButton.setEnabled(false);
+        tb.add(gotoListOrders);
+        gotoListOrders.setEnabled(false);
         tb.add(Box.createHorizontalGlue());
         tb.add(customerToggleButton);
         customerToggleButton.setEnabled(false);
@@ -103,7 +142,7 @@ public class MainWindow extends JFrame {
             gotoForm.setEnabled(true);
             staffToggleButton.setEnabled(true);
 
-            listOrdersButton.setEnabled(false);
+            gotoListOrders.setEnabled(false);
             customerToggleButton.setEnabled(false);
         });
 
@@ -114,7 +153,7 @@ public class MainWindow extends JFrame {
             gotoForm.setEnabled(false);
             staffToggleButton.setEnabled(false);
 
-            listOrdersButton.setEnabled(true);
+            gotoListOrders.setEnabled(true);
             customerToggleButton.setEnabled(true);
         });
 
