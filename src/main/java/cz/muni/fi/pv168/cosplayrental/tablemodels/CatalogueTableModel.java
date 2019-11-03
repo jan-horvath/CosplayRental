@@ -85,14 +85,7 @@ public class CatalogueTableModel extends AbstractTableModel  {
     }
 
     public ProductStack getOrderedProductStack(int row) {
-        ProductStack catalogueItem = entries.get(row);
-        ProductStack orderedItem = new ProductStack(
-                catalogueItem.getName(),
-                catalogueItem.getSize(),
-                catalogueItem.getPrice(),
-                piecesOrdered.get(row)
-        );
-        return orderedItem;
+        return entries.get(row);
     }
 
     public boolean areAllItemsZero() {

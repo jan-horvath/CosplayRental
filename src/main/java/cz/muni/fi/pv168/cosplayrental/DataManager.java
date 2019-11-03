@@ -9,6 +9,8 @@ import java.time.format.DateTimeFormatter;
 
 
 import javax.swing.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -71,18 +73,25 @@ public class DataManager {
             int itemCount = (int) catalogueTableModel.getValueAt(i,
                     catalogueTableModel.getColumnCount()-1);
             if (itemCount > 0) {
-                orderedItems.add(catalogueTableModel.getOrderedProductStack(i));
+                ProductStack wantsToOrder = catalogueTableModel.getOrderedProductStack(i);
+                wantsToOrder.setStackSize(wantsToOrder.getStackSize() - itemCount);
+                orderedItems.add(new ProductStack(
+                        wantsToOrder.getName(), wantsToOrder.getSize(), wantsToOrder.getPrice(), itemCount));
             }
         }
-
+        
         String email = formData.get("email");
         String creditCardNumber = formData.get("cardNumber");
         String fullName = formData.get("name");
         String phone = formData.get("phoneNumber");
+        System.out.println(email + " " + creditCardNumber + " " + fullName + " " + phone + " " + formData.get("returnDate"));
         LocalDate returnDate = LocalDate.parse(formData.get("returnDate"), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 
         Order desiredOrder = new Order(orderedItems, email, creditCardNumber, fullName, phone, returnDate);
         orders.add(desiredOrder);
+
+        orderTableModel.fireTableRowsInserted(orders.size()-1, orders.size()-1);
+        catalogueTableModel.fireTableDataChanged();
 
         return orderedItems;
     }
