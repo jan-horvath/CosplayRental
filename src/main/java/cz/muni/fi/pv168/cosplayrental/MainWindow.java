@@ -10,48 +10,55 @@ import cz.muni.fi.pv168.cosplayrental.tablemodels.OrderTableModel;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.ProductStackListRenderer;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
 
 
 public class MainWindow extends JFrame {
 
-    private static List<ProductStack> CATALOG_TEST_DATA = Arrays.asList(
+    private static List<ProductStack> CATALOG_TEST_DATA = new ArrayList<>(Arrays.asList(
             new ProductStack("Asterix helmet", ProductStack.Size.NA, 15.80, 3),
             new ProductStack("Poseidon trident", ProductStack.Size.NA, 21.90, 3),
-            new ProductStack("Deadpool suit", ProductStack.Size.M,42.20, 4)
-    );
+            new ProductStack("Deadpool suit", ProductStack.Size.M,42.20, 4),
+            new ProductStack("Witcher silver sword", ProductStack.Size.NA, 29, 0),
+            new ProductStack("Portal gun", ProductStack.Size.NA, 42, 1),
+            new ProductStack("BFG9000", ProductStack.Size.NA, 65, 0),
+            new ProductStack("Ironman suit", ProductStack.Size.L, 120, 0),
+            new ProductStack("Captain America suit", ProductStack.Size.L, 109, 0),
+            new ProductStack("Batman suit", ProductStack.Size.S, 100, 0),
+            new ProductStack("Batarang set", ProductStack.Size.NA, 25, 10)
+    ));
 
-    private static List<ProductStack> ps1 = Arrays.asList(
+    private static List<ProductStack> ps1 = new ArrayList<>(Arrays.asList(
             new ProductStack("Witcher silver sword", ProductStack.Size.NA, 29, 3),
             new ProductStack("Portal gun", ProductStack.Size.NA, 42, 2),
             new ProductStack("BFG9000", ProductStack.Size.NA, 65, 1)
-    );
+    ));
 
-    private static List<ProductStack> ps2 = Arrays.asList(
+    private static List<ProductStack> ps2 = new ArrayList<>(Arrays.asList(
             new ProductStack("Ironman suit", ProductStack.Size.L, 120, 1),
             new ProductStack("Captain America suit", ProductStack.Size.L, 109, 1)
-    );
+    ));
 
-    private static List<ProductStack> ps3 = Arrays.asList(
+    private static List<ProductStack> ps3 = new ArrayList<>(Arrays.asList(
             new ProductStack("Batman suit", ProductStack.Size.S, 100, 1),
             new ProductStack("Batarang set", ProductStack.Size.NA, 25, 2)
-    );
+    ));
 
 
-    private static List<Order> ORDER_TEST_DATA = Arrays.asList(
+    private static List<Order> ORDER_TEST_DATA = new ArrayList<>(Arrays.asList(
             new Order(ps1, "weaponreplica@enthusiast.org", "9184345167789991", "No Name",
                     "+658291912994", LocalDate.of(2019, 12, 20)),
             new Order(ps2, "fred.kirby@gmail.org", "9184345161019991", "Fred Kirby",
                     "+929123456994", LocalDate.of(2019, 12, 21)),
             new Order(ps3, "marc.blake@batmanfan.org", "4116852067789991", "Marc Blake",
                     "+444291912994", LocalDate.of(2019, 12, 22))
-    );
+    ));
 
     private static final JPanel BLANK = new JPanel();
 
@@ -59,21 +66,21 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("CoReS: Cosplay Rental Service ©");
 
-        //Tables and windows
+        //Tables
         DataManager dataManager = new DataManager(CATALOG_TEST_DATA, ORDER_TEST_DATA);
+
         JTable catalogueTable = new JTable(dataManager.getCatalogueTableModel());
         catalogueTable.removeColumn(
                 catalogueTable.getColumnModel().getColumn(CatalogueTableModel.Column.values().length)
         );
 
         JTable addToCartTable = new JTable(dataManager.getCatalogueTableModel());
-        
+
         JTable orderTable = new JTable(dataManager.getOrderTableModel());
         orderTable.setDefaultRenderer(List.class, new ProductStackListRenderer());
-        orderTable.setRowHeight(50);
+        orderTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        JButton createOrderButton = new JButton("Create order");
-        createOrderButton.setVisible(false);
+        //Cards/Widnows
         CardLayout c1 = new CardLayout();
         JPanel cards = new JPanel(c1);
         add(cards);
@@ -83,8 +90,6 @@ public class MainWindow extends JFrame {
         cards.add(new JScrollPane(new FormPanel()), "Form");
         cards.add(new JScrollPane(orderTable), "Orders list");
 
-        add(createOrderButton, BorderLayout.PAGE_END);
-
         addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent event) {
                 setSize(
@@ -93,52 +98,45 @@ public class MainWindow extends JFrame {
             }
         });
 
-        //Toolbar
-        JToolBar tb = new JToolBar();
-        add(tb, BorderLayout.BEFORE_FIRST_LINE);
+        //Top toolbar
+        JToolBar topToolBar = new JToolBar();
+        add(topToolBar, BorderLayout.BEFORE_FIRST_LINE);
 
         GoToAction gotoHome = new GoToAction(() -> {
                 c1.show(cards, "Home");
-                createOrderButton.setVisible(false);
             }, "Home", "homeIcon.png", KeyEvent.VK_1);
 
         GoToAction gotoCatalogue = new GoToAction(() -> {
                 c1.show(cards, "Catalogue");
-                createOrderButton.setVisible(false);
             }, "Catalogue", "catalogueIcon.png", KeyEvent.VK_2);
 
         GoToAction gotoOrder = new GoToAction(() -> {
                 c1.show(cards, "Order");
-                createOrderButton.setVisible(true);
             }, "Order", "orderIcon.png", KeyEvent.VK_3);
 
         GoToAction gotoForm = new GoToAction(() -> {
                 c1.show(cards, "Form");
-                createOrderButton.setVisible(false);
             }, "Form", "formIcon.png", KeyEvent.VK_4);
 
         GoToAction gotoListOrders = new GoToAction(() -> {
-            c1.show(cards, "Orders list");
-            createOrderButton.setVisible(false);
-        }, "Orders list", "listOrdersIcon.png", KeyEvent.VK_5);
+                c1.show(cards, "Orders list");
+            }, "Orders list", "listOrdersIcon.png", KeyEvent.VK_5);
 
-        /*JButton listOrdersButton = new JButton("List orders",
-                new ImageIcon(MainWindow.class.getResource("listOrdersIcon.png")));*/
         JButton customerToggleButton = new JButton("",
                 new ImageIcon(MainWindow.class.getResource("customerIcon.png")));
         JButton staffToggleButton = new JButton("",
                 new ImageIcon(MainWindow.class.getResource("staffIcon.png")));
 
-        tb.add(gotoHome);
-        tb.add(gotoCatalogue);
-        tb.add(gotoOrder);
-        tb.add(gotoForm);
-        tb.add(gotoListOrders);
+        topToolBar.add(gotoHome);
+        topToolBar.add(gotoCatalogue);
+        topToolBar.add(gotoOrder);
+        topToolBar.add(gotoForm);
+        topToolBar.add(gotoListOrders);
         gotoListOrders.setEnabled(false);
-        tb.add(Box.createHorizontalGlue());
-        tb.add(customerToggleButton);
+        topToolBar.add(Box.createHorizontalGlue());
+        topToolBar.add(customerToggleButton);
         customerToggleButton.setEnabled(false);
-        tb.add(staffToggleButton);
+        topToolBar.add(staffToggleButton);
 
         customerToggleButton.addActionListener(e -> {
             c1.show(cards, "Home");
@@ -160,6 +158,24 @@ public class MainWindow extends JFrame {
 
             gotoListOrders.setEnabled(true);
             customerToggleButton.setEnabled(true);
+        });
+
+        //Bottom toolbar
+        JToolBar bottomToolBar = new JToolBar();
+        add(bottomToolBar, BorderLayout.AFTER_LAST_LINE);
+
+        JButton createOrderButton = new JButton("Create order");
+        JButton returnOrderButton = new JButton("Return order");
+        bottomToolBar.add(createOrderButton);
+        bottomToolBar.add(returnOrderButton);
+
+        returnOrderButton.addActionListener(e -> {
+            int selectedRow = orderTable.getSelectedRow();
+            if (selectedRow == -1) {
+                return;
+            }
+            int modelRow = orderTable.convertRowIndexToModel(selectedRow);
+            dataManager.returnOrder(modelRow);
         });
 
         //Menubar
