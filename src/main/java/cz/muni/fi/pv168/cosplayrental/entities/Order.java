@@ -13,9 +13,9 @@ public class Order {
 
     public Order(List<ProductStack> productStacks, String email, String creditCardNumber, String fullName, String phoneNumber, LocalDate returnDate) {
         this.productStacks = productStacks;
+        this.fullName = fullName;
         this.email = email;
         this.creditCardNumber = creditCardNumber;
-        this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.returnDate = returnDate;
     }

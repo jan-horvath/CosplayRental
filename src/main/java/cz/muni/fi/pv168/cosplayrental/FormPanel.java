@@ -4,13 +4,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class FormPanel extends JPanel {
 
-    private List<JTextField> textFields = new ArrayList<JTextField>();
+    public Map<String, String> formData = new HashMap<>();
+    public List<JTextField> textFields = new ArrayList<JTextField>();
     private List<JLabel> labels = new ArrayList<JLabel>();
 
-    private Container c;
 
     public FormPanel() {
 
@@ -21,28 +23,31 @@ public class FormPanel extends JPanel {
         labels.add(nameLabel);
         JTextField nameField = new JTextField();    
         textFields.add(nameField);
+        formData.put("name", nameField.getText());
 
         JLabel emailLabel = new JLabel("E-mail adress:");
         labels.add(emailLabel);
         JTextField emailField = new JTextField();
         textFields.add(emailField);
+        formData.put("email", emailField.getText());
 
         JLabel cardLabel = new JLabel("Credit card number:");
         labels.add(cardLabel);
         JTextField cardField = new JTextField();
         textFields.add(cardField);
+        formData.put("cardNumber", cardField.getText());
 
         JLabel phoneLabel = new JLabel("Phone number:");
         labels.add(phoneLabel);
         JTextField phoneField = new JTextField();
         textFields.add(phoneField);
+        formData.put("phoneNumber", phoneField.getText());
 
         JLabel returnDateLabel = new JLabel("Return date:");
         labels.add(returnDateLabel);
         JTextField returnDateField = new JTextField();
         textFields.add(returnDateField);
-
-        JButton submitButton = new JButton("SUMBIT");
+        formData.put("returnDate", returnDateField.getText());
 
 
         for (int i = 0; i < labels.size(); i++) {
@@ -52,6 +57,9 @@ public class FormPanel extends JPanel {
                     new Dimension(Integer.MAX_VALUE, 30));
             add(f);
         }
-        add(submitButton);
+    }
+
+    public Map<String, String> getFormData() {
+        return formData;
     }
 }

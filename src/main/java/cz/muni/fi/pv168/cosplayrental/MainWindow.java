@@ -1,17 +1,13 @@
 package cz.muni.fi.pv168.cosplayrental;
 
-import com.google.common.collect.ImmutableList;
 import cz.muni.fi.pv168.cosplayrental.actions.ExitAction;
 import cz.muni.fi.pv168.cosplayrental.actions.GoToAction;
 import cz.muni.fi.pv168.cosplayrental.entities.Order;
 import cz.muni.fi.pv168.cosplayrental.entities.ProductStack;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.CatalogueTableModel;
-import cz.muni.fi.pv168.cosplayrental.tablemodels.OrderTableModel;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.ProductStackListRenderer;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
@@ -66,9 +62,10 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("CoReS: Cosplay Rental Service ©");
 
+        FormPanel formPanel = new FormPanel();
         //Tables
-        DataManager dataManager = new DataManager(CATALOG_TEST_DATA, ORDER_TEST_DATA);
 
+        DataManager dataManager = new DataManager(CATALOG_TEST_DATA, ORDER_TEST_DATA, formPanel);
         JTable catalogueTable = new JTable(dataManager.getCatalogueTableModel());
         catalogueTable.removeColumn(
                 catalogueTable.getColumnModel().getColumn(CatalogueTableModel.Column.values().length)
@@ -80,7 +77,7 @@ public class MainWindow extends JFrame {
         orderTable.setDefaultRenderer(List.class, new ProductStackListRenderer());
         orderTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        //Cards/Widnows
+        //Cards/Windows
         CardLayout c1 = new CardLayout();
         JPanel cards = new JPanel(c1);
         add(cards);
@@ -88,7 +85,7 @@ public class MainWindow extends JFrame {
         cards.add(new JLabel(new ImageIcon(MainWindow.class.getResource("warmup.png"))), "Home");
         cards.add(new JScrollPane(catalogueTable), "Catalogue");
         cards.add(new JScrollPane(addToCartTable), "Order");
-        cards.add(new JScrollPane(new FormPanel()), "Form");
+        cards.add(new JScrollPane(formPanel), "Form");
         cards.add(new JScrollPane(orderTable), "Orders list");
 
         addComponentListener(new ComponentAdapter() {
@@ -167,8 +164,11 @@ public class MainWindow extends JFrame {
 
         JButton createOrderButton = new JButton("Create order");
         JButton returnOrderButton = new JButton("Return order");
+        JButton submitOrderButton = new JButton("Submit order");
         bottomToolBar.add(createOrderButton);
         bottomToolBar.add(returnOrderButton);
+        bottomToolBar.add(submitOrderButton);
+
 
         returnOrderButton.addActionListener(e -> {
             int selectedRow = orderTable.getSelectedRow();
@@ -177,6 +177,16 @@ public class MainWindow extends JFrame {
             }
             int modelRow = orderTable.convertRowIndexToModel(selectedRow);
             dataManager.returnOrder(modelRow);
+        });
+
+        createOrderButton.addActionListener( e -> {
+            dataManager.createOrderItems();
+            c1.show(cards, "Form");
+        });
+
+        submitOrderButton.addActionListener( e -> {
+            dataManager.submitOrder();
+
         });
 
         //Menubar

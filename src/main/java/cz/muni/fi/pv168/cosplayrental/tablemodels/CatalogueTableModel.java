@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.Collections;
 
 public class CatalogueTableModel extends AbstractTableModel  {
 
@@ -15,7 +16,7 @@ public class CatalogueTableModel extends AbstractTableModel  {
 
     public CatalogueTableModel(List<ProductStack> entries) {
         this.entries = entries;
-        this.piecesOrdered = new ArrayList<>(Arrays.asList(new Integer[entries.size()]));
+        this.piecesOrdered = new ArrayList<>(Collections.nCopies(entries.size(), 0));
     }
 
     public enum Column {
