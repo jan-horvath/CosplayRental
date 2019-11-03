@@ -66,30 +66,22 @@ public class DataManager {
     public List<ProductStack> createOrderItems() {
         List<ProductStack> orderedItems = new ArrayList<>();
 
-        int i = 0;
-        for (Integer itemsCount : getCatalogueTableModel().piecesOrdered) {
-            if (itemsCount > 0) {
-                ProductStack catalogueItem = productStacks.get(i);
-                ProductStack item = new ProductStack(
-                        catalogueItem.getName(),
-                        catalogueItem.getSize(),
-                        catalogueItem.getPrice(),
-                        itemsCount);
-                orderedItems.add(item);
+        for (int i = 0; i < catalogueTableModel.getRowCount(); i++) {
+            int itemCount = (int) catalogueTableModel.getValueAt(i,
+                    catalogueTableModel.getColumnCount()-1);
+            if (itemCount > 0) {
+                orderedItems.add(catalogueTableModel.getOrderedProductStack(i));
             }
-            i++;
         }
 
         if (orderedItems.isEmpty()) {
                 throw new IllegalStateException("There must be at least 1 item in the order.");
             }
-
         return orderedItems;
     }
 
     public void submitOrder() {
         Map<String, String> formData = formPanel.getFormData();
-        //
         // TODO
 
     }

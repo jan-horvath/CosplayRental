@@ -12,7 +12,7 @@ import java.util.Collections;
 public class CatalogueTableModel extends AbstractTableModel  {
 
     public List<ProductStack> entries;
-    public List<Integer> piecesOrdered;
+    private List<Integer> piecesOrdered;
 
     public CatalogueTableModel(List<ProductStack> entries) {
         this.entries = entries;
@@ -82,5 +82,16 @@ public class CatalogueTableModel extends AbstractTableModel  {
         if ((Integer) aValue > entries.get(rowIndex).getStackSize()) {
             piecesOrdered.set(rowIndex, (Integer) 0);
         }
+    }
+
+    public ProductStack getOrderedProductStack(int row) {
+        ProductStack catalogueItem = entries.get(row);
+        ProductStack orderedItem = new ProductStack(
+                catalogueItem.getName(),
+                catalogueItem.getSize(),
+                catalogueItem.getPrice(),
+                piecesOrdered.get(row)
+        );
+        return orderedItem;
     }
 }

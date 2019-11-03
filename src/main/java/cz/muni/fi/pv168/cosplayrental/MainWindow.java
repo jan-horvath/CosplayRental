@@ -180,11 +180,11 @@ public class MainWindow extends JFrame {
         });
 
         createOrderButton.addActionListener( e -> {
-            dataManager.createOrderItems();
             c1.show(cards, "Form");
         });
 
         submitOrderButton.addActionListener( e -> {
+            List<ProductStack> orderedItems = dataManager.createOrderItems();
             dataManager.submitOrder();
 
         });
