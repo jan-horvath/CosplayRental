@@ -5,9 +5,7 @@ import cz.muni.fi.pv168.cosplayrental.actions.ExitAction;
 import cz.muni.fi.pv168.cosplayrental.actions.GoToAction;
 import cz.muni.fi.pv168.cosplayrental.entities.Order;
 import cz.muni.fi.pv168.cosplayrental.entities.ProductStack;
-import cz.muni.fi.pv168.cosplayrental.tableentries.CatalogueEntry;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.CatalogueTableModel;
-import cz.muni.fi.pv168.cosplayrental.tablemodels.AddToCartTableModel;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.OrderTableModel;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.ProductStackListRenderer;
 
@@ -16,16 +14,16 @@ import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
 import java.util.List;
 
 
 public class MainWindow extends JFrame {
 
-    private static final List<CatalogueEntry> CATALOG_TEST_DATA = ImmutableList.of(
-            new CatalogueEntry("Asterix helmet", 17.80),
-            new CatalogueEntry("Poseidon trident", 21.90),
-            new CatalogueEntry("Deadpool suit", 42.20)
+    private static final List<ProductStack> CATALOG_TEST_DATA = (List<ProductStack> ) ImmutableList.of(
+            new ProductStack("Asterix helmet", ProductStack.Size.NA, 15.80, 3),
+            new ProductStack("Poseidon trident", ProductStack.Size.NA, 21.90, 3),
+            new ProductStack("Deadpool suit", ProductStack.Size.M,42.20, 4)
     );
 
     private static final List<ProductStack> ps1 = Arrays.asList(
@@ -63,8 +61,11 @@ public class MainWindow extends JFrame {
         //Tables and windows
         TableModel catalogueTableModel = new CatalogueTableModel(CATALOG_TEST_DATA);
         JTable catalogueTable = new JTable(catalogueTableModel);
+        catalogueTable.removeColumn(
+                catalogueTable.getColumnModel().getColumn(CatalogueTableModel.Column.values().length)
+        );
 
-        TableModel addToCartTableModel = new AddToCartTableModel(CATALOG_TEST_DATA);
+        TableModel addToCartTableModel = new CatalogueTableModel(CATALOG_TEST_DATA);
         JTable addToCartTable = new JTable(addToCartTableModel);
 
         TableModel orderTableModel = new OrderTableModel(ORDER_TEST_DATA);
