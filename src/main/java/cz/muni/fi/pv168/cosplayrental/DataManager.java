@@ -4,6 +4,9 @@ import cz.muni.fi.pv168.cosplayrental.entities.Order;
 import cz.muni.fi.pv168.cosplayrental.entities.ProductStack;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.OrderTableModel;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -36,8 +39,6 @@ public class DataManager {
         return orderTableModel;
     }
 
-    //public void createOrder(SortedSet<Integer>)
-
     public void returnOrder(int orderIndex) {
         Order orderToRemove = orders.get(orderIndex);
 
@@ -63,7 +64,7 @@ public class DataManager {
         catalogueTableModel.fireTableDataChanged();
     }
 
-    public List<ProductStack> createOrderItems() {
+    public List<ProductStack> createOrderItems(Map<String, String> formData) {
         List<ProductStack> orderedItems = new ArrayList<>();
 
         for (int i = 0; i < catalogueTableModel.getRowCount(); i++) {
@@ -74,15 +75,15 @@ public class DataManager {
             }
         }
 
-        if (orderedItems.isEmpty()) {
-                throw new IllegalStateException("There must be at least 1 item in the order.");
-            }
+        String email = formData.get("email");
+        String creditCardNumber = formData.get("cardNumber");
+        String fullName = formData.get("name");
+        String phone = formData.get("phoneNumber");
+        LocalDate returnDate = LocalDate.parse(formData.get("returnDate"), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+
+        Order desiredOrder = new Order(orderedItems, email, creditCardNumber, fullName, phone, returnDate);
+        orders.add(desiredOrder);
+
         return orderedItems;
-    }
-
-    public void submitOrder() {
-        Map<String, String> formData = formPanel.getFormData();
-        // TODO
-
     }
 }

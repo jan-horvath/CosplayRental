@@ -8,6 +8,7 @@ import cz.muni.fi.pv168.cosplayrental.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.ProductStackListRenderer;
 
 import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
@@ -180,13 +181,15 @@ public class MainWindow extends JFrame {
         });
 
         createOrderButton.addActionListener( e -> {
+            CatalogueTableModel c = (CatalogueTableModel) catalogueTable.getModel();
+            if (c.areAllItemsZero()) {
+                throw new IllegalStateException("There must be at least 1 item in the order.");
+            }
             c1.show(cards, "Form");
         });
 
         submitOrderButton.addActionListener( e -> {
-            List<ProductStack> orderedItems = dataManager.createOrderItems();
-            dataManager.submitOrder();
-
+            dataManager.createOrderItems(formPanel.getFormData());
         });
 
         //Menubar

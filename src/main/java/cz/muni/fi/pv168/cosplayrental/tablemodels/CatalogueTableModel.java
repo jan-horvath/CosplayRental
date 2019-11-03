@@ -94,4 +94,14 @@ public class CatalogueTableModel extends AbstractTableModel  {
         );
         return orderedItem;
     }
+
+    public boolean areAllItemsZero() {
+        boolean allZero = true;
+        for (Integer i : piecesOrdered) {
+            if (i > 0) {
+                allZero = false;
+            }
+        }
+        return allZero;
+    }
 }
