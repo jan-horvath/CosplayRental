@@ -184,9 +184,7 @@ public class MainWindow extends JFrame {
         });
 
         submitOrderButton.addActionListener( e -> {
-            List<ProductStack> orderedItems = dataManager.createOrderItems();
-            dataManager.submitOrder();
-
+            dataManager.createOrderItems(formPanel.getFormData());
         });
 
         //Menubar

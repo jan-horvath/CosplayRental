@@ -9,9 +9,8 @@ import java.util.HashMap;
 
 public class FormPanel extends JPanel {
 
-    public Map<String, String> formData = new HashMap<>();
-    public List<JTextField> textFields = new ArrayList<JTextField>();
-    private List<JLabel> labels = new ArrayList<JLabel>();
+    public List<JTextField> textFields = new ArrayList<>();
+    private List<JLabel> labels = new ArrayList<>();
 
 
     public FormPanel() {
@@ -19,35 +18,25 @@ public class FormPanel extends JPanel {
         BoxLayout boxlayout = new BoxLayout(this, BoxLayout.Y_AXIS);
         setLayout(boxlayout);
 
-        JLabel nameLabel = new JLabel("Your name & surname:");
-        labels.add(nameLabel);
+        labels.add(new JLabel("Your name & surname:"));
         JTextField nameField = new JTextField();    
         textFields.add(nameField);
-        formData.put("name", nameField.getText());
 
-        JLabel emailLabel = new JLabel("E-mail adress:");
-        labels.add(emailLabel);
+        labels.add(new JLabel("E-mail adress:"));
         JTextField emailField = new JTextField();
         textFields.add(emailField);
-        formData.put("email", emailField.getText());
 
-        JLabel cardLabel = new JLabel("Credit card number:");
-        labels.add(cardLabel);
+        labels.add(new JLabel("Credit card number:"));
         JTextField cardField = new JTextField();
         textFields.add(cardField);
-        formData.put("cardNumber", cardField.getText());
 
-        JLabel phoneLabel = new JLabel("Phone number:");
-        labels.add(phoneLabel);
+        labels.add(new JLabel("Phone number:"));
         JTextField phoneField = new JTextField();
         textFields.add(phoneField);
-        formData.put("phoneNumber", phoneField.getText());
 
-        JLabel returnDateLabel = new JLabel("Return date:");
-        labels.add(returnDateLabel);
+        labels.add(new JLabel("Return date:"));
         JTextField returnDateField = new JTextField();
         textFields.add(returnDateField);
-        formData.put("returnDate", returnDateField.getText());
 
 
         for (int i = 0; i < labels.size(); i++) {
@@ -60,6 +49,12 @@ public class FormPanel extends JPanel {
     }
 
     public Map<String, String> getFormData() {
+        Map<String, String> formData = new HashMap<>();
+        formData.put("name", textFields.get(0).getText());
+        formData.put("email", textFields.get(1).getText());
+        formData.put("cardNumber", textFields.get(2).getText());
+        formData.put("phoneNumber", textFields.get(3).getText());
+        formData.put("returnDate", textFields.get(4).getText());
         return formData;
     }
 }
