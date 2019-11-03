@@ -14,36 +14,37 @@ import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 
 public class MainWindow extends JFrame {
 
-    private static final List<ProductStack> CATALOG_TEST_DATA = (List<ProductStack> ) ImmutableList.of(
+    private static List<ProductStack> CATALOG_TEST_DATA = Arrays.asList(
             new ProductStack("Asterix helmet", ProductStack.Size.NA, 15.80, 3),
             new ProductStack("Poseidon trident", ProductStack.Size.NA, 21.90, 3),
             new ProductStack("Deadpool suit", ProductStack.Size.M,42.20, 4)
     );
 
-    private static final List<ProductStack> ps1 = Arrays.asList(
+    private static List<ProductStack> ps1 = Arrays.asList(
             new ProductStack("Witcher silver sword", ProductStack.Size.NA, 29, 3),
             new ProductStack("Portal gun", ProductStack.Size.NA, 42, 2),
             new ProductStack("BFG9000", ProductStack.Size.NA, 65, 1)
     );
 
-    private static final List<ProductStack> ps2 = Arrays.asList(
+    private static List<ProductStack> ps2 = Arrays.asList(
             new ProductStack("Ironman suit", ProductStack.Size.L, 120, 1),
             new ProductStack("Captain America suit", ProductStack.Size.L, 109, 1)
     );
 
-    private static final List<ProductStack> ps3 = Arrays.asList(
+    private static List<ProductStack> ps3 = Arrays.asList(
             new ProductStack("Batman suit", ProductStack.Size.S, 100, 1),
             new ProductStack("Batarang set", ProductStack.Size.NA, 25, 2)
     );
 
 
-    private static final List<Order> ORDER_TEST_DATA = ImmutableList.of(
+    private static List<Order> ORDER_TEST_DATA = Arrays.asList(
             new Order(ps1, "weaponreplica@enthusiast.org", "9184345167789991", "No Name",
                     "+658291912994", LocalDate.of(2019, 12, 20)),
             new Order(ps2, "fred.kirby@gmail.org", "9184345161019991", "Fred Kirby",
@@ -59,17 +60,15 @@ public class MainWindow extends JFrame {
         setTitle("CoReS: Cosplay Rental Service ©");
 
         //Tables and windows
-        TableModel catalogueTableModel = new CatalogueTableModel(CATALOG_TEST_DATA);
-        JTable catalogueTable = new JTable(catalogueTableModel);
+        DataManager dataManager = new DataManager(CATALOG_TEST_DATA, ORDER_TEST_DATA);
+        JTable catalogueTable = new JTable(dataManager.getCatalogueTableModel());
         catalogueTable.removeColumn(
                 catalogueTable.getColumnModel().getColumn(CatalogueTableModel.Column.values().length)
         );
 
-        TableModel addToCartTableModel = new CatalogueTableModel(CATALOG_TEST_DATA);
-        JTable addToCartTable = new JTable(addToCartTableModel);
-
-        TableModel orderTableModel = new OrderTableModel(ORDER_TEST_DATA);
-        JTable orderTable = new JTable(orderTableModel);
+        JTable addToCartTable = new JTable(dataManager.getCatalogueTableModel());
+        
+        JTable orderTable = new JTable(dataManager.getOrderTableModel());
         orderTable.setDefaultRenderer(List.class, new ProductStackListRenderer());
         orderTable.setRowHeight(50);
 
