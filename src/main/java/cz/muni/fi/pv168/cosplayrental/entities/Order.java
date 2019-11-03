@@ -1,5 +1,6 @@
 package cz.muni.fi.pv168.cosplayrental.entities;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class Order {
@@ -8,13 +9,15 @@ public class Order {
     private final String creditCardNumber;
     private final String fullName;
     private final String phoneNumber;
+    private LocalDate returnDate;
 
-    public Order(List<ProductStack> productStacks, String email, String creditCardNumber, String fullName, String phoneNumber) {
+    public Order(List<ProductStack> productStacks, String email, String creditCardNumber, String fullName, String phoneNumber, LocalDate returnDate) {
         this.productStacks = productStacks;
         this.email = email;
         this.creditCardNumber = creditCardNumber;
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
+        this.returnDate = returnDate;
     }
 
     public List<ProductStack> getProductStacks() {
@@ -35,5 +38,13 @@ public class Order {
 
     public String getPhoneNumber() {
         return phoneNumber;
+    }
+
+    public LocalDate getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate;
     }
 }

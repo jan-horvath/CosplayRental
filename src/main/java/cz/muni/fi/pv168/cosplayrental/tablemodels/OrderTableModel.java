@@ -5,6 +5,8 @@ import cz.muni.fi.pv168.cosplayrental.entities.ProductStack;
 import cz.muni.fi.pv168.cosplayrental.tableentries.CatalogueEntry;
 
 import javax.swing.table.AbstractTableModel;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 
@@ -16,8 +18,8 @@ public class OrderTableModel extends AbstractTableModel {
         EMAIL("Email", String.class, Order::getEmail),
         CREDIT_CARD("Credit card number", String.class, Order::getCreditCardNumber),
         FULL_NAME("Name", String.class, Order::getFullName),
-        PHONE_NUMBER("Phone", String.class, Order::getPhoneNumber);
-
+        PHONE_NUMBER("Phone", String.class, Order::getPhoneNumber),
+        RETURN_DATE("Return date", LocalDate.class, Order::getReturnDate);
 
         private <T> Column(String name, Class<T> columnClass, Function<Order, T> extractor) {
             this.name = name;
