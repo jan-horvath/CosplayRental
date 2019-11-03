@@ -10,13 +10,16 @@ public class FormPanel extends JPanel {
     private List<JTextField> textFields = new ArrayList<JTextField>();
     private List<JLabel> labels = new ArrayList<JLabel>();
 
+    private Container c;
+
     public FormPanel() {
+
         BoxLayout boxlayout = new BoxLayout(this, BoxLayout.Y_AXIS);
         setLayout(boxlayout);
 
         JLabel nameLabel = new JLabel("Your name & surname:");
         labels.add(nameLabel);
-        JTextField nameField = new JTextField();
+        JTextField nameField = new JTextField();    
         textFields.add(nameField);
 
         JLabel emailLabel = new JLabel("E-mail adress:");
@@ -34,9 +37,13 @@ public class FormPanel extends JPanel {
         JTextField phoneField = new JTextField();
         textFields.add(phoneField);
 
+        JLabel returnDateLabel = new JLabel("Return date:");
+        labels.add(returnDateLabel);
+        JTextField returnDateField = new JTextField();
+        textFields.add(returnDateField);
+
         JButton submitButton = new JButton("SUMBIT");
 
-        if (labels.size() != textFields.size()) System.exit(0);
 
         for (int i = 0; i < labels.size(); i++) {
             add(labels.get(i));
