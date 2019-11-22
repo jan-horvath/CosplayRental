@@ -184,6 +184,7 @@ public class MainWindow extends JFrame {
         returnOrderButton.addActionListener(e -> {
             int selectedRow = orderTable.getSelectedRow();
             if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(null, "Please select order that needs to be returned.", "No order selected", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             int modelRow = orderTable.convertRowIndexToModel(selectedRow);
@@ -217,6 +218,7 @@ public class MainWindow extends JFrame {
             }
             formPanel.clearTextFields();
             bottomToolBar.setVisible(false);
+            JOptionPane.showMessageDialog(null, "Your order has been created!", "", JOptionPane.INFORMATION_MESSAGE);
             c1.show(cards, "Home");
         });
 

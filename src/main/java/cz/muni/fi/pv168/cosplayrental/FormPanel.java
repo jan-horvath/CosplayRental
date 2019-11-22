@@ -34,7 +34,7 @@ public class FormPanel extends JPanel {
         JTextField phoneField = new JTextField();
         textFields.add(phoneField);
 
-        labels.add(new JLabel("Return date:"));
+        labels.add(new JLabel("Return date (DD.MM.YYYY):"));
         JTextField returnDateField = new JTextField();
         textFields.add(returnDateField);
 
