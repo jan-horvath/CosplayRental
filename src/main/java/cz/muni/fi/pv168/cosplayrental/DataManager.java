@@ -1,5 +1,6 @@
 package cz.muni.fi.pv168.cosplayrental;
 
+import cz.muni.fi.pv168.cosplayrental.Exceptions.EmptyTextboxException;
 import cz.muni.fi.pv168.cosplayrental.entities.Order;
 import cz.muni.fi.pv168.cosplayrental.entities.ProductStack;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.CatalogueTableModel;
@@ -8,9 +9,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 
-import javax.swing.*;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +66,12 @@ public class DataManager {
 
     public List<ProductStack> createOrderItems(Map<String, String> formData) {
         List<ProductStack> orderedItems = new ArrayList<>();
+
+        for (Map.Entry<String, String> entry : formData.entrySet()) {
+            if (entry.getValue().isEmpty()) {
+                throw new EmptyTextboxException();
+            }
+        }
 
         for (int i = 0; i < catalogueTableModel.getRowCount(); i++) {
             int itemCount = (int) catalogueTableModel.getValueAt(i,

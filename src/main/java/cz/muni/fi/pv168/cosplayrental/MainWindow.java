@@ -1,5 +1,6 @@
 package cz.muni.fi.pv168.cosplayrental;
 
+import cz.muni.fi.pv168.cosplayrental.Exceptions.EmptyTextboxException;
 import cz.muni.fi.pv168.cosplayrental.actions.ExitAction;
 import cz.muni.fi.pv168.cosplayrental.actions.GoToAction;
 import cz.muni.fi.pv168.cosplayrental.entities.Order;
@@ -8,10 +9,10 @@ import cz.muni.fi.pv168.cosplayrental.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.ProductStackListRenderer;
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.List;
 
@@ -97,29 +98,51 @@ public class MainWindow extends JFrame {
             }
         });
 
+        //Bottom toolbar
+        JToolBar bottomToolBar = new JToolBar();
+        add(bottomToolBar, BorderLayout.AFTER_LAST_LINE);
+        bottomToolBar.setVisible(false);
+
+        JButton createOrderButton = new JButton("Create order");
+        JButton submitOrderButton = new JButton("Submit order");
+        JButton returnOrderButton = new JButton("Return order");
+        bottomToolBar.add(createOrderButton);
+        bottomToolBar.add(submitOrderButton);
+        bottomToolBar.add(Box.createHorizontalGlue());
+        bottomToolBar.add(returnOrderButton);
+
         //Top toolbar
         JToolBar topToolBar = new JToolBar();
         add(topToolBar, BorderLayout.BEFORE_FIRST_LINE);
 
         GoToAction gotoHome = new GoToAction(() -> {
                 c1.show(cards, "Home");
+                bottomToolBar.setVisible(false);
             }, "Home", "homeIcon.png", KeyEvent.VK_1);
 
         GoToAction gotoCatalogue = new GoToAction(() -> {
                 c1.show(cards, "Catalogue");
+                bottomToolBar.setVisible(false);
             }, "Catalogue", "catalogueIcon.png", KeyEvent.VK_2);
 
         GoToAction gotoOrder = new GoToAction(() -> {
                 c1.show(cards, "Order");
+                bottomToolBar.setVisible(true);
+                createOrderButton.setVisible(true);
+                createOrderButton.setEnabled(true);
+                submitOrderButton.setVisible(true);
+                submitOrderButton.setEnabled(false);
+                returnOrderButton.setVisible(false);
             }, "Order", "orderIcon.png", KeyEvent.VK_3);
-
-        GoToAction gotoForm = new GoToAction(() -> {
-                c1.show(cards, "Form");
-            }, "Form", "formIcon.png", KeyEvent.VK_4);
 
         GoToAction gotoListOrders = new GoToAction(() -> {
                 c1.show(cards, "Orders list");
-            }, "Orders list", "listOrdersIcon.png", KeyEvent.VK_5);
+                bottomToolBar.setVisible(true);
+                createOrderButton.setVisible(false);
+                submitOrderButton.setVisible(false);
+                returnOrderButton.setVisible(true);
+                returnOrderButton.setEnabled(true);
+            }, "Orders list", "listOrdersIcon.png", KeyEvent.VK_4);
 
         JButton customerToggleButton = new JButton("",
                 new ImageIcon(MainWindow.class.getResource("customerIcon.png")));
@@ -129,7 +152,6 @@ public class MainWindow extends JFrame {
         topToolBar.add(gotoHome);
         topToolBar.add(gotoCatalogue);
         topToolBar.add(gotoOrder);
-        topToolBar.add(gotoForm);
         topToolBar.add(gotoListOrders);
         gotoListOrders.setEnabled(false);
         topToolBar.add(Box.createHorizontalGlue());
@@ -141,10 +163,10 @@ public class MainWindow extends JFrame {
             c1.show(cards, "Home");
             gotoCatalogue.setEnabled(true);
             gotoOrder.setEnabled(true);
-            gotoForm.setEnabled(true);
             staffToggleButton.setEnabled(true);
 
             gotoListOrders.setEnabled(false);
+            bottomToolBar.setVisible(false);
             customerToggleButton.setEnabled(false);
         });
 
@@ -152,24 +174,12 @@ public class MainWindow extends JFrame {
             c1.show(cards, "Home");
             gotoCatalogue.setEnabled(false);
             gotoOrder.setEnabled(false);
-            gotoForm.setEnabled(false);
             staffToggleButton.setEnabled(false);
+            bottomToolBar.setVisible(false);
 
             gotoListOrders.setEnabled(true);
             customerToggleButton.setEnabled(true);
         });
-
-        //Bottom toolbar
-        JToolBar bottomToolBar = new JToolBar();
-        add(bottomToolBar, BorderLayout.AFTER_LAST_LINE);
-
-        JButton createOrderButton = new JButton("Create order");
-        JButton returnOrderButton = new JButton("Return order");
-        JButton submitOrderButton = new JButton("Submit order");
-        bottomToolBar.add(createOrderButton);
-        bottomToolBar.add(returnOrderButton);
-        bottomToolBar.add(submitOrderButton);
-
 
         returnOrderButton.addActionListener(e -> {
             int selectedRow = orderTable.getSelectedRow();
@@ -185,11 +195,28 @@ public class MainWindow extends JFrame {
             if (c.areAllItemsZero()) {
                 throw new IllegalStateException("There must be at least 1 item in the order.");
             }
+            bottomToolBar.setVisible(true);
+            createOrderButton.setVisible(true);
+            createOrderButton.setEnabled(false);
+            submitOrderButton.setVisible(true);
+            submitOrderButton.setEnabled(true);
+            returnOrderButton.setVisible(false);
             c1.show(cards, "Form");
         });
 
         submitOrderButton.addActionListener( e -> {
-            dataManager.createOrderItems(formPanel.getFormData());
+            try {
+                dataManager.createOrderItems(formPanel.getFormData());
+            } catch (EmptyTextboxException ETexception) {
+                JOptionPane.showMessageDialog(null, "Please fill all the textfields.", "Empty textfield(s)", JOptionPane.ERROR_MESSAGE);
+                return;
+            } catch (DateTimeParseException DTPexception) {
+                JOptionPane.showMessageDialog(null, "Please enter the return date in the specified format (dd.MM.YYYY)", "Wrong date format", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            formPanel.clearTextFields();
+            bottomToolBar.setVisible(false);
+            c1.show(cards, "Home");
         });
 
         //Menubar
@@ -200,7 +227,8 @@ public class MainWindow extends JFrame {
         gotoMenu.add(gotoHome);
         gotoMenu.add(gotoCatalogue);
         gotoMenu.add(gotoOrder);
-        gotoMenu.add(gotoForm);
+        //gotoMenu.add(gotoForm);
+        gotoMenu.add(gotoListOrders);
 
         JMenu helpMenu = new JMenu("Help");
 
@@ -222,11 +250,6 @@ public class MainWindow extends JFrame {
     }
 
     public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new MainWindow().setVisible(true);
-            }
-        });
+        EventQueue.invokeLater(() -> new MainWindow().setVisible(true));
     }
 }

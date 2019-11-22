@@ -58,8 +58,4 @@ public class ProductStack {
     public String toString() {
         return  name + " (" + size + "):  " + stackSize + " pc" + ((stackSize > 1) ? "s" : "");
     }
-
-//    public boolean isAddedToCart() {
-//        return stackSize > 0;
-//    }
 }

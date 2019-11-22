@@ -48,6 +48,12 @@ public class FormPanel extends JPanel {
         }
     }
 
+    public void clearTextFields() {
+        for (JTextField field : textFields) {
+            field.setText("");
+        }
+    }
+
     public Map<String, String> getFormData() {
         Map<String, String> formData = new HashMap<>();
         formData.put("name", textFields.get(0).getText());
