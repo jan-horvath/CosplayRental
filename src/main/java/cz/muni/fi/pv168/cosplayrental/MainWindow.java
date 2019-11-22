@@ -193,7 +193,8 @@ public class MainWindow extends JFrame {
         createOrderButton.addActionListener( e -> {
             CatalogueTableModel c = (CatalogueTableModel) catalogueTable.getModel();
             if (c.areAllItemsZero()) {
-                throw new IllegalStateException("There must be at least 1 item in the order.");
+                JOptionPane.showMessageDialog(null, "Please select items, you wish to rent, by entering a number into the last column", "No items selected", JOptionPane.ERROR_MESSAGE);
+                return;
             }
             bottomToolBar.setVisible(true);
             createOrderButton.setVisible(true);
