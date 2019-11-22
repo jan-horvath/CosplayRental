@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.List;
@@ -64,10 +65,12 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("CoReS: Cosplay Rental Service ©");
 
+        TimeSimulator timeSimulator = new TimeSimulator();
+
         FormPanel formPanel = new FormPanel();
         //Tables
 
-        DataManager dataManager = new DataManager(CATALOG_TEST_DATA, ORDER_TEST_DATA, formPanel);
+        DataManager dataManager = new DataManager(CATALOG_TEST_DATA, ORDER_TEST_DATA, formPanel, timeSimulator);
         JTable catalogueTable = new JTable(dataManager.getCatalogueTableModel());
         catalogueTable.removeColumn(
                 catalogueTable.getColumnModel().getColumn(CatalogueTableModel.Column.values().length)
@@ -149,15 +152,36 @@ public class MainWindow extends JFrame {
         JButton staffToggleButton = new JButton("",
                 new ImageIcon(MainWindow.class.getResource("staffIcon.png")));
 
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        JLabel timeLabel = new JLabel(dateFormat.format(timeSimulator.getTime()));
+        JButton oneDayAdvanceButton = new JButton("+1 day");
+        oneDayAdvanceButton.addActionListener(e -> {timeSimulator.advanceOneDay();});
+        JButton oneWeekAdvanceButton = new JButton("+1 week");
+        oneWeekAdvanceButton.addActionListener(e -> {timeSimulator.advanceOneWeek();});
+        JButton fourWeeksAdvanceButton = new JButton("+4 weeks");
+        fourWeeksAdvanceButton.addActionListener(e -> {timeSimulator.advanceFourWeeks();});
+
         topToolBar.add(gotoHome);
         topToolBar.add(gotoCatalogue);
         topToolBar.add(gotoOrder);
         topToolBar.add(gotoListOrders);
         gotoListOrders.setEnabled(false);
         topToolBar.add(Box.createHorizontalGlue());
+        topToolBar.add(timeLabel);
+        topToolBar.add(Box.createHorizontalGlue());
+        topToolBar.add(oneDayAdvanceButton);
+        topToolBar.add(oneWeekAdvanceButton);
+        topToolBar.add(fourWeeksAdvanceButton);
+        topToolBar.add(Box.createHorizontalGlue());
         topToolBar.add(customerToggleButton);
         customerToggleButton.setEnabled(false);
         topToolBar.add(staffToggleButton);
+
+        timeSimulator.addCallback(() -> {
+            timeLabel.setText(dateFormat.format(timeSimulator.getTime()));
+        });
+
+        timeSimulator.addCallback(dataManager::checkReturnDates);
 
         customerToggleButton.addActionListener(e -> {
             c1.show(cards, "Home");

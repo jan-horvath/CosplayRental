@@ -5,10 +5,14 @@ import cz.muni.fi.pv168.cosplayrental.entities.Order;
 import cz.muni.fi.pv168.cosplayrental.entities.ProductStack;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.OrderTableModel;
+
+import java.sql.Time;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
 
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,12 +26,15 @@ public class DataManager {
     private OrderTableModel orderTableModel;
     private FormPanel formPanel;
 
-    public DataManager(List<ProductStack> productStacks, List<Order> orders, FormPanel formPanel) {
+    private TimeSimulator timeSimulator;
+
+    public DataManager(List<ProductStack> productStacks, List<Order> orders, FormPanel formPanel, TimeSimulator timeSimulator) {
         this.productStacks = productStacks;
         this.orders = orders;
         this.formPanel = formPanel;
         catalogueTableModel = new CatalogueTableModel(productStacks);
         orderTableModel = new OrderTableModel(orders);
+        this.timeSimulator = timeSimulator;
 
     }
 
@@ -98,5 +105,19 @@ public class DataManager {
         catalogueTableModel.fireTableDataChanged();
 
         return orderedItems;
+    }
+
+    public void checkReturnDates() {
+        for (Order order : orders) {
+            long differenceInDays = ChronoUnit.DAYS.between(order.getReturnDate(), timeSimulator.getTime());
+            if (differenceInDays > 0) { //order should have been returned by now
+                if (differenceInDays == 3) {
+                    System.err.println(order.getFullName() + "'s order is 3 days past its return date. Notification email has been sent to " + order.getEmail());
+                }
+                if (differenceInDays % 7 == 0) {
+                    System.err.println(order.getFullName() + "'s order is " + differenceInDays/7 + " week(s) past its return date. Notification email has been sent to " + order.getEmail());
+                }
+            }
+        }
     }
 }
