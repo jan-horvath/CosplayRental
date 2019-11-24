@@ -97,4 +97,10 @@ public class CatalogueTableModel extends AbstractTableModel  {
         }
         return allZero;
     }
+
+    public void setAllAddToCartItemsToZero() {
+        for (int i = 0; i < getRowCount(); i++) {
+            setValueAt(0, i, getColumnCount()-1);
+        }
+    }
 }

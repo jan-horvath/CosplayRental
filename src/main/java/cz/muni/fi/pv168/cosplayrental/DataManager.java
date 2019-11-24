@@ -1,14 +1,14 @@
 package cz.muni.fi.pv168.cosplayrental;
 
 import cz.muni.fi.pv168.cosplayrental.Exceptions.EmptyTextboxException;
+import cz.muni.fi.pv168.cosplayrental.Exceptions.InvalidReturnDateException;
 import cz.muni.fi.pv168.cosplayrental.entities.Order;
 import cz.muni.fi.pv168.cosplayrental.entities.ProductStack;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.OrderTableModel;
 
-import java.sql.Time;
+import javax.swing.*;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
 
@@ -80,6 +80,12 @@ public class DataManager {
             }
         }
 
+        LocalDate returnDate = LocalDate.parse(formData.get("returnDate"), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+
+        if (returnDate.compareTo(timeSimulator.getTime()) < 0) {
+            throw new InvalidReturnDateException();
+        }
+
         for (int i = 0; i < catalogueTableModel.getRowCount(); i++) {
             int itemCount = (int) catalogueTableModel.getValueAt(i,
                     catalogueTableModel.getColumnCount()-1);
@@ -95,8 +101,6 @@ public class DataManager {
         String creditCardNumber = formData.get("cardNumber");
         String fullName = formData.get("name");
         String phone = formData.get("phoneNumber");
-        System.out.println(email + " " + creditCardNumber + " " + fullName + " " + phone + " " + formData.get("returnDate"));
-        LocalDate returnDate = LocalDate.parse(formData.get("returnDate"), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 
         Order desiredOrder = new Order(orderedItems, email, creditCardNumber, fullName, phone, returnDate);
         orders.add(desiredOrder);
@@ -107,17 +111,38 @@ public class DataManager {
         return orderedItems;
     }
 
+    private String createLateReturnedOrderCustomerData(Order order, long differenceInDays) {
+        String notReturnedItems = "";
+        for (ProductStack ps : order.getProductStacks()) {
+            notReturnedItems += "\n    " + ps.getName() + ", " + ps.getStackSize() + " piece(s)";
+        }
+        return "\n" + order.getFullName() + " (" + differenceInDays + " days)" + ":" + notReturnedItems;
+    }
     public void checkReturnDates() {
+        int notReturnedOrders = 0;
+        String message = "Customers that did not keep the return date (name, delay, ordered items):";
+
         for (Order order : orders) {
             long differenceInDays = ChronoUnit.DAYS.between(order.getReturnDate(), timeSimulator.getTime());
-            if (differenceInDays > 0) { //order should have been returned by now
-                if (differenceInDays == 3) {
-                    System.err.println(order.getFullName() + "'s order is 3 days past its return date. Notification email has been sent to " + order.getEmail());
-                }
-                if (differenceInDays % 7 == 0) {
-                    System.err.println(order.getFullName() + "'s order is " + differenceInDays/7 + " week(s) past its return date. Notification email has been sent to " + order.getEmail());
+
+            //order should have been returned by now
+            if (differenceInDays > 0) {
+                if (differenceInDays == 3 || differenceInDays % 7 == 0) {
+                    if (differenceInDays == 3) {
+                        System.err.println(order.getFullName() + "'s order is 3 days past its return date. Notification email has been sent to " + order.getEmail());
+                    } else {
+                        System.err.println(order.getFullName() + "'s order is " + differenceInDays/7 + " week(s) past its return date. Notification email has been sent to " + order.getEmail());
+                    }
+                    message +=  createLateReturnedOrderCustomerData(order, differenceInDays);
+                    notReturnedOrders++;
                 }
             }
         }
+
+        if (notReturnedOrders > 0) {
+            JOptionPane.showMessageDialog(null, message, "Not Returned Orders", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
     }
 }

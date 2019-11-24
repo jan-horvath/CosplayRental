@@ -1,6 +1,7 @@
 package cz.muni.fi.pv168.cosplayrental;
 
 import cz.muni.fi.pv168.cosplayrental.Exceptions.EmptyTextboxException;
+import cz.muni.fi.pv168.cosplayrental.Exceptions.InvalidReturnDateException;
 import cz.muni.fi.pv168.cosplayrental.actions.ExitAction;
 import cz.muni.fi.pv168.cosplayrental.actions.GoToAction;
 import cz.muni.fi.pv168.cosplayrental.entities.Order;
@@ -66,7 +67,6 @@ public class MainWindow extends JFrame {
         setTitle("CoReS: Cosplay Rental Service ©");
 
         TimeSimulator timeSimulator = new TimeSimulator();
-
         FormPanel formPanel = new FormPanel();
         //Tables
 
@@ -239,8 +239,12 @@ public class MainWindow extends JFrame {
             } catch (DateTimeParseException DTPexception) {
                 JOptionPane.showMessageDialog(null, "Please enter the return date in the specified format (dd.MM.YYYY)", "Wrong date format", JOptionPane.ERROR_MESSAGE);
                 return;
+            } catch (InvalidReturnDateException IRDException) {
+                JOptionPane.showMessageDialog(null, "Return date already passed. Please enter a valid one.", "Invalid return date", JOptionPane.ERROR_MESSAGE);
+                return;
             }
             formPanel.clearTextFields();
+            dataManager.getCatalogueTableModel().setAllAddToCartItemsToZero();
             bottomToolBar.setVisible(false);
             JOptionPane.showMessageDialog(null, "Your order has been created!", "", JOptionPane.INFORMATION_MESSAGE);
             c1.show(cards, "Home");
