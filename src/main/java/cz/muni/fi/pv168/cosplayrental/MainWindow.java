@@ -201,6 +201,10 @@ public class MainWindow extends JFrame {
         JButton fourWeeksAdvanceButton = new JButton("+4 weeks");
         fourWeeksAdvanceButton.addActionListener(e -> {timeSimulator.advanceFourWeeks();});
 
+        oneDayAdvanceButton.setEnabled(false);
+        oneWeekAdvanceButton.setEnabled(false);
+        fourWeeksAdvanceButton.setEnabled(false);
+
         JButton customerToggleButton = new JButton("",
                 new ImageIcon(MainWindow.class.getResource("customerIcon.png")));
         JButton staffToggleButton = new JButton("",
@@ -220,6 +224,10 @@ public class MainWindow extends JFrame {
             gotoListOrders.setEnabled(false);
             bottomToolBar.setVisible(false);
             customerToggleButton.setEnabled(false);
+
+            oneDayAdvanceButton.setEnabled(false);
+            oneWeekAdvanceButton.setEnabled(false);
+            fourWeeksAdvanceButton.setEnabled(false);
         });
 
         staffToggleButton.addActionListener(e -> {
@@ -231,6 +239,10 @@ public class MainWindow extends JFrame {
 
             gotoListOrders.setEnabled(true);
             customerToggleButton.setEnabled(true);
+
+            oneDayAdvanceButton.setEnabled(true);
+            oneWeekAdvanceButton.setEnabled(true);
+            fourWeeksAdvanceButton.setEnabled(true);
         });
 
         topToolBar.add(gotoHome);
