@@ -68,9 +68,9 @@ public class MainWindow extends JFrame {
 
         TimeSimulator timeSimulator = new TimeSimulator();
         FormPanel formPanel = new FormPanel();
-        //Tables
 
         DataManager dataManager = new DataManager(CATALOG_TEST_DATA, ORDER_TEST_DATA, formPanel, timeSimulator);
+        //Tables
         JTable catalogueTable = new JTable(dataManager.getCatalogueTableModel());
         catalogueTable.removeColumn(
                 catalogueTable.getColumnModel().getColumn(CatalogueTableModel.Column.values().length)
@@ -114,6 +114,51 @@ public class MainWindow extends JFrame {
         bottomToolBar.add(Box.createHorizontalGlue());
         bottomToolBar.add(returnOrderButton);
 
+        returnOrderButton.addActionListener(e -> {
+            int selectedRow = orderTable.getSelectedRow();
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(null, "Please select order that needs to be returned.", "No order selected", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int modelRow = orderTable.convertRowIndexToModel(selectedRow);
+            dataManager.returnOrder(modelRow);
+        });
+
+        createOrderButton.addActionListener( e -> {
+            CatalogueTableModel c = (CatalogueTableModel) catalogueTable.getModel();
+            if (c.areAllItemsZero()) {
+                JOptionPane.showMessageDialog(null, "Please select items, you wish to rent, by entering a number into the last column", "No items selected", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            bottomToolBar.setVisible(true);
+            createOrderButton.setVisible(true);
+            createOrderButton.setEnabled(false);
+            submitOrderButton.setVisible(true);
+            submitOrderButton.setEnabled(true);
+            returnOrderButton.setVisible(false);
+            c1.show(cards, "Form");
+        });
+
+        submitOrderButton.addActionListener( e -> {
+            try {
+                dataManager.createOrder(formPanel.getFormData());
+            } catch (EmptyTextboxException ETexception) {
+                JOptionPane.showMessageDialog(null, "Please fill all the textfields.", "Empty textfield(s)", JOptionPane.ERROR_MESSAGE);
+                return;
+            } catch (DateTimeParseException DTPexception) {
+                JOptionPane.showMessageDialog(null, "Please enter the return date in the specified format (dd.MM.YYYY)", "Wrong date format", JOptionPane.ERROR_MESSAGE);
+                return;
+            } catch (InvalidReturnDateException IRDException) {
+                JOptionPane.showMessageDialog(null, "Return date already passed. Please enter a valid one.", "Invalid return date", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            formPanel.clearTextFields();
+            dataManager.getCatalogueTableModel().setAllAddToCartItemsToZero();
+            bottomToolBar.setVisible(false);
+            JOptionPane.showMessageDialog(null, "Your order has been created!", "", JOptionPane.INFORMATION_MESSAGE);
+            c1.show(cards, "Home");
+        });
+
         //Top toolbar
         JToolBar topToolBar = new JToolBar();
         add(topToolBar, BorderLayout.BEFORE_FIRST_LINE);
@@ -147,11 +192,6 @@ public class MainWindow extends JFrame {
                 returnOrderButton.setEnabled(true);
             }, "Orders list", "listOrdersIcon.png", KeyEvent.VK_4);
 
-        JButton customerToggleButton = new JButton("",
-                new ImageIcon(MainWindow.class.getResource("customerIcon.png")));
-        JButton staffToggleButton = new JButton("",
-                new ImageIcon(MainWindow.class.getResource("staffIcon.png")));
-
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         JLabel timeLabel = new JLabel(dateFormat.format(timeSimulator.getTime()));
         JButton oneDayAdvanceButton = new JButton("+1 day");
@@ -161,26 +201,14 @@ public class MainWindow extends JFrame {
         JButton fourWeeksAdvanceButton = new JButton("+4 weeks");
         fourWeeksAdvanceButton.addActionListener(e -> {timeSimulator.advanceFourWeeks();});
 
-        topToolBar.add(gotoHome);
-        topToolBar.add(gotoCatalogue);
-        topToolBar.add(gotoOrder);
-        topToolBar.add(gotoListOrders);
-        gotoListOrders.setEnabled(false);
-        topToolBar.add(Box.createHorizontalGlue());
-        topToolBar.add(timeLabel);
-        topToolBar.add(Box.createHorizontalGlue());
-        topToolBar.add(oneDayAdvanceButton);
-        topToolBar.add(oneWeekAdvanceButton);
-        topToolBar.add(fourWeeksAdvanceButton);
-        topToolBar.add(Box.createHorizontalGlue());
-        topToolBar.add(customerToggleButton);
-        customerToggleButton.setEnabled(false);
-        topToolBar.add(staffToggleButton);
+        JButton customerToggleButton = new JButton("",
+                new ImageIcon(MainWindow.class.getResource("customerIcon.png")));
+        JButton staffToggleButton = new JButton("",
+                new ImageIcon(MainWindow.class.getResource("staffIcon.png")));
 
         timeSimulator.addCallback(() -> {
             timeLabel.setText(dateFormat.format(timeSimulator.getTime()));
         });
-
         timeSimulator.addCallback(dataManager::checkReturnDates);
 
         customerToggleButton.addActionListener(e -> {
@@ -205,50 +233,21 @@ public class MainWindow extends JFrame {
             customerToggleButton.setEnabled(true);
         });
 
-        returnOrderButton.addActionListener(e -> {
-            int selectedRow = orderTable.getSelectedRow();
-            if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(null, "Please select order that needs to be returned.", "No order selected", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            int modelRow = orderTable.convertRowIndexToModel(selectedRow);
-            dataManager.returnOrder(modelRow);
-        });
-
-        createOrderButton.addActionListener( e -> {
-            CatalogueTableModel c = (CatalogueTableModel) catalogueTable.getModel();
-            if (c.areAllItemsZero()) {
-                JOptionPane.showMessageDialog(null, "Please select items, you wish to rent, by entering a number into the last column", "No items selected", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            bottomToolBar.setVisible(true);
-            createOrderButton.setVisible(true);
-            createOrderButton.setEnabled(false);
-            submitOrderButton.setVisible(true);
-            submitOrderButton.setEnabled(true);
-            returnOrderButton.setVisible(false);
-            c1.show(cards, "Form");
-        });
-
-        submitOrderButton.addActionListener( e -> {
-            try {
-                dataManager.createOrderItems(formPanel.getFormData());
-            } catch (EmptyTextboxException ETexception) {
-                JOptionPane.showMessageDialog(null, "Please fill all the textfields.", "Empty textfield(s)", JOptionPane.ERROR_MESSAGE);
-                return;
-            } catch (DateTimeParseException DTPexception) {
-                JOptionPane.showMessageDialog(null, "Please enter the return date in the specified format (dd.MM.YYYY)", "Wrong date format", JOptionPane.ERROR_MESSAGE);
-                return;
-            } catch (InvalidReturnDateException IRDException) {
-                JOptionPane.showMessageDialog(null, "Return date already passed. Please enter a valid one.", "Invalid return date", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            formPanel.clearTextFields();
-            dataManager.getCatalogueTableModel().setAllAddToCartItemsToZero();
-            bottomToolBar.setVisible(false);
-            JOptionPane.showMessageDialog(null, "Your order has been created!", "", JOptionPane.INFORMATION_MESSAGE);
-            c1.show(cards, "Home");
-        });
+        topToolBar.add(gotoHome);
+        topToolBar.add(gotoCatalogue);
+        topToolBar.add(gotoOrder);
+        topToolBar.add(gotoListOrders);
+        gotoListOrders.setEnabled(false);
+        topToolBar.add(Box.createHorizontalGlue());
+        topToolBar.add(timeLabel);
+        topToolBar.add(Box.createHorizontalGlue());
+        topToolBar.add(oneDayAdvanceButton);
+        topToolBar.add(oneWeekAdvanceButton);
+        topToolBar.add(fourWeeksAdvanceButton);
+        topToolBar.add(Box.createHorizontalGlue());
+        topToolBar.add(customerToggleButton);
+        customerToggleButton.setEnabled(false);
+        topToolBar.add(staffToggleButton);
 
         //Menubar
         JMenu fileMenu = new JMenu("File");
@@ -258,7 +257,6 @@ public class MainWindow extends JFrame {
         gotoMenu.add(gotoHome);
         gotoMenu.add(gotoCatalogue);
         gotoMenu.add(gotoOrder);
-        //gotoMenu.add(gotoForm);
         gotoMenu.add(gotoListOrders);
 
         JMenu helpMenu = new JMenu("Help");
