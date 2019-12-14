@@ -63,7 +63,7 @@ public class MainWindow extends JFrame {
 
     public MainWindow() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setTitle("CoReS: Cosplay Rental Service ©");
+        setTitle("CoRe: Cosplay Rental ©");
 
         TimeSimulator timeSimulator = new TimeSimulator();
 
