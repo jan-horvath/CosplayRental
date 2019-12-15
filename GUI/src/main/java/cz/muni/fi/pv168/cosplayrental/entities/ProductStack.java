@@ -8,16 +8,27 @@ public class ProductStack {
         NA,XS,S,M,L,XL,XXL
     }
 
+    private static int id_gen = 0;
+    private static int generateId() {
+        return id_gen++;
+    }
+
+    private final long id;
     private final String name;
     private final Size size;
     private double price;
     private int stackSize;
 
     public ProductStack(String name, Size size, double price, int stackSize) {
+        this.id = generateId();
         this.name = name;
         this.size = size;
         this.price = price;
         this.stackSize = stackSize;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getName() {
