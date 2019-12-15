@@ -22,29 +22,15 @@ public class DataManager {
     private List<ProductStack> productStacks;
     private List<Order> orders;
 
-    private CatalogueTableModel catalogueTableModel;
-    private OrderTableModel orderTableModel;
-    private FormPanel formPanel;
-
     private TimeSimulator timeSimulator;
 
-    public DataManager(List<ProductStack> productStacks, List<Order> orders, FormPanel formPanel, TimeSimulator timeSimulator) {
+    public DataManager(List<ProductStack> productStacks, List<Order> orders, TimeSimulator timeSimulator) {
         this.productStacks = productStacks;
         this.orders = orders;
-        this.formPanel = formPanel;
-        catalogueTableModel = new CatalogueTableModel(productStacks);
-        orderTableModel = new OrderTableModel(orders);
         this.timeSimulator = timeSimulator;
 
     }
 
-    public CatalogueTableModel getCatalogueTableModel() {
-        return catalogueTableModel;
-    }
-
-    public OrderTableModel getOrderTableModel() {
-        return orderTableModel;
-    }
 
     public void returnOrder(int orderIndex) {
         Order orderToRemove = orders.get(orderIndex);
@@ -67,11 +53,9 @@ public class DataManager {
         }
 
         orders.remove(orderIndex);
-        orderTableModel.fireTableRowsDeleted(orderIndex, orderIndex);
-        catalogueTableModel.fireTableDataChanged();
     }
 
-    public List<ProductStack> createOrderItems(Map<String, String> formData) {
+    public void createOrderItems(Map<String, String> formData, Map<Integer, Integer> productCounts) {
         List<ProductStack> orderedItems = new ArrayList<>();
 
         for (Map.Entry<String, String> entry : formData.entrySet()) {
@@ -80,14 +64,13 @@ public class DataManager {
             }
         }
 
-        for (int i = 0; i < catalogueTableModel.getRowCount(); i++) {
-            int itemCount = (int) catalogueTableModel.getValueAt(i,
-                    catalogueTableModel.getColumnCount()-1);
-            if (itemCount > 0) {
-                ProductStack wantsToOrder = catalogueTableModel.getOrderedProductStack(i);
-                wantsToOrder.setStackSize(wantsToOrder.getStackSize() - itemCount);
+        for (Map.Entry<Integer, Integer> productCount : productCounts.entrySet()) {
+            Integer stackSize = productCount.getValue();
+            if (stackSize > 0) {
+                ProductStack wantsToOrder = productStacks.get(productCount.getKey());
+                wantsToOrder.setStackSize(wantsToOrder.getStackSize() - stackSize);
                 orderedItems.add(new ProductStack(
-                        wantsToOrder.getName(), wantsToOrder.getSize(), wantsToOrder.getPrice(), itemCount));
+                        wantsToOrder.getName(), wantsToOrder.getSize(), wantsToOrder.getPrice(), stackSize));
             }
         }
         
@@ -100,11 +83,6 @@ public class DataManager {
 
         Order desiredOrder = new Order(orderedItems, email, creditCardNumber, fullName, phone, returnDate);
         orders.add(desiredOrder);
-
-        orderTableModel.fireTableRowsInserted(orders.size()-1, orders.size()-1);
-        catalogueTableModel.fireTableDataChanged();
-
-        return orderedItems;
     }
 
     public void checkReturnDates() {

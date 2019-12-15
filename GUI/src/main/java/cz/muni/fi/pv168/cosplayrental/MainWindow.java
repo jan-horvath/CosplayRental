@@ -6,6 +6,7 @@ import cz.muni.fi.pv168.cosplayrental.actions.GoToAction;
 import cz.muni.fi.pv168.cosplayrental.entities.Order;
 import cz.muni.fi.pv168.cosplayrental.entities.ProductStack;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.CatalogueTableModel;
+import cz.muni.fi.pv168.cosplayrental.tablemodels.OrderTableModel;
 import cz.muni.fi.pv168.cosplayrental.tablemodels.ProductStackListRenderer;
 
 import javax.swing.*;
@@ -66,19 +67,21 @@ public class MainWindow extends JFrame {
         setTitle("CoRe: Cosplay Rental ©");
 
         TimeSimulator timeSimulator = new TimeSimulator();
-
         FormPanel formPanel = new FormPanel();
-        //Tables
 
-        DataManager dataManager = new DataManager(CATALOG_TEST_DATA, ORDER_TEST_DATA, formPanel, timeSimulator);
-        JTable catalogueTable = new JTable(dataManager.getCatalogueTableModel());
+        //Tables
+        CatalogueTableModel catalogueTableModel = new CatalogueTableModel(CATALOG_TEST_DATA);
+        OrderTableModel orderTableModel = new OrderTableModel(ORDER_TEST_DATA);
+
+        DataManager dataManager = new DataManager(CATALOG_TEST_DATA, ORDER_TEST_DATA, timeSimulator);
+        JTable catalogueTable = new JTable(catalogueTableModel);
         catalogueTable.removeColumn(
                 catalogueTable.getColumnModel().getColumn(CatalogueTableModel.Column.values().length)
         );
 
-        JTable addToCartTable = new JTable(dataManager.getCatalogueTableModel());
+        JTable addToCartTable = new JTable(catalogueTableModel);
 
-        JTable orderTable = new JTable(dataManager.getOrderTableModel());
+        JTable orderTable = new JTable(orderTableModel);
         orderTable.setDefaultRenderer(List.class, new ProductStackListRenderer());
         orderTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -213,6 +216,8 @@ public class MainWindow extends JFrame {
             }
             int modelRow = orderTable.convertRowIndexToModel(selectedRow);
             dataManager.returnOrder(modelRow);
+            orderTableModel.fireTableRowsDeleted(modelRow, modelRow);
+            catalogueTableModel.fireTableDataChanged();
         });
 
         createOrderButton.addActionListener( e -> {
@@ -231,8 +236,13 @@ public class MainWindow extends JFrame {
         });
 
         submitOrderButton.addActionListener( e -> {
-            try {
-                dataManager.createOrderItems(formPanel.getFormData());
+            Map<Integer, Integer> productCounts = new HashMap<>();
+            int catalogueTableModelRowCount = catalogueTableModel.getRowCount();
+            for (int i = 0; i < catalogueTableModelRowCount; i++) {
+                productCounts.put(catalogueTable.convertRowIndexToModel(i), (Integer) catalogueTableModel.getValueAt(i, 4));
+            }
+                try {
+                dataManager.createOrderItems(formPanel.getFormData(), productCounts);
             } catch (EmptyTextboxException ETexception) {
                 JOptionPane.showMessageDialog(null, "Please fill all the textfields.", "Empty textfield(s)", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -240,6 +250,8 @@ public class MainWindow extends JFrame {
                 JOptionPane.showMessageDialog(null, "Please enter the return date in the specified format (dd.MM.YYYY)", "Wrong date format", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+            orderTableModel.fireTableRowsInserted(catalogueTableModelRowCount-1, catalogueTableModelRowCount-1);
+            catalogueTableModel.fireTableDataChanged();
             formPanel.clearTextFields();
             bottomToolBar.setVisible(false);
             JOptionPane.showMessageDialog(null, "Your order has been created!", "", JOptionPane.INFORMATION_MESSAGE);
