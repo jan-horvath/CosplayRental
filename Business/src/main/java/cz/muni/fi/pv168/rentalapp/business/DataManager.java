@@ -1,9 +1,11 @@
 package cz.muni.fi.pv168.rentalapp.business;
 
 import cz.muni.fi.pv168.rentalapp.business.Exceptions.EmptyTextboxException;
+import cz.muni.fi.pv168.rentalapp.business.Exceptions.InvalidReturnDateException;
 import cz.muni.fi.pv168.rentalapp.business.entities.Order;
 import cz.muni.fi.pv168.rentalapp.business.entities.ProductStack;
 
+import javax.swing.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -25,6 +27,43 @@ public class DataManager {
 
     }
 
+    public void createOrderItems(Map<String, String> formData, Map<Integer, Integer> productCounts) {
+        checkEmptyFormData(formData);
+
+        LocalDate returnDate = LocalDate.parse(formData.get("returnDate"), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        if (returnDate.compareTo(timeSimulator.getTime()) < 0) {
+            throw new InvalidReturnDateException();
+        }
+
+        String email = formData.get("email");
+        String creditCardNumber = formData.get("cardNumber");
+        String fullName = formData.get("name");
+        String phone = formData.get("phoneNumber");
+
+        List<ProductStack> orderedItems = new ArrayList<>();
+
+        for (Map.Entry<Integer, Integer> productCount : productCounts.entrySet()) {
+            Integer stackSize = productCount.getValue();
+            if (stackSize > 0) {
+                ProductStack wantsToOrder = productStacks.get(productCount.getKey());
+                wantsToOrder.setStackSize(wantsToOrder.getStackSize() - stackSize);
+                orderedItems.add(new ProductStack(
+                        wantsToOrder.getName(), wantsToOrder.getSize(), wantsToOrder.getPrice(), stackSize));
+            }
+        }
+
+        Order desiredOrder = new Order(orderedItems, email, creditCardNumber, fullName, phone, returnDate);
+        orders.add(desiredOrder);
+    }
+
+
+    private void checkEmptyFormData(Map<String, String> formData) {
+        for (Map.Entry<String, String> entry : formData.entrySet()) {
+            if (entry.getValue().isEmpty()) {
+                throw new EmptyTextboxException();
+            }
+        }
+    }
 
     public void returnOrder(int orderIndex) {
         Order orderToRemove = orders.get(orderIndex);
@@ -49,47 +88,36 @@ public class DataManager {
         orders.remove(orderIndex);
     }
 
-    public void createOrderItems(Map<String, String> formData, Map<Integer, Integer> productCounts) {
-        List<ProductStack> orderedItems = new ArrayList<>();
-
-        for (Map.Entry<String, String> entry : formData.entrySet()) {
-            if (entry.getValue().isEmpty()) {
-                throw new EmptyTextboxException();
-            }
-        }
-
-        for (Map.Entry<Integer, Integer> productCount : productCounts.entrySet()) {
-            Integer stackSize = productCount.getValue();
-            if (stackSize > 0) {
-                ProductStack wantsToOrder = productStacks.get(productCount.getKey());
-                wantsToOrder.setStackSize(wantsToOrder.getStackSize() - stackSize);
-                orderedItems.add(new ProductStack(
-                        wantsToOrder.getName(), wantsToOrder.getSize(), wantsToOrder.getPrice(), stackSize));
-            }
-        }
-        
-        String email = formData.get("email");
-        String creditCardNumber = formData.get("cardNumber");
-        String fullName = formData.get("name");
-        String phone = formData.get("phoneNumber");
-        System.out.println(email + " " + creditCardNumber + " " + fullName + " " + phone + " " + formData.get("returnDate"));
-        LocalDate returnDate = LocalDate.parse(formData.get("returnDate"), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-
-        Order desiredOrder = new Order(orderedItems, email, creditCardNumber, fullName, phone, returnDate);
-        orders.add(desiredOrder);
-    }
-
     public void checkReturnDates() {
+        int notReturnedOrders = 0;
+        String message = "Customers that did not keep the return date (name, delay, ordered items):";
+
         for (Order order : orders) {
             long differenceInDays = ChronoUnit.DAYS.between(order.getReturnDate(), timeSimulator.getTime());
-            if (differenceInDays > 0) { //order should have been returned by now
-                if (differenceInDays == 3) {
-                    System.err.println(order.getFullName() + "'s order is 3 days past its return date. Notification email has been sent to " + order.getEmail());
-                }
-                if (differenceInDays % 7 == 0) {
-                    System.err.println(order.getFullName() + "'s order is " + differenceInDays/7 + " week(s) past its return date. Notification email has been sent to " + order.getEmail());
+
+            if (differenceInDays > 0) {
+                if (differenceInDays == 3 || differenceInDays % 7 == 0) {
+                    if (differenceInDays == 3) {
+                        System.err.println(order.getFullName() + "'s order is 3 days past its return date. Notification email has been sent to " + order.getEmail());
+                    } else {
+                        System.err.println(order.getFullName() + "'s order is " + differenceInDays/7 + " week(s) past its return date. Notification email has been sent to " + order.getEmail());
+                    }
+                    message +=  createNotReturnedOrderCustomerData(order, differenceInDays);
+                    notReturnedOrders++;
                 }
             }
         }
+        if (notReturnedOrders > 0) {
+            JOptionPane.showMessageDialog(null, message, "Not Returned Orders", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+    }
+
+    private String createNotReturnedOrderCustomerData(Order order, long differenceInDays) {
+        String notReturnedItems = "";
+        for (ProductStack ps : order.getProductStacks()) {
+            notReturnedItems += "\n    " + ps.getName() + ", " + ps.getStackSize() + " piece(s)";
+        }
+        return "\n" + order.getFullName() + " (" + differenceInDays + " days)" + ":" + notReturnedItems;
     }
 }
