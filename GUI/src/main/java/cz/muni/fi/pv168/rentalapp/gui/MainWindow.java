@@ -3,7 +3,7 @@ package cz.muni.fi.pv168.rentalapp.gui;
 import cz.muni.fi.pv168.rentalapp.business.DataManager;
 import cz.muni.fi.pv168.rentalapp.business.Exceptions.EmptyTextboxException;
 import cz.muni.fi.pv168.rentalapp.business.Exceptions.InvalidReturnDateException;
-import cz.muni.fi.pv168.rentalapp.gui.FormPanel;
+
 import cz.muni.fi.pv168.rentalapp.business.TimeSimulator;
 import cz.muni.fi.pv168.rentalapp.gui.actions.ExitAction;
 import cz.muni.fi.pv168.rentalapp.gui.actions.GoToAction;
@@ -261,7 +261,6 @@ public class MainWindow extends JFrame {
             c1.show(cards, "Home");
         });
 
-
         topToolBar.add(gotoHome);
         topToolBar.add(gotoCatalogue);
         topToolBar.add(gotoOrder);
@@ -277,7 +276,6 @@ public class MainWindow extends JFrame {
         topToolBar.add(customerToggleButton);
         customerToggleButton.setEnabled(false);
         topToolBar.add(staffToggleButton);
-
 
         //Menubar
         JMenu fileMenu = new JMenu("File");

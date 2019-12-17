@@ -56,7 +56,6 @@ public class DataManager {
         orders.add(desiredOrder);
     }
 
-
     private void checkEmptyFormData(Map<String, String> formData) {
         for (Map.Entry<String, String> entry : formData.entrySet()) {
             if (entry.getValue().isEmpty()) {
