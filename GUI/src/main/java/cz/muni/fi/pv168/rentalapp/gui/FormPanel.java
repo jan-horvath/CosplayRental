@@ -1,4 +1,4 @@
-package cz.muni.fi.pv168.cosplayrental;
+package cz.muni.fi.pv168.rentalapp.gui;
 
 import javax.swing.*;
 import java.awt.*;

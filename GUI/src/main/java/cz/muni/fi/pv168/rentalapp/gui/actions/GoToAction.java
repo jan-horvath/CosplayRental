@@ -1,4 +1,4 @@
-package cz.muni.fi.pv168.cosplayrental.actions;
+package cz.muni.fi.pv168.rentalapp.gui.actions;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

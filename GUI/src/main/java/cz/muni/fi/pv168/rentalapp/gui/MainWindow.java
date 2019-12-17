@@ -1,13 +1,16 @@
-package cz.muni.fi.pv168.cosplayrental;
+package cz.muni.fi.pv168.rentalapp.gui;
 
-import cz.muni.fi.pv168.cosplayrental.Exceptions.EmptyTextboxException;
-import cz.muni.fi.pv168.cosplayrental.actions.ExitAction;
-import cz.muni.fi.pv168.cosplayrental.actions.GoToAction;
-import cz.muni.fi.pv168.cosplayrental.entities.Order;
-import cz.muni.fi.pv168.cosplayrental.entities.ProductStack;
-import cz.muni.fi.pv168.cosplayrental.tablemodels.CatalogueTableModel;
-import cz.muni.fi.pv168.cosplayrental.tablemodels.OrderTableModel;
-import cz.muni.fi.pv168.cosplayrental.tablemodels.ProductStackListRenderer;
+import cz.muni.fi.pv168.rentalapp.business.DataManager;
+import cz.muni.fi.pv168.rentalapp.business.Exceptions.EmptyTextboxException;
+import cz.muni.fi.pv168.rentalapp.business.FormPanel;
+import cz.muni.fi.pv168.rentalapp.business.TimeSimulator;
+import cz.muni.fi.pv168.rentalapp.gui.actions.ExitAction;
+import cz.muni.fi.pv168.rentalapp.gui.actions.GoToAction;
+import cz.muni.fi.pv168.rentalapp.business.entities.Order;
+import cz.muni.fi.pv168.rentalapp.business.entities.ProductStack;
+import cz.muni.fi.pv168.rentalapp.gui.tablemodels.CatalogueTableModel;
+import cz.muni.fi.pv168.rentalapp.gui.tablemodels.OrderTableModel;
+import cz.muni.fi.pv168.rentalapp.gui.tablemodels.ProductStackListRenderer;
 
 import javax.swing.*;
 import java.awt.*;

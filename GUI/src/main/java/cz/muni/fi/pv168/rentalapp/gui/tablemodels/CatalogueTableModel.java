@@ -1,10 +1,9 @@
-package cz.muni.fi.pv168.cosplayrental.tablemodels;
+package cz.muni.fi.pv168.rentalapp.gui.tablemodels;
 
-import cz.muni.fi.pv168.cosplayrental.entities.ProductStack;
+import cz.muni.fi.pv168.rentalapp.business.entities.ProductStack;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.Collections;

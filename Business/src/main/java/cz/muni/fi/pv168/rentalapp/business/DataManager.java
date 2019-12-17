@@ -1,17 +1,11 @@
-package cz.muni.fi.pv168.cosplayrental;
+package cz.muni.fi.pv168.rentalapp.business;
 
-import cz.muni.fi.pv168.cosplayrental.Exceptions.EmptyTextboxException;
-import cz.muni.fi.pv168.cosplayrental.entities.Order;
-import cz.muni.fi.pv168.cosplayrental.entities.ProductStack;
-import cz.muni.fi.pv168.cosplayrental.tablemodels.CatalogueTableModel;
-import cz.muni.fi.pv168.cosplayrental.tablemodels.OrderTableModel;
+import cz.muni.fi.pv168.rentalapp.business.Exceptions.EmptyTextboxException;
+import cz.muni.fi.pv168.rentalapp.business.entities.Order;
+import cz.muni.fi.pv168.rentalapp.business.entities.ProductStack;
 
-import java.sql.Time;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
-
-
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,10 +1,9 @@
-package cz.muni.fi.pv168.cosplayrental.tablemodels;
+package cz.muni.fi.pv168.rentalapp.gui.tablemodels;
 
-import cz.muni.fi.pv168.cosplayrental.entities.Order;
+import cz.muni.fi.pv168.rentalapp.business.entities.Order;
 
 import javax.swing.table.AbstractTableModel;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 

@@ -1,11 +1,10 @@
-package cz.muni.fi.pv168.cosplayrental.tablemodels;
+package cz.muni.fi.pv168.rentalapp.gui.tablemodels;
 
-import cz.muni.fi.pv168.cosplayrental.entities.ProductStack;
+import cz.muni.fi.pv168.rentalapp.business.entities.ProductStack;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.List;
 
 public class ProductStackListRenderer extends JList<ProductStack> implements TableCellRenderer {

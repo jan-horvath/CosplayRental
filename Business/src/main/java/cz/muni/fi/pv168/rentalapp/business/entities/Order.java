@@ -1,4 +1,4 @@
-package cz.muni.fi.pv168.cosplayrental.entities;
+package cz.muni.fi.pv168.rentalapp.business.entities;
 
 import java.time.LocalDate;
 import java.util.List;
