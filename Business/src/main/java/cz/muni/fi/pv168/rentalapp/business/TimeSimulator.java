@@ -30,19 +30,19 @@ public class TimeSimulator {
     public void advanceOneDay() {
         date = date.plusDays(1);
         executeCallbacks();
+
     }
 
     public void advanceOneWeek() {
-        for (int i = 0; i < 7; ++i) {
+        for (int i = 0; i< 7; ++i) {
             advanceOneDay();
         }
     }
 
     public void advanceFourWeeks() {
-        advanceOneWeek();
-        advanceOneWeek();
-        advanceOneWeek();
-        advanceOneWeek();
+        for (int i = 0; i < 4; i++) {
+            advanceOneWeek();
+        }
     }
 
 }
