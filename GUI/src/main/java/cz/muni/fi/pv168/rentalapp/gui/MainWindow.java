@@ -13,7 +13,6 @@ import cz.muni.fi.pv168.rentalapp.gui.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.OrderTableModel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.ProductStackListRenderer;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -65,8 +64,6 @@ public class MainWindow extends JFrame {
                     "+444291912994", LocalDate.of(2019, 12, 22))
     ));
 
-    private static final JPanel BLANK = new JPanel();
-
     public MainWindow() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("CoRe: Cosplay Rental ©");
@@ -96,7 +93,6 @@ public class MainWindow extends JFrame {
         JPanel cards = new JPanel(c1);
         add(cards);
 
-        cards.add(new JLabel(new ImageIcon(MainWindow.class.getResource("warmup.png"))), "Home");
         cards.add(new JScrollPane(catalogueTable), "Catalogue");
         cards.add(new JScrollPane(addToCartTable), "Order");
         cards.add(new JScrollPane(formPanel), "Form");
@@ -126,11 +122,6 @@ public class MainWindow extends JFrame {
         //Top toolbar
         JToolBar topToolBar = new JToolBar();
         add(topToolBar, BorderLayout.BEFORE_FIRST_LINE);
-
-        GoToAction gotoHome = new GoToAction(() -> {
-                c1.show(cards, "Home");
-                bottomToolBar.setVisible(false);
-            }, "Home", "homeIcon.png", KeyEvent.VK_1);
 
         GoToAction gotoCatalogue = new GoToAction(() -> {
                 c1.show(cards, "Catalogue");
@@ -165,48 +156,10 @@ public class MainWindow extends JFrame {
         JButton fourWeeksAdvanceButton = new JButton("+4 weeks");
         fourWeeksAdvanceButton.addActionListener(e -> {timeSimulator.advanceFourWeeks();});
 
-        oneDayAdvanceButton.setEnabled(false);
-        oneWeekAdvanceButton.setEnabled(false);
-        fourWeeksAdvanceButton.setEnabled(false);
-
-        JButton customerToggleButton = new JButton("",
-                new ImageIcon(MainWindow.class.getResource("customerIcon.png")));
-        JButton staffToggleButton = new JButton("",
-                new ImageIcon(MainWindow.class.getResource("staffIcon.png")));
-
         timeSimulator.addCallback(() -> {
             timeLabel.setText(dateFormat.format(timeSimulator.getTime()));
         });
         timeSimulator.addCallback(dataManager::checkReturnDates);
-
-        customerToggleButton.addActionListener(e -> {
-            c1.show(cards, "Home");
-            gotoCatalogue.setEnabled(true);
-            gotoOrder.setEnabled(true);
-            staffToggleButton.setEnabled(true);
-
-            gotoListOrders.setEnabled(false);
-            bottomToolBar.setVisible(false);
-            customerToggleButton.setEnabled(false);
-
-            oneDayAdvanceButton.setEnabled(false);
-            oneWeekAdvanceButton.setEnabled(false);
-            fourWeeksAdvanceButton.setEnabled(false);
-        });
-
-        staffToggleButton.addActionListener(e -> {
-            c1.show(cards, "Home");
-            gotoCatalogue.setEnabled(false);
-            gotoOrder.setEnabled(false);
-            staffToggleButton.setEnabled(false);
-            bottomToolBar.setVisible(false);
-
-            gotoListOrders.setEnabled(true);
-            customerToggleButton.setEnabled(true);
-            oneDayAdvanceButton.setEnabled(true);
-            oneWeekAdvanceButton.setEnabled(true);
-            fourWeeksAdvanceButton.setEnabled(true);
-        });
 
         returnOrderButton.addActionListener(e -> {
             int selectedRow = orderTable.getSelectedRow();
@@ -241,7 +194,7 @@ public class MainWindow extends JFrame {
             for (int i = 0; i < catalogueTableModelRowCount; i++) {
                 productCounts.put(catalogueTable.convertRowIndexToModel(i), (Integer) catalogueTableModel.getValueAt(i, 4));
             }
-                try {
+            try {
                 dataManager.createOrderItems(formPanel.getFormData(), productCounts);
             } catch (EmptyTextboxException ETexception) {
                 JOptionPane.showMessageDialog(null, "Please fill all the textfields.", "Empty textfield(s)", JOptionPane.ERROR_MESSAGE);
@@ -253,53 +206,35 @@ public class MainWindow extends JFrame {
                 JOptionPane.showMessageDialog(null, "Return date already passed. Please enter a valid one.", "Invalid return date", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            orderTableModel.fireTableRowsInserted(catalogueTableModelRowCount-1, catalogueTableModelRowCount-1);
-            catalogueTableModel.fireTableDataChanged();
+            orderTableModel.fireTableRowsInserted(0,0);
+            //orderTableModel.fireTableRowsInserted(orderTableModel.getRowCount()-1, orderTableModel.getRowCount()-1);
             formPanel.clearTextFields();
             bottomToolBar.setVisible(false);
             JOptionPane.showMessageDialog(null, "Your order has been created!", "", JOptionPane.INFORMATION_MESSAGE);
-            c1.show(cards, "Home");
         });
 
-        topToolBar.add(gotoHome);
         topToolBar.add(gotoCatalogue);
         topToolBar.add(gotoOrder);
         topToolBar.add(gotoListOrders);
-        gotoListOrders.setEnabled(false);
         topToolBar.add(Box.createHorizontalGlue());
         topToolBar.add(timeLabel);
         topToolBar.add(Box.createHorizontalGlue());
         topToolBar.add(oneDayAdvanceButton);
         topToolBar.add(oneWeekAdvanceButton);
         topToolBar.add(fourWeeksAdvanceButton);
-        topToolBar.add(Box.createHorizontalGlue());
-        topToolBar.add(customerToggleButton);
-        customerToggleButton.setEnabled(false);
-        topToolBar.add(staffToggleButton);
 
         //Menubar
         JMenu fileMenu = new JMenu("File");
         fileMenu.add(new ExitAction());
 
         JMenu gotoMenu = new JMenu("Go to");
-        gotoMenu.add(gotoHome);
         gotoMenu.add(gotoCatalogue);
         gotoMenu.add(gotoOrder);
         gotoMenu.add(gotoListOrders);
 
-        JMenu helpMenu = new JMenu("Help");
-
-        JMenuItem terms = new JMenuItem("Terms of use");
-        JMenuItem contact = new JMenuItem("Contact us");
-        JMenuItem howTo = new JMenuItem("How to fill in the form?");
-        helpMenu.add(terms);
-        helpMenu.add(contact);
-        helpMenu.add(howTo);
-
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(fileMenu);
         menuBar.add(gotoMenu);
-        menuBar.add(helpMenu);
 
         setJMenuBar(menuBar);
 
