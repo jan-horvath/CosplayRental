@@ -101,6 +101,7 @@ public class CatalogueTableModel extends AbstractTableModel  {
         for (int i = 0; i < getRowCount(); i++) {
             setValueAt(0, i, getColumnCount()-1);
         }
+        fireTableDataChanged();
     }
 
     public List<ProductStack> getProductStackWithSelectedPieces() {

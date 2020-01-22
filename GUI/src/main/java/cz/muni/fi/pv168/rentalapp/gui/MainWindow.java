@@ -113,7 +113,7 @@ public class MainWindow extends JFrame {
 
         ////
 
-        cards.add(new CataloguePanel(CATALOG_TEST_DATA), "Catalogue");
+        cards.add(new CataloguePanel(catalogueTableModel,  orderTableModel, dataManager), "Catalogue");
         //cards.add(new JScrollPane(addToCartTable), "Order");
         //cards.add(new JScrollPane(formPanel), "Form");
         cards.add(new JScrollPane(orderTable), "Orders list");
