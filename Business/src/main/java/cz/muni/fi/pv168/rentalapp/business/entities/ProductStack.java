@@ -27,6 +27,14 @@ public class ProductStack {
         this.stackSize = stackSize;
     }
 
+    public ProductStack(ProductStack other) {
+        id = generateId();
+        name = other.name;
+        size = other.size;
+        price = other.price;
+        stackSize = other.stackSize;
+    }
+
     public long getId() {
         return id;
     }

@@ -9,6 +9,7 @@ import cz.muni.fi.pv168.rentalapp.gui.actions.ExitAction;
 import cz.muni.fi.pv168.rentalapp.gui.actions.GoToAction;
 import cz.muni.fi.pv168.rentalapp.business.entities.Order;
 import cz.muni.fi.pv168.rentalapp.business.entities.ProductStack;
+import cz.muni.fi.pv168.rentalapp.gui.panels.CataloguePanel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.OrderTableModel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.ProductStackListRenderer;
@@ -93,18 +94,30 @@ public class MainWindow extends JFrame {
         JPanel cards = new JPanel(c1);
         add(cards);
 
-        cards.add(new JScrollPane(catalogueTable), "Catalogue");
-        cards.add(new JScrollPane(addToCartTable), "Order");
-        cards.add(new JScrollPane(formPanel), "Form");
+        ////
+        JPanel newCataloguePanel = new JPanel();
+        newCataloguePanel.add(addToCartTable);
+        newCataloguePanel.setLayout(new GridLayout(1,1));
+
+        JPanel orderOverviewPanel = new JPanel(new BorderLayout(2,2));
+        JButton northButton = new JButton("NORTH");
+        //Order form panel
+        JButton newCreateOrderButton = new JButton("Create order (new)");
+
+        orderOverviewPanel.add(catalogueTable, BorderLayout.NORTH);
+        orderOverviewPanel.add(formPanel, BorderLayout.CENTER);
+        orderOverviewPanel.add(newCreateOrderButton, BorderLayout.SOUTH);
+
+        newCataloguePanel.add(orderOverviewPanel);
+
+
+        ////
+
+        cards.add(new CataloguePanel(CATALOG_TEST_DATA), "Catalogue");
+        //cards.add(new JScrollPane(addToCartTable), "Order");
+        //cards.add(new JScrollPane(formPanel), "Form");
         cards.add(new JScrollPane(orderTable), "Orders list");
 
-        addComponentListener(new ComponentAdapter() {
-            public void componentResized(ComponentEvent event) {
-                setSize(
-                        Math.max(Integer.MIN_VALUE, getWidth()),
-                        Math.max(700, getHeight()));
-            }
-        });
 
         //Bottom toolbar
         JToolBar bottomToolBar = new JToolBar();

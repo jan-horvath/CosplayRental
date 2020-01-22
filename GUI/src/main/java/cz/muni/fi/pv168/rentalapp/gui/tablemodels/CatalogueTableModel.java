@@ -11,11 +11,11 @@ import java.util.Collections;
 public class CatalogueTableModel extends AbstractTableModel  {
 
     public List<ProductStack> entries;
-    private List<Integer> piecesOrdered;
+    private List<Integer> piecesSelected;
 
     public CatalogueTableModel(List<ProductStack> entries) {
         this.entries = entries;
-        this.piecesOrdered = new ArrayList<>(Collections.nCopies(entries.size(), 0));
+        this.piecesSelected = new ArrayList<>(Collections.nCopies(entries.size(), 0));
     }
 
     public enum Column {
@@ -45,7 +45,7 @@ public class CatalogueTableModel extends AbstractTableModel  {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         if (columnIndex == Column.values().length) {
-            return piecesOrdered.get(rowIndex);
+            return piecesSelected.get(rowIndex);
         }
         ProductStack entry = entries.get(rowIndex);
         return Column.values()[columnIndex].extractor.apply(entry);
@@ -75,11 +75,11 @@ public class CatalogueTableModel extends AbstractTableModel  {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         if (columnIndex == Column.values().length) {
-            piecesOrdered.set(rowIndex, (Integer) aValue);
+            piecesSelected.set(rowIndex, (Integer) aValue);
         }
 
         if ((Integer) aValue > entries.get(rowIndex).getStackSize()) {
-            piecesOrdered.set(rowIndex, (Integer) 0);
+            piecesSelected.set(rowIndex, (Integer) 0);
         }
     }
 
@@ -89,7 +89,7 @@ public class CatalogueTableModel extends AbstractTableModel  {
 
     public boolean areAllItemsZero() {
         boolean allZero = true;
-        for (Integer i : piecesOrdered) {
+        for (Integer i : piecesSelected) {
             if (i > 0) {
                 allZero = false;
             }
@@ -101,5 +101,17 @@ public class CatalogueTableModel extends AbstractTableModel  {
         for (int i = 0; i < getRowCount(); i++) {
             setValueAt(0, i, getColumnCount()-1);
         }
+    }
+
+    public List<ProductStack> getProductStackWithSelectedPieces() {
+        List<ProductStack> selectedStacks = new ArrayList<>();
+
+        for (int i = 0; i < entries.size(); ++i) {
+            ProductStack selectedProductStack = new ProductStack(entries.get(i));
+            selectedProductStack.setStackSize(piecesSelected.get(i));
+            selectedStacks.add(selectedProductStack);
+        }
+
+        return selectedStacks;
     }
 }
