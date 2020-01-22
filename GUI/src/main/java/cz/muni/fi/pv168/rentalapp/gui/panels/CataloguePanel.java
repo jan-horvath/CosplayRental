@@ -3,7 +3,6 @@ package cz.muni.fi.pv168.rentalapp.gui.panels;
 import cz.muni.fi.pv168.rentalapp.business.DataManager;
 import cz.muni.fi.pv168.rentalapp.business.Exceptions.EmptyTextboxException;
 import cz.muni.fi.pv168.rentalapp.business.Exceptions.InvalidReturnDateException;
-import cz.muni.fi.pv168.rentalapp.business.entities.ProductStack;
 import cz.muni.fi.pv168.rentalapp.gui.FormPanel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.OrderTableModel;
@@ -14,7 +13,6 @@ import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -24,6 +22,7 @@ public class CataloguePanel extends JPanel {
     private OrderTableModel orderTM;
     private CatalogueTableModel catalogueTM;
     private JTable catalogueTable;
+
     private OrderOverviewPane orderOverviewPane = new OrderOverviewPane();
     private FormPanel formPanel = new FormPanel();
     private JButton createOrderButton = new JButton("Create order");

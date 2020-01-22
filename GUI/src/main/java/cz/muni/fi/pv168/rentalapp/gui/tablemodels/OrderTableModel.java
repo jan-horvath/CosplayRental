@@ -60,4 +60,8 @@ public class OrderTableModel extends AbstractTableModel {
     public Class<?> getColumnClass(int columnIndex) {
         return Column.values()[columnIndex].columnClass;
     }
+
+    public List<Order> getEntries() {
+        return entries;
+    }
 }

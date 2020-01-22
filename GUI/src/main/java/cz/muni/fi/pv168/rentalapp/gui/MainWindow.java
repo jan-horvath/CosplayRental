@@ -10,6 +10,7 @@ import cz.muni.fi.pv168.rentalapp.gui.actions.GoToAction;
 import cz.muni.fi.pv168.rentalapp.business.entities.Order;
 import cz.muni.fi.pv168.rentalapp.business.entities.ProductStack;
 import cz.muni.fi.pv168.rentalapp.gui.panels.CataloguePanel;
+import cz.muni.fi.pv168.rentalapp.gui.panels.OrderListPanel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.OrderTableModel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.ProductStackListRenderer;
@@ -92,7 +93,7 @@ public class MainWindow extends JFrame {
         add(cards);
 
         cards.add(new CataloguePanel(catalogueTableModel,  orderTableModel, dataManager), "Catalogue");
-        cards.add(new JScrollPane(orderTable), "Orders list");
+        cards.add(new OrderListPanel(catalogueTableModel, orderTableModel, dataManager), "Orders list");
 
 
         //Bottom toolbar
