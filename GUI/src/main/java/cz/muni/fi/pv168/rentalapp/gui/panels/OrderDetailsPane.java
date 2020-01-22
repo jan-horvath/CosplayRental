@@ -31,6 +31,7 @@ public class OrderDetailsPane extends JEditorPane {
         for (ProductStack ps : order.getProductStacks()) {
             sb.append(ps.getName()).append("(").append(ps.getSize()).append(") x").append(ps.getStackSize()).append("\n");
         }
+
         setText(sb.toString());
     }
 }

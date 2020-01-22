@@ -1,9 +1,6 @@
 package cz.muni.fi.pv168.rentalapp.gui;
 
 import cz.muni.fi.pv168.rentalapp.business.DataManager;
-import cz.muni.fi.pv168.rentalapp.business.Exceptions.EmptyTextboxException;
-import cz.muni.fi.pv168.rentalapp.business.Exceptions.InvalidReturnDateException;
-
 import cz.muni.fi.pv168.rentalapp.business.TimeSimulator;
 import cz.muni.fi.pv168.rentalapp.gui.actions.ExitAction;
 import cz.muni.fi.pv168.rentalapp.gui.actions.GoToAction;
@@ -13,17 +10,14 @@ import cz.muni.fi.pv168.rentalapp.gui.panels.CataloguePanel;
 import cz.muni.fi.pv168.rentalapp.gui.panels.OrderListPanel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.OrderTableModel;
-import cz.muni.fi.pv168.rentalapp.gui.tablemodels.ProductStackListRenderer;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.List;
-
 
 public class MainWindow extends JFrame {
 
@@ -56,7 +50,6 @@ public class MainWindow extends JFrame {
             new ProductStack("Batarang set", ProductStack.Size.NA, 25, 2)
     ));
 
-
     private static List<Order> ORDER_TEST_DATA = new ArrayList<>(Arrays.asList(
             new Order(ps1, "weaponreplica@enthusiast.org", "9184345167789991", "No Name",
                     "+658291912994", LocalDate.of(2019, 12, 20)),
@@ -83,10 +76,6 @@ public class MainWindow extends JFrame {
         });
         timeSimulator.addCallback(dataManager::checkReturnDates);
 
-        JTable orderTable = new JTable(orderTableModel);
-        orderTable.setDefaultRenderer(List.class, new ProductStackListRenderer());
-        orderTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
         //Cards
         CardLayout c1 = new CardLayout();
         JPanel cards = new JPanel(c1);
@@ -95,29 +84,13 @@ public class MainWindow extends JFrame {
         cards.add(new CataloguePanel(catalogueTableModel,  orderTableModel, dataManager), "Catalogue");
         cards.add(new OrderListPanel(catalogueTableModel, orderTableModel, dataManager), "Orders list");
 
-
-        //Bottom toolbar
-        JToolBar bottomToolBar = new JToolBar();
-        add(bottomToolBar, BorderLayout.AFTER_LAST_LINE);
-        bottomToolBar.setVisible(false);
-
-        JButton returnOrderButton = new JButton("Return order");
-        bottomToolBar.add(returnOrderButton);
-
-        //Top toolbar
-        JToolBar topToolBar = new JToolBar();
-        add(topToolBar, BorderLayout.BEFORE_FIRST_LINE);
-
+        //Actions
         GoToAction gotoCatalogue = new GoToAction(() -> {
                 c1.show(cards, "Catalogue");
-                bottomToolBar.setVisible(false);
             }, "Catalogue", "catalogueIcon.png", KeyEvent.VK_2);
 
         GoToAction gotoListOrders = new GoToAction(() -> {
                 c1.show(cards, "Orders list");
-                bottomToolBar.setVisible(true);
-                returnOrderButton.setVisible(true);
-                returnOrderButton.setEnabled(true);
             }, "Orders list", "listOrdersIcon.png", KeyEvent.VK_4);
 
         JButton oneDayAdvanceButton = new JButton("+1 day");
@@ -127,18 +100,9 @@ public class MainWindow extends JFrame {
         JButton fourWeeksAdvanceButton = new JButton("+4 weeks");
         fourWeeksAdvanceButton.addActionListener(e -> {timeSimulator.advanceFourWeeks();});
 
-        returnOrderButton.addActionListener(e -> {
-            int selectedRow = orderTable.getSelectedRow();
-            if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(null, "Please select order that needs to be returned.", "No order selected", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            int modelRow = orderTable.convertRowIndexToModel(selectedRow);
-            dataManager.returnOrder(modelRow);
-            orderTableModel.fireTableRowsDeleted(modelRow, modelRow);
-            catalogueTableModel.fireTableDataChanged();
-        });
-
+        //Top toolbar
+        JToolBar topToolBar = new JToolBar();
+        add(topToolBar, BorderLayout.BEFORE_FIRST_LINE);
         topToolBar.add(gotoCatalogue);
         topToolBar.add(gotoListOrders);
         topToolBar.add(Box.createHorizontalGlue());
@@ -162,7 +126,8 @@ public class MainWindow extends JFrame {
 
         setJMenuBar(menuBar);
 
-        pack();
+        //pack();
+        setSize(800, 500);
     }
 
     public static void main(String[] args) {
