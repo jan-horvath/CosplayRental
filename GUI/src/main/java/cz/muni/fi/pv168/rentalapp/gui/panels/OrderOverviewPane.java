@@ -14,6 +14,10 @@ public class OrderOverviewPane extends JEditorPane {
         setText("Price: 0");
     }
 
+    public void clearPane() {
+        setText("Price: 0");
+    }
+
     public void changeOrderInformation(List<ProductStack> productStacks) {
         StringBuilder sb = new StringBuilder();
 

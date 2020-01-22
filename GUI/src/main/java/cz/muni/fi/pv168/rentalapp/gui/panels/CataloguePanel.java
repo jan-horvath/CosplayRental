@@ -95,6 +95,8 @@ public class CataloguePanel extends JPanel {
             orderTM.fireTableRowsInserted(0,0);
             formPanel.clearTextFields();
             catalogueTM.setAllAddToCartItemsToZero();
+            orderOverviewPane.clearPane();
+
             JOptionPane.showMessageDialog(null, "Your order has been created!", "", JOptionPane.INFORMATION_MESSAGE);
         });
     }

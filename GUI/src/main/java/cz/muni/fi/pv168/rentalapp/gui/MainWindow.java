@@ -69,53 +69,29 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("CoRe: Cosplay Rental ©");
 
+        //Initialization
         TimeSimulator timeSimulator = new TimeSimulator();
-        FormPanel formPanel = new FormPanel();
-
-        //Tables
         CatalogueTableModel catalogueTableModel = new CatalogueTableModel(CATALOG_TEST_DATA);
         OrderTableModel orderTableModel = new OrderTableModel(ORDER_TEST_DATA);
-
         DataManager dataManager = new DataManager(CATALOG_TEST_DATA, ORDER_TEST_DATA, timeSimulator);
-        JTable catalogueTable = new JTable(catalogueTableModel);
 
-        catalogueTable.removeColumn(
-                catalogueTable.getColumnModel().getColumn(CatalogueTableModel.Column.values().length)
-        );
-
-        JTable addToCartTable = new JTable(catalogueTableModel);
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        JLabel timeLabel = new JLabel(dateFormat.format(timeSimulator.getTime()));
+        timeSimulator.addCallback(() -> {
+            timeLabel.setText(dateFormat.format(timeSimulator.getTime()));
+        });
+        timeSimulator.addCallback(dataManager::checkReturnDates);
 
         JTable orderTable = new JTable(orderTableModel);
         orderTable.setDefaultRenderer(List.class, new ProductStackListRenderer());
         orderTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        //Cards/Windows
+        //Cards
         CardLayout c1 = new CardLayout();
         JPanel cards = new JPanel(c1);
         add(cards);
 
-        ////
-        JPanel newCataloguePanel = new JPanel();
-        newCataloguePanel.add(addToCartTable);
-        newCataloguePanel.setLayout(new GridLayout(1,1));
-
-        JPanel orderOverviewPanel = new JPanel(new BorderLayout(2,2));
-        JButton northButton = new JButton("NORTH");
-        //Order form panel
-        JButton newCreateOrderButton = new JButton("Create order (new)");
-
-        orderOverviewPanel.add(catalogueTable, BorderLayout.NORTH);
-        orderOverviewPanel.add(formPanel, BorderLayout.CENTER);
-        orderOverviewPanel.add(newCreateOrderButton, BorderLayout.SOUTH);
-
-        newCataloguePanel.add(orderOverviewPanel);
-
-
-        ////
-
         cards.add(new CataloguePanel(catalogueTableModel,  orderTableModel, dataManager), "Catalogue");
-        //cards.add(new JScrollPane(addToCartTable), "Order");
-        //cards.add(new JScrollPane(formPanel), "Form");
         cards.add(new JScrollPane(orderTable), "Orders list");
 
 
@@ -124,12 +100,7 @@ public class MainWindow extends JFrame {
         add(bottomToolBar, BorderLayout.AFTER_LAST_LINE);
         bottomToolBar.setVisible(false);
 
-        JButton createOrderButton = new JButton("Create order");
-        JButton submitOrderButton = new JButton("Submit order");
         JButton returnOrderButton = new JButton("Return order");
-        bottomToolBar.add(createOrderButton);
-        bottomToolBar.add(submitOrderButton);
-        bottomToolBar.add(Box.createHorizontalGlue());
         bottomToolBar.add(returnOrderButton);
 
         //Top toolbar
@@ -141,38 +112,19 @@ public class MainWindow extends JFrame {
                 bottomToolBar.setVisible(false);
             }, "Catalogue", "catalogueIcon.png", KeyEvent.VK_2);
 
-        GoToAction gotoOrder = new GoToAction(() -> {
-                c1.show(cards, "Order");
-                bottomToolBar.setVisible(true);
-                createOrderButton.setVisible(true);
-                createOrderButton.setEnabled(true);
-                submitOrderButton.setVisible(true);
-                submitOrderButton.setEnabled(false);
-                returnOrderButton.setVisible(false);
-            }, "Order", "orderIcon.png", KeyEvent.VK_3);
-
         GoToAction gotoListOrders = new GoToAction(() -> {
                 c1.show(cards, "Orders list");
                 bottomToolBar.setVisible(true);
-                createOrderButton.setVisible(false);
-                submitOrderButton.setVisible(false);
                 returnOrderButton.setVisible(true);
                 returnOrderButton.setEnabled(true);
             }, "Orders list", "listOrdersIcon.png", KeyEvent.VK_4);
 
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        JLabel timeLabel = new JLabel(dateFormat.format(timeSimulator.getTime()));
         JButton oneDayAdvanceButton = new JButton("+1 day");
         oneDayAdvanceButton.addActionListener(e -> {timeSimulator.advanceOneDay();});
         JButton oneWeekAdvanceButton = new JButton("+1 week");
         oneWeekAdvanceButton.addActionListener(e -> {timeSimulator.advanceOneWeek();});
         JButton fourWeeksAdvanceButton = new JButton("+4 weeks");
         fourWeeksAdvanceButton.addActionListener(e -> {timeSimulator.advanceFourWeeks();});
-
-        timeSimulator.addCallback(() -> {
-            timeLabel.setText(dateFormat.format(timeSimulator.getTime()));
-        });
-        timeSimulator.addCallback(dataManager::checkReturnDates);
 
         returnOrderButton.addActionListener(e -> {
             int selectedRow = orderTable.getSelectedRow();
@@ -186,48 +138,7 @@ public class MainWindow extends JFrame {
             catalogueTableModel.fireTableDataChanged();
         });
 
-        createOrderButton.addActionListener( e -> {
-            CatalogueTableModel c = (CatalogueTableModel) catalogueTable.getModel();
-            if (c.areAllItemsZero()) {
-                JOptionPane.showMessageDialog(null, "Please select items, you wish to rent, by entering a number into the last column", "No items selected", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            bottomToolBar.setVisible(true);
-            createOrderButton.setVisible(true);
-            createOrderButton.setEnabled(false);
-            submitOrderButton.setVisible(true);
-            submitOrderButton.setEnabled(true);
-            returnOrderButton.setVisible(false);
-            c1.show(cards, "Form");
-        });
-
-        submitOrderButton.addActionListener( e -> {
-            Map<Integer, Integer> productCounts = new HashMap<>();
-            int catalogueTableModelRowCount = catalogueTableModel.getRowCount();
-            for (int i = 0; i < catalogueTableModelRowCount; i++) {
-                productCounts.put(catalogueTable.convertRowIndexToModel(i), (Integer) catalogueTableModel.getValueAt(i, 4));
-            }
-            try {
-                dataManager.createOrderItems(formPanel.getFormData(), productCounts);
-            } catch (EmptyTextboxException ETexception) {
-                JOptionPane.showMessageDialog(null, "Please fill all the textfields.", "Empty textfield(s)", JOptionPane.ERROR_MESSAGE);
-                return;
-            } catch (DateTimeParseException DTPexception) {
-                JOptionPane.showMessageDialog(null, "Please enter the return date in the specified format (dd.MM.YYYY)", "Wrong date format", JOptionPane.ERROR_MESSAGE);
-                return;
-            } catch (InvalidReturnDateException IRDException) {
-                JOptionPane.showMessageDialog(null, "Return date already passed. Please enter a valid one.", "Invalid return date", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            orderTableModel.fireTableRowsInserted(0,0);
-            //orderTableModel.fireTableRowsInserted(orderTableModel.getRowCount()-1, orderTableModel.getRowCount()-1);
-            formPanel.clearTextFields();
-            bottomToolBar.setVisible(false);
-            JOptionPane.showMessageDialog(null, "Your order has been created!", "", JOptionPane.INFORMATION_MESSAGE);
-        });
-
         topToolBar.add(gotoCatalogue);
-        topToolBar.add(gotoOrder);
         topToolBar.add(gotoListOrders);
         topToolBar.add(Box.createHorizontalGlue());
         topToolBar.add(timeLabel);
@@ -242,7 +153,6 @@ public class MainWindow extends JFrame {
 
         JMenu gotoMenu = new JMenu("Go to");
         gotoMenu.add(gotoCatalogue);
-        gotoMenu.add(gotoOrder);
         gotoMenu.add(gotoListOrders);
 
         JMenuBar menuBar = new JMenuBar();
