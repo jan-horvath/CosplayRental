@@ -11,7 +11,7 @@ public class Order {
     }
 
     private final long id;
-    private final List<ProductStack> productStacks;
+    private final List<ProductStack> productStacks  ;
     private final String email;
     private final String creditCardNumber;
     private final String fullName;
