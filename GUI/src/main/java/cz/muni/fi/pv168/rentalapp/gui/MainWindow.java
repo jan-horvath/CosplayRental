@@ -72,10 +72,10 @@ public class MainWindow extends JFrame {
         FormPanel formPanel = new FormPanel();
 
         //Tables
+        DataManager dataManager = new DataManager(CATALOG_TEST_DATA, ORDER_TEST_DATA, timeSimulator);
+
         CatalogueTableModel catalogueTableModel = new CatalogueTableModel(CATALOG_TEST_DATA);
         OrderTableModel orderTableModel = new OrderTableModel(ORDER_TEST_DATA);
-
-        DataManager dataManager = new DataManager(CATALOG_TEST_DATA, ORDER_TEST_DATA, timeSimulator);
         JTable catalogueTable = new JTable(catalogueTableModel);
 
         catalogueTable.removeColumn(
@@ -195,7 +195,7 @@ public class MainWindow extends JFrame {
                 productCounts.put(catalogueTable.convertRowIndexToModel(i), (Integer) catalogueTableModel.getValueAt(i, 4));
             }
             try {
-                dataManager.createOrderItems(formPanel.getFormData(), productCounts);
+                dataManager.createOrder(formPanel.getFormData(), productCounts);
             } catch (EmptyTextboxException ETexception) {
                 JOptionPane.showMessageDialog(null, "Please fill all the textfields.", "Empty textfield(s)", JOptionPane.ERROR_MESSAGE);
                 return;

@@ -24,10 +24,10 @@ public class DataManager {
         this.productStacks = productStacks;
         this.orders = orders;
         this.timeSimulator = timeSimulator;
-
+        // add DB Managers as class attributes
     }
 
-    public void createOrderItems(Map<String, String> formData, Map<Integer, Integer> productCounts) {
+    public void createOrder(Map<String, String> formData, Map<Integer, Integer> productCounts) {
         checkEmptyFormData(formData);
 
         LocalDate returnDate = LocalDate.parse(formData.get("returnDate"), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
@@ -40,6 +40,20 @@ public class DataManager {
         String fullName = formData.get("name");
         String phone = formData.get("phoneNumber");
 
+        List<ProductStack> orderedItems = createOrderItems(productCounts);
+        Order desiredOrder = new Order(orderedItems, email, creditCardNumber, fullName, phone, returnDate);
+        orders.add(desiredOrder);
+    }
+
+    private void checkEmptyFormData(Map<String, String> formData) {
+        for (Map.Entry<String, String> entry : formData.entrySet()) {
+            if (entry.getValue().isEmpty()) {
+                throw new EmptyTextboxException();
+            }
+        }
+    }
+
+    private List<ProductStack> createOrderItems(Map<Integer, Integer> productCounts) {
         List<ProductStack> orderedItems = new ArrayList<>();
 
         for (Map.Entry<Integer, Integer> productCount : productCounts.entrySet()) {
@@ -51,17 +65,7 @@ public class DataManager {
                         wantsToOrder.getName(), wantsToOrder.getSize(), wantsToOrder.getPrice(), stackSize));
             }
         }
-
-        Order desiredOrder = new Order(orderedItems, email, creditCardNumber, fullName, phone, returnDate);
-        orders.add(desiredOrder);
-    }
-
-    private void checkEmptyFormData(Map<String, String> formData) {
-        for (Map.Entry<String, String> entry : formData.entrySet()) {
-            if (entry.getValue().isEmpty()) {
-                throw new EmptyTextboxException();
-            }
-        }
+        return orderedItems;
     }
 
     public void returnOrder(int orderIndex) {
@@ -85,6 +89,7 @@ public class DataManager {
         }
 
         orders.remove(orderIndex);
+//        OrderManager.deleteOrder(orderToRemove.getId());
     }
 
     public void checkReturnDates() {

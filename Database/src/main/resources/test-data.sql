@@ -7,16 +7,26 @@ VALUES
 ('fred.kirby@gmail.org', '9184345161019991', 'Fred Kirby', '+929123456994', '2019-12-21'),
 ('marc.blake@batmanfan.org', '4116852067789991', 'Marc Blake', '+444291912994', '2019-12-22');
 
-INSERT INTO PRODUCTSTACKS
-(ORDERID, NAME, SIZE, PRICE, STACKSIZE)
+INSERT INTO STOREPRODUCTSTACKS
+(NAME, SIZE, PRICE, STACKSIZE)
 VALUES
-(NULL, 'Asterix helmet', 'NA', 15.80, 3),
-(NULL, 'Ironman suit', 'L', 120, 0),
-(NULL, 'Batarang set', 'NA', 25, 10),
-(1, 'Witcher silver sword', 'NA', 29, 3),
-(1, 'Portal gun', 'NA', 42, 2),
-(2, 'Ironman suit', 'L', 120, 1),
-(2, 'Captain America suit', 'L', 109, 1),
-(3, 'Batman suit', 'S', 100, 1),
-(3, 'Batarang set', 'NA', 25, 2);
+('Asterix helmet', 'NA', 15.80, 3),
+('Poseidon trident', 'NA', 21.90, 3),
+('Deadpool suit', 'M', 42.20, 4),
+('Witcher silver sword', 'NA', 29, 0),
+('Portal gun', 'NA', 42, 1),
+('BFG9000', 'NA', 65, 0),
+('Ironman suit', 'L', 120, 0),
+('Captain America suit', 'L', 109, 0),
+('Batman suit', 'S', 100, 0),
+('Batarang set', 'NA', 25, 10);
 
+INSERT INTO ORDEREDPRODUCTSTACKS
+(ORDERID, PRODUCTSTACKID, STACKSIZE) VALUES
+ (1, 4, 3),
+ (1, 5, 2),
+ (1, 6, 1),
+ (2, 7, 1),
+ (2, 8, 1),
+ (3, 9, 1),
+ (3, 10, 1);
