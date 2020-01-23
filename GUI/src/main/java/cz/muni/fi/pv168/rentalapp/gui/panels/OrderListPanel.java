@@ -26,7 +26,7 @@ public class OrderListPanel extends JPanel {
         orderTable = new JTable(orderTM);
         orderTable.removeColumn(orderTable.getColumnModel().getColumn(0));
         orderTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add(orderTable);
+        add(new JScrollPane(orderTable));
 
         JPanel orderDetailsPanel = new JPanel();
         BoxLayout layout = new BoxLayout(orderDetailsPanel, BoxLayout.PAGE_AXIS);

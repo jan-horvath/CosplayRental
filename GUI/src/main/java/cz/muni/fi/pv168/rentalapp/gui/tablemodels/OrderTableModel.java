@@ -18,7 +18,7 @@ public class OrderTableModel extends AbstractTableModel {
         PHONE_NUMBER("Phone", String.class, Order::getPhoneNumber),
         RETURN_DATE("Return date", LocalDate.class, Order::getReturnDate);
 
-        private <T> Column(String name, Class<T> columnClass, Function<Order, T> extractor) {
+        <T> Column(String name, Class<T> columnClass, Function<Order, T> extractor) {
             this.name = name;
             this.columnClass = columnClass;
             this.extractor = extractor;

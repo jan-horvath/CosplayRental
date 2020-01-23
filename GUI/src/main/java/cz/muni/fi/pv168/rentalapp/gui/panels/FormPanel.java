@@ -1,4 +1,4 @@
-package cz.muni.fi.pv168.rentalapp.gui;
+package cz.muni.fi.pv168.rentalapp.gui.panels;
 
 import javax.swing.*;
 import java.awt.*;

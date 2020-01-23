@@ -3,7 +3,6 @@ package cz.muni.fi.pv168.rentalapp.gui.panels;
 import cz.muni.fi.pv168.rentalapp.business.DataManager;
 import cz.muni.fi.pv168.rentalapp.business.Exceptions.EmptyTextboxException;
 import cz.muni.fi.pv168.rentalapp.business.Exceptions.InvalidReturnDateException;
-import cz.muni.fi.pv168.rentalapp.gui.FormPanel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.OrderTableModel;
 
@@ -34,7 +33,7 @@ public class CataloguePanel extends JPanel {
         orderTM = otm;
         catalogueTM = ctm;
         catalogueTable = new JTable(catalogueTM);
-        add(catalogueTable);
+        add(new JScrollPane(catalogueTable));
 
         JPanel orderOverviewPanel = new JPanel();
         BoxLayout layout = new BoxLayout(orderOverviewPanel, BoxLayout.PAGE_AXIS);
