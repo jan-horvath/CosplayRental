@@ -1,6 +1,6 @@
 package cz.muni.fi.pv168.rentalapp.gui.tablemodels;
 
-import cz.muni.fi.pv168.rentalapp.business.entities.ProductStack;
+import cz.muni.fi.pv168.rentalapp.database.entities.ProductStack;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;

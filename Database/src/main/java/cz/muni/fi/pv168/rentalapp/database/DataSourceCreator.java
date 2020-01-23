@@ -15,7 +15,7 @@ public class DataSourceCreator {
 
         //load connection properties from a file
         Properties p = new Properties();
-        p.load(DataSourceCreator.class.getResourceAsStream("jdbc.properties"));
+        p.load(DataSourceCreator.class.getResourceAsStream("/jdbc.properties"));
 
         //set connection
         ds.setDriverClassName(p.getProperty("jdbc.driver"));
@@ -25,9 +25,21 @@ public class DataSourceCreator {
 
         //populate db with tables and data
         new ResourceDatabasePopulator(
-                new ClassPathResource("schema-javadb.sql", DataSourceCreator.class),
-                new ClassPathResource("test-data.sql", DataSourceCreator.class))
+                new ClassPathResource("/schema-javadb.sql", DataSourceCreator.class),
+                new ClassPathResource("/test-data.sql", DataSourceCreator.class))
                 .execute(ds);
         return ds;
+    }
+
+    /**
+     * Runs database layer. For tests, mainly.
+     * @param args
+     * @throws IOException
+     */
+    public static void main(String[] args) throws IOException {
+        DataSource dataSource = getDataSource();
+//        via Adamek
+//        OrderManager orderManager = new OrderManager(dataSource);
+//        List<Order> orders = orderManager.getAllOrders();
     }
 }
