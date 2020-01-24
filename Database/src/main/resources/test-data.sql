@@ -1,11 +1,11 @@
 -- test-data.sql
 
 INSERT INTO ORDERS
-(EMAIL, CREDITCARDNUMBER, FULLNAME, PHONENUMBER, RETURNDATE)
+(EMAIL, FULLNAME, PHONENUMBER, RETURNDATE)
 VALUES
-('weaponreplica@enthusiast.org', '9184345167789991', 'No Name', '+658291912994', '2019-12-20'),
-('fred.kirby@gmail.org', '9184345161019991', 'Fred Kirby', '+929123456994', '2019-12-21'),
-('marc.blake@batmanfan.org', '4116852067789991', 'Marc Blake', '+444291912994', '2019-12-22');
+('weaponreplica@enthusiast.org', 'No Name', '+658291912994', '2019-12-20'),
+('fred.kirby@gmail.org', 'Fred Kirby', '+929123456994', '2019-12-21'),
+('marc.blake@batmanfan.org', 'Marc Blake', '+444291912994', '2019-12-22');
 
 INSERT INTO STOREPRODUCTSTACKS
 (NAME, SIZE, PRICE, STACKSIZE)
@@ -22,11 +22,11 @@ VALUES
 ('Batarang set', 'NA', 25, 10);
 
 INSERT INTO ORDEREDPRODUCTSTACKS
-(ORDERID, PRODUCTSTACKID, STACKSIZE) VALUES
- (1, 4, 3),
- (1, 5, 2),
- (1, 6, 1),
- (2, 7, 1),
- (2, 8, 1),
- (3, 9, 1),
- (3, 10, 1);
+(ORDERID, STOREID, NAME, SIZE, PRICE, STACKSIZE) VALUES
+ (1, 4, 'Witcher silver sword', 'NA', 29, 3),
+ (1, 5, 'Portal gun', 'NA', 42, 2),
+ (1, 6, 'BFG9000', 'NA', 65, 1),
+ (2, 7, 'Ironman suit', 'L', 120, 1),
+ (2, 8, 'Captain America suit', 'L', 109, 1),
+ (3, 9, 'Batman suit', 'S', 100, 1),
+ (3, 10, 'Batarang set', 'NA', 25, 1);

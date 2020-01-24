@@ -13,7 +13,6 @@ public class OrderTableModel extends AbstractTableModel {
 
         PRODUCT_STACKS("Products", List.class, Order::getProductStacks),
         EMAIL("Email", String.class, Order::getEmail),
-        CREDIT_CARD("Credit card number", String.class, Order::getCreditCardNumber),
         FULL_NAME("Name", String.class, Order::getFullName),
         PHONE_NUMBER("Phone", String.class, Order::getPhoneNumber),
         RETURN_DATE("Return date", LocalDate.class, Order::getReturnDate);

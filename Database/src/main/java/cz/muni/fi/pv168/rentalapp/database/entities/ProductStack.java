@@ -8,28 +8,35 @@ public class ProductStack {
         NA,XS,S,M,L,XL,XXL
     }
 
-    private static int id_gen = 0;
-    private static int generateId() {
-        return id_gen++;
-    }
-
-    private final long id;
+    // id attributes added because of database incorporation. Just WIP version.
+    // question: final key word
+    private long id;
+    private long orderId;
+    private long storeId;
     private final String name;
     private final Size size;
     private double price;
     private int stackSize;
 
     public ProductStack(String name, Size size, double price, int stackSize) {
-        this.id = generateId();
         this.name = name;
         this.size = size;
         this.price = price;
         this.stackSize = stackSize;
     }
 
+    public ProductStack(long id, long orderId, long storeId, String name, Size size, double price, int stackSize) {
+        this(name, size, price, stackSize);
+        this.id = id;
+        this.orderId = orderId;
+        this.storeId = storeId;
+    }
+
     public long getId() {
         return id;
     }
+
+    public void setId(long nid) { this.id = nid; };
 
     public String getName() {
         return name;

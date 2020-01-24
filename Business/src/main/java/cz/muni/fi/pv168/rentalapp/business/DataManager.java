@@ -41,7 +41,7 @@ public class DataManager {
         String phone = formData.get("phoneNumber");
 
         List<ProductStack> orderedItems = createOrderItems(productCounts);
-        Order desiredOrder = new Order(orderedItems, email, creditCardNumber, fullName, phone, returnDate);
+        Order desiredOrder = new Order(orderedItems, email, fullName, phone, returnDate);
         orders.add(desiredOrder);
     }
 

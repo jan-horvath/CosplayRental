@@ -56,11 +56,11 @@ public class MainWindow extends JFrame {
 
 
     private static List<Order> ORDER_TEST_DATA = new ArrayList<>(Arrays.asList(
-            new Order(ps1, "weaponreplica@enthusiast.org", "9184345167789991", "No Name",
+            new Order(ps1, "weaponreplica@enthusiast.org", "No Name",
                     "+658291912994", LocalDate.of(2019, 12, 20)),
-            new Order(ps2, "fred.kirby@gmail.org", "9184345161019991", "Fred Kirby",
+            new Order(ps2, "fred.kirby@gmail.org", "Fred Kirby",
                     "+929123456994", LocalDate.of(2019, 12, 21)),
-            new Order(ps3, "marc.blake@batmanfan.org", "4116852067789991", "Marc Blake",
+            new Order(ps3, "marc.blake@batmanfan.org", "Marc Blake",
                     "+444291912994", LocalDate.of(2019, 12, 22))
     ));
 

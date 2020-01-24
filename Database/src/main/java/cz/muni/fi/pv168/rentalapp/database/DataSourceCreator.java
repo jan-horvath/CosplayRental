@@ -1,11 +1,14 @@
 package cz.muni.fi.pv168.rentalapp.database;
 
 import com.zaxxer.hikari.HikariDataSource;
+import cz.muni.fi.pv168.rentalapp.database.entities.Order;
+import cz.muni.fi.pv168.rentalapp.database.entities.ProductStack;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 public class DataSourceCreator {
@@ -36,10 +39,20 @@ public class DataSourceCreator {
      * @param args
      * @throws IOException
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, DatabaseOrderException {
         DataSource dataSource = getDataSource();
-//        via Adamek
-//        OrderManager orderManager = new OrderManager(dataSource);
-//        List<Order> orders = orderManager.getAllOrders();
+        OrderManager orderManager = new OrderManager(dataSource);
+        // SQL tables: IDs begin with 1
+        // if id does not exist, getOrderById() returns null
+        List<Order> orders = orderManager.getAllOrders();
+        for (Order o : orders) {
+            System.out.println(o.getFullName());
+            for (ProductStack ps : o.getProductStacks()) {
+                System.out.println(ps);
+            }
+        }
+//        System.out.println(desiredOrder.getFullName());
     }
+//        List<Order> orders = orderManager.getAllOrders();
 }
+

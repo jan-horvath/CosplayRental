@@ -5,43 +5,38 @@ import java.util.List;
 
 public class Order {
 
-    private static int id_gen = 0;
-    private static int generateId() {
-        return id_gen++;
-    }
-
-    private final long id;
+    private long id;
     private final List<ProductStack> productStacks  ;
     private final String email;
-    private final String creditCardNumber;
     private final String fullName;
     private final String phoneNumber;
     private LocalDate returnDate;
 
-    public Order(List<ProductStack> productStacks, String email, String creditCardNumber, String fullName, String phoneNumber, LocalDate returnDate) {
-        this.id = generateId();
+    public Order(List<ProductStack> productStacks, String email, String fullName, String phoneNumber, LocalDate returnDate) {
         this.productStacks = productStacks;
         this.fullName = fullName;
         this.email = email;
-        this.creditCardNumber = creditCardNumber;
         this.phoneNumber = phoneNumber;
         this.returnDate = returnDate;
+    }
+    public Order(long id, List<ProductStack> productStacks, String email, String fullName, String phoneNumber, LocalDate returnDate) {
+        this(productStacks, email, fullName, phoneNumber, returnDate);
+        this.id = id;
     }
 
     public long getId() {
         return id;
     }
 
+    public void setId(long nid) {
+        this.id = nid;
+    }
     public List<ProductStack> getProductStacks() {
         return productStacks;
     }
 
     public String getEmail() {
         return email;
-    }
-
-    public String getCreditCardNumber() {
-        return creditCardNumber;
     }
 
     public String getFullName() {
