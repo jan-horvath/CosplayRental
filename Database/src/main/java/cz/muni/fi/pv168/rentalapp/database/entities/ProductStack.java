@@ -11,7 +11,6 @@ public class ProductStack {
     // id attributes added because of database incorporation. Just WIP version.
     // question: final key word
     private long id;
-    private long orderId;
     private long storeId;
     private final String name;
     private final Size size;
@@ -25,10 +24,12 @@ public class ProductStack {
         this.stackSize = stackSize;
     }
 
-    public ProductStack(long id, long orderId, long storeId, String name, Size size, double price, int stackSize) {
-        this(name, size, price, stackSize);
+    public ProductStack(long id, long storeId, String name, Size size, double price, int stackSize) {
+        this.name = name;
+        this.size = size;
+        this.price = price;
+        this.stackSize = stackSize;
         this.id = id;
-        this.orderId = orderId;
         this.storeId = storeId;
     }
 
@@ -40,6 +41,10 @@ public class ProductStack {
 
     public String getName() {
         return name;
+    }
+
+    public long getStoreId() {
+        return storeId;
     }
 
     public Size getSize() {

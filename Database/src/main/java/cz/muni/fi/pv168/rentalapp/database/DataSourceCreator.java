@@ -8,6 +8,7 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,34 +43,27 @@ public class DataSourceCreator {
      * @param args
      * @throws IOException
      */
-    public static void main(String[] args) throws IOException, DatabaseOrderException {
+    public static void main(String[] args) throws IOException, DatabaseException, SQLException {
         DataSource dataSource = getDataSource();
         OrderManager orderManager = new OrderManager(dataSource);
+        ProductStackManager productStackManager = new ProductStackManager(dataSource);
 
         // SQL tables: IDs begin with 1
         // if orderId does not exist, getOrderById() returns null
 
         List<ProductStack> prodStack = new ArrayList<>(Arrays.asList(
-                new ProductStack("Asterix helmet", ProductStack.Size.NA, 15.80, 1),
-                new ProductStack("Poseidon trident", ProductStack.Size.NA, 21.90, 1)
+                new ProductStack(1 , 1, "Asterix helmet", ProductStack.Size.NA, 15.80, 1),
+                new ProductStack(1, 2, "Poseidon trident", ProductStack.Size.NA, 21.90, 1)
         ));
         LocalDate date = LocalDate.of(2020, 11, 6);
-        Order order = new Order(prodStack, "email", "Radka", "777777", date);
-        order.setId(999);
 
-        List<Order> orders = orderManager.getAllOrders();
-        for (Order o : orders) {
-            System.out.println(o.getFullName());
-            for (ProductStack ps : o.getProductStacks()) {
-                System.out.println(ps);
-            }
-        }
-
-        orderManager.createOrder(order);
-        List<Order> orders2 = orderManager.getAllOrders();
-        System.out.println(orders2.size());
-        System.out.println(orderManager.getOrderById(order.getId()).getFullName());
+        long orderId = orderManager.insertOrder(prodStack, "email", "Radka", "777777", date);
 //        System.out.println(orderManager.getAllOrders().size());
+//        System.out.println(productStackManager.getAllOrderedProductStacks().size());
+//        orderManager.deleteOrder(orderId);
+//        System.out.println(orderManager.getAllOrders().size());
+//        System.out.println(productStackManager.getAllOrderedProductStacks().size());
+
     }
 }
 

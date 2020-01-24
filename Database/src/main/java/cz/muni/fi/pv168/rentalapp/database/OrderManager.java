@@ -2,7 +2,6 @@ package cz.muni.fi.pv168.rentalapp.database;
 
 import cz.muni.fi.pv168.rentalapp.database.entities.Order;
 import cz.muni.fi.pv168.rentalapp.database.entities.ProductStack;
-import cz.muni.fi.pv168.rentalapp.database.entities.ProductStack.Size;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
@@ -26,7 +25,7 @@ public class OrderManager {
         this.jdbc = new JdbcTemplate(dataSource);
     }
 
-    public Order getOrderById(long id) throws DatabaseOrderException {
+    public Order getOrderById(long id) throws DatabaseException {
         try (Connection con = dataSource.getConnection()) {
             try (PreparedStatement st = con.prepareStatement("select * from orders where id = ?")) {
                 st.setLong(1, id);
@@ -39,11 +38,11 @@ public class OrderManager {
             }
         } catch (SQLException e) {
             System.err.println("Cannot select order with id " + id + ": " + e);
-            throw new DatabaseOrderException("Database failed on order selection", e);
+            throw new DatabaseException("Database failed on order selection", e);
         }
     }
 
-    public List<Order> getAllOrders() throws DatabaseOrderException {
+    public List<Order> getAllOrders() throws DatabaseException {
         try (Connection con = dataSource.getConnection()) {
             try (PreparedStatement st = con.prepareStatement("select * from orders")) {
                 ResultSet rs = st.executeQuery();
@@ -55,24 +54,22 @@ public class OrderManager {
                 return orders;
             }
         } catch (SQLException e) {
-            throw new DatabaseOrderException("Database error: Database select failed on getting all orders.", e);
+            throw new DatabaseException("Database error: Database select failed on getting all orders.", e);
         }
     }
 
-    private List<ProductStack> getOrderedProductStacksByOrderId(long orderId) throws DatabaseOrderException {
+    private List<ProductStack> getOrderedProductStacksByOrderId(long orderId) throws DatabaseException {
         try (Connection con = dataSource.getConnection()) {
             try (PreparedStatement st = con.prepareStatement("select * from orderedproductstacks where orderid = ?")) {
                 st.setLong(1, orderId);
                 ResultSet rs = st.executeQuery();
                 List<ProductStack> orderedItems = new ArrayList<>();
                 while (rs.next()) {
-                    long id = rs.getLong("id");
+                    long orderedPSid = rs.getLong("id");
                     long storeId = rs.getLong("storeid");
-                    String name = rs.getString("name");
-                    Size size = Size.valueOf(rs.getString("size"));
-                    double price = rs.getDouble("price");
-                    int stackSize = rs.getInt("stacksize");
-                    orderedItems.add(new ProductStack(id, orderId, storeId, name, size, price, stackSize));
+                    int stackSize = rs.getInt("stackSize");
+                    ProductStack storePS = productStackManager.getProductStackById(storeId);
+                    orderedItems.add(new ProductStack(orderedPSid, storeId, storePS.getName(), storePS.getSize(), storePS.getPrice(), stackSize));
                 }
                 if (orderedItems.isEmpty()) {
                     throw new IllegalArgumentException("Database error: There were found no ordered products for given order.");
@@ -81,12 +78,12 @@ public class OrderManager {
             }
         } catch (SQLException e) {
             System.err.println("Cannot select product stack with orderId " + orderId + ": " + e);
-            throw new DatabaseOrderException("Database failed on product stack selection", e);
+            throw new DatabaseException("Database failed on product stack selection", e);
         }
     }
 
     // just saving lines of code in getAllOrders and getOrderById
-    private Order createOrderOnResultSet(ResultSet rs) throws SQLException, DatabaseOrderException {
+    private Order createOrderOnResultSet(ResultSet rs) throws SQLException, DatabaseException {
         long id = rs.getLong("id");
         String email = rs.getString("email");
         String fullName = rs.getString("fullname");
@@ -96,20 +93,41 @@ public class OrderManager {
         return new Order(id, orderItems, email, fullName, phoneNumber, returnDate);
     }
 
-    public void createOrder(Order order) {
+    public long insertOrder(List<ProductStack> productStacks, String email, String fullName, String phoneNumber, LocalDate returnDate) throws DatabaseException {
         SimpleJdbcInsert insertOrder = new SimpleJdbcInsert(jdbc).withTableName("orders").usingGeneratedKeyColumns("id");
-        Map<String, Object> parameters = new HashMap<>(2);
-        parameters.put("email", order.getEmail());
-        parameters.put("fullname", order.getFullName());
-        parameters.put("phonenumber", order.getPhoneNumber());
+        Map<String, Object> parameters = new HashMap<>(4);
+        parameters.put("email", email);
+        parameters.put("fullname", fullName);
+        parameters.put("phonenumber", phoneNumber);
         // LocalDate returnDate is already parsed to ISO_LOCAL pattern in DataManager.createOrder()
-        parameters.put("returndate", Date.valueOf(order.getReturnDate()));
-        Number id = insertOrder.executeAndReturnKey(parameters);
-        order.setId(id.longValue());
+        parameters.put("returndate", Date.valueOf(returnDate));
+        long orderId = insertOrder.executeAndReturnKey(parameters).longValue();
+
+        insertOrderedProductStacks(productStacks, orderId);
+
+        return orderId;
     }
+
+    private void insertOrderedProductStacks(List<ProductStack> productStacks, long orderId) throws DatabaseException {
+        SimpleJdbcInsert insertOrderedPS = new SimpleJdbcInsert(jdbc).withTableName("orderedproductstacks").usingGeneratedKeyColumns("id");
+        Map<String, Object> parameters = new HashMap<>(4);
+
+        for (ProductStack ps : productStacks) {
+            parameters.put("orderid", orderId);
+            parameters.put("storeid", ps.getStoreId());
+            parameters.put("stackSize", ps.getStackSize());
+
+            int rowsAffected = insertOrderedPS.execute(parameters);
+            if (rowsAffected != 1) {
+                throw new DatabaseException("One affected row expected, got " + rowsAffected + " rows affected during adding products into OrderedProductStackTable.");
+            }
+        }
+    }
+
+    public void deleteOrder(Long orderId) {
+        jdbc.update("DELETE FROM orders WHERE id=?", orderId);
+    }
+
 }
-//
-//    public void deleteOrder(Long orderId) {
-//
-//    }
+
 
