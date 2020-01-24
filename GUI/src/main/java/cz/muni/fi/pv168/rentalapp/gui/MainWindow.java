@@ -16,6 +16,7 @@ import cz.muni.fi.pv168.rentalapp.gui.tablemodels.ProductStackListRenderer;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -64,7 +65,7 @@ public class MainWindow extends JFrame {
                     "+444291912994", LocalDate.of(2019, 12, 22))
     ));
 
-    public MainWindow() {
+    public MainWindow() throws IOException {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("CoRe: Cosplay Rental ©");
 
@@ -242,6 +243,13 @@ public class MainWindow extends JFrame {
     }
 
     public static void main(String[] args) {
-        EventQueue.invokeLater(() -> new MainWindow().setVisible(true));
+        // try - catch because of calling DataManager that calls OrderManager and DataSourceCreator which throws IOExc
+        EventQueue.invokeLater(() -> {
+            try {
+                new MainWindow().setVisible(true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

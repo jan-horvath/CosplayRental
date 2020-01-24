@@ -2,10 +2,15 @@ package cz.muni.fi.pv168.rentalapp.business;
 
 import cz.muni.fi.pv168.rentalapp.business.Exceptions.EmptyTextboxException;
 import cz.muni.fi.pv168.rentalapp.business.Exceptions.InvalidReturnDateException;
+import cz.muni.fi.pv168.rentalapp.database.DataSourceCreator;
+import cz.muni.fi.pv168.rentalapp.database.OrderManager;
+import cz.muni.fi.pv168.rentalapp.database.ProductStackManager;
 import cz.muni.fi.pv168.rentalapp.database.entities.Order;
 import cz.muni.fi.pv168.rentalapp.database.entities.ProductStack;
 
+import javax.sql.DataSource;
 import javax.swing.*;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -17,14 +22,20 @@ import java.util.Map;
 public class DataManager {
     private List<ProductStack> productStacks;
     private List<Order> orders;
+    private OrderManager orderManager;
 
     private TimeSimulator timeSimulator;
 
-    public DataManager(List<ProductStack> productStacks, List<Order> orders, TimeSimulator timeSimulator) {
+    public DataManager(List<ProductStack> productStacks, List<Order> orders, TimeSimulator timeSimulator) throws IOException {
         this.productStacks = productStacks;
         this.orders = orders;
         this.timeSimulator = timeSimulator;
-        // add DB Managers as class attributes
+        // DB version: productStack and orders arguments do not exist at this point, must be loaded from database
+        //      - load all Orders, all StoreProductStacks
+        // DataManager passes loaded data to MainWindow, MainWindow visualizes them
+
+        DataSource dataSource = DataSourceCreator.getDataSource();
+        this.orderManager = new OrderManager(dataSource);
     }
 
     public void createOrder(Map<String, String> formData, Map<Integer, Integer> productCounts) {
@@ -42,6 +53,9 @@ public class DataManager {
 
         List<ProductStack> orderedItems = createOrderItems(productCounts);
         Order desiredOrder = new Order(orderedItems, email, fullName, phone, returnDate);
+        // insert desiredOrder into ORDERS, desiredOrder obtains id (call setId() in OrderManager)
+        // insert orderedItems into ORDEREDPS using orderId that was assigned during order insertion into ORDERS
+        //          storeId should be assigned to catalogue product stacks from the point of loading DB into memory
         orders.add(desiredOrder);
     }
 

@@ -23,10 +23,10 @@ VALUES
 
 INSERT INTO ORDEREDPRODUCTSTACKS
 (ORDERID, STOREID, NAME, SIZE, PRICE, STACKSIZE) VALUES
- (1, 4, 'Witcher silver sword', 'NA', 29, 3),
- (1, 5, 'Portal gun', 'NA', 42, 2),
- (1, 6, 'BFG9000', 'NA', 65, 1),
- (2, 7, 'Ironman suit', 'L', 120, 1),
- (2, 8, 'Captain America suit', 'L', 109, 1),
- (3, 9, 'Batman suit', 'S', 100, 1),
- (3, 10, 'Batarang set', 'NA', 25, 1);
+ (1, 4, 3),
+ (1, 5, 2),
+ (1, 6, 1),
+ (2, 7, 1),
+ (2, 8, 1),
+ (3, 9, 1),
+ (3, 10, 1);

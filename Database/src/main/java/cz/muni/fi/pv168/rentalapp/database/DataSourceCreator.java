@@ -8,6 +8,9 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -42,8 +45,18 @@ public class DataSourceCreator {
     public static void main(String[] args) throws IOException, DatabaseOrderException {
         DataSource dataSource = getDataSource();
         OrderManager orderManager = new OrderManager(dataSource);
+
         // SQL tables: IDs begin with 1
-        // if id does not exist, getOrderById() returns null
+        // if orderId does not exist, getOrderById() returns null
+
+        List<ProductStack> prodStack = new ArrayList<>(Arrays.asList(
+                new ProductStack("Asterix helmet", ProductStack.Size.NA, 15.80, 1),
+                new ProductStack("Poseidon trident", ProductStack.Size.NA, 21.90, 1)
+        ));
+        LocalDate date = LocalDate.of(2020, 11, 6);
+        Order order = new Order(prodStack, "email", "Radka", "777777", date);
+        order.setId(999);
+
         List<Order> orders = orderManager.getAllOrders();
         for (Order o : orders) {
             System.out.println(o.getFullName());
@@ -51,8 +64,12 @@ public class DataSourceCreator {
                 System.out.println(ps);
             }
         }
-//        System.out.println(desiredOrder.getFullName());
+
+        orderManager.createOrder(order);
+        List<Order> orders2 = orderManager.getAllOrders();
+        System.out.println(orders2.size());
+        System.out.println(orderManager.getOrderById(order.getId()).getFullName());
+//        System.out.println(orderManager.getAllOrders().size());
     }
-//        List<Order> orders = orderManager.getAllOrders();
 }
 

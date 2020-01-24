@@ -8,7 +8,7 @@ public class GoToAction extends AbstractAction {
     private final Runnable goToOperation;
 
     public GoToAction(Runnable goToOperation, String name, String iconFileName, int acceleratorKey) {
-//        super(name, new ImageIcon(GoToAction.class.getResource(iconFileName)));
+        super(name, new ImageIcon(GoToAction.class.getResource(iconFileName)));
 //        System.out.println(GoToAction.class.getResource(iconFileName));
 //        System.out.println(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
         this.goToOperation = goToOperation;

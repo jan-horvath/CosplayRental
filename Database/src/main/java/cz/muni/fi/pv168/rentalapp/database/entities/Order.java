@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Order {
 
-    private long id;
+    private long id = -1;
     private final List<ProductStack> productStacks  ;
     private final String email;
     private final String fullName;
