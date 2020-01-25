@@ -64,6 +64,16 @@ public class DataSourceCreator {
 //        System.out.println(orderManager.getAllOrders().size());
 //        System.out.println(productStackManager.getAllOrderedProductStacks().size());
 
+        //System.out.println(productStackManager.getAllStoreProductStacks());
+
+        ProductStack productStackById = productStackManager.getProductStackById(1);
+        System.out.println(productStackById);
+        productStackById.setStackSize(5);
+        productStackManager.updateStoreProductStack(productStackById);
+        System.out.println(productStackManager.getProductStackById(1));
+
+
+
     }
 }
 
