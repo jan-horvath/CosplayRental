@@ -5,10 +5,10 @@ import cz.muni.fi.pv168.rentalapp.business.Exceptions.EmptyTextboxException;
 import cz.muni.fi.pv168.rentalapp.business.Exceptions.InvalidReturnDateException;
 
 import cz.muni.fi.pv168.rentalapp.business.TimeSimulator;
+import cz.muni.fi.pv168.rentalapp.database.DatabaseException;
 import cz.muni.fi.pv168.rentalapp.gui.actions.ExitAction;
 import cz.muni.fi.pv168.rentalapp.gui.actions.GoToAction;
 import cz.muni.fi.pv168.rentalapp.database.entities.Order;
-import cz.muni.fi.pv168.rentalapp.database.entities.ProductStack;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.OrderTableModel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.ProductStackListRenderer;
@@ -17,7 +17,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -25,47 +24,47 @@ import java.util.List;
 
 
 public class MainWindow extends JFrame {
+//
+//    private static List<ProductStack> CATALOG_TEST_DATA = new ArrayList<>(Arrays.asList(
+//            new ProductStack("Asterix helmet", ProductStack.Size.NA, 15.80, 3),
+//            new ProductStack("Poseidon trident", ProductStack.Size.NA, 21.90, 3),
+//            new ProductStack("Deadpool suit", ProductStack.Size.M,42.20, 4),
+//            new ProductStack("Witcher silver sword", ProductStack.Size.NA, 29, 0),
+//            new ProductStack("Portal gun", ProductStack.Size.NA, 42, 1),
+//            new ProductStack("BFG9000", ProductStack.Size.NA, 65, 0),
+//            new ProductStack("Ironman suit", ProductStack.Size.L, 120, 0),
+//            new ProductStack("Captain America suit", ProductStack.Size.L, 109, 0),
+//            new ProductStack("Batman suit", ProductStack.Size.S, 100, 0),
+//            new ProductStack("Batarang set", ProductStack.Size.NA, 25, 10)
+//    ));
+//
+//    private static List<ProductStack> ps1 = new ArrayList<>(Arrays.asList(
+//            new ProductStack("Witcher silver sword", ProductStack.Size.NA, 29, 3),
+//            new ProductStack("Portal gun", ProductStack.Size.NA, 42, 2),
+//            new ProductStack("BFG9000", ProductStack.Size.NA, 65, 1)
+//    ));
+//
+//    private static List<ProductStack> ps2 = new ArrayList<>(Arrays.asList(
+//            new ProductStack("Ironman suit", ProductStack.Size.L, 120, 1),
+//            new ProductStack("Captain America suit", ProductStack.Size.L, 109, 1)
+//    ));
+//
+//    private static List<ProductStack> ps3 = new ArrayList<>(Arrays.asList(
+//            new ProductStack("Batman suit", ProductStack.Size.S, 100, 1),
+//            new ProductStack("Batarang set", ProductStack.Size.NA, 25, 2)
+//    ));
+//
+//
+//    private static List<Order> ORDER_TEST_DATA = new ArrayList<>(Arrays.asList(
+//            new Order(ps1, "weaponreplica@enthusiast.org", "No Name",
+//                    "+658291912994", LocalDate.of(2019, 12, 20)),
+//            new Order(ps2, "fred.kirby@gmail.org", "Fred Kirby",
+//                    "+929123456994", LocalDate.of(2019, 12, 21)),
+//            new Order(ps3, "marc.blake@batmanfan.org", "Marc Blake",
+//                    "+444291912994", LocalDate.of(2019, 12, 22))
+//    ));
 
-    private static List<ProductStack> CATALOG_TEST_DATA = new ArrayList<>(Arrays.asList(
-            new ProductStack("Asterix helmet", ProductStack.Size.NA, 15.80, 3),
-            new ProductStack("Poseidon trident", ProductStack.Size.NA, 21.90, 3),
-            new ProductStack("Deadpool suit", ProductStack.Size.M,42.20, 4),
-            new ProductStack("Witcher silver sword", ProductStack.Size.NA, 29, 0),
-            new ProductStack("Portal gun", ProductStack.Size.NA, 42, 1),
-            new ProductStack("BFG9000", ProductStack.Size.NA, 65, 0),
-            new ProductStack("Ironman suit", ProductStack.Size.L, 120, 0),
-            new ProductStack("Captain America suit", ProductStack.Size.L, 109, 0),
-            new ProductStack("Batman suit", ProductStack.Size.S, 100, 0),
-            new ProductStack("Batarang set", ProductStack.Size.NA, 25, 10)
-    ));
-
-    private static List<ProductStack> ps1 = new ArrayList<>(Arrays.asList(
-            new ProductStack("Witcher silver sword", ProductStack.Size.NA, 29, 3),
-            new ProductStack("Portal gun", ProductStack.Size.NA, 42, 2),
-            new ProductStack("BFG9000", ProductStack.Size.NA, 65, 1)
-    ));
-
-    private static List<ProductStack> ps2 = new ArrayList<>(Arrays.asList(
-            new ProductStack("Ironman suit", ProductStack.Size.L, 120, 1),
-            new ProductStack("Captain America suit", ProductStack.Size.L, 109, 1)
-    ));
-
-    private static List<ProductStack> ps3 = new ArrayList<>(Arrays.asList(
-            new ProductStack("Batman suit", ProductStack.Size.S, 100, 1),
-            new ProductStack("Batarang set", ProductStack.Size.NA, 25, 2)
-    ));
-
-
-    private static List<Order> ORDER_TEST_DATA = new ArrayList<>(Arrays.asList(
-            new Order(ps1, "weaponreplica@enthusiast.org", "No Name",
-                    "+658291912994", LocalDate.of(2019, 12, 20)),
-            new Order(ps2, "fred.kirby@gmail.org", "Fred Kirby",
-                    "+929123456994", LocalDate.of(2019, 12, 21)),
-            new Order(ps3, "marc.blake@batmanfan.org", "Marc Blake",
-                    "+444291912994", LocalDate.of(2019, 12, 22))
-    ));
-
-    public MainWindow() throws IOException {
+    public MainWindow() throws IOException, DatabaseException {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("CoRe: Cosplay Rental ©");
 
@@ -73,10 +72,11 @@ public class MainWindow extends JFrame {
         FormPanel formPanel = new FormPanel();
 
         //Tables
-        DataManager dataManager = new DataManager(CATALOG_TEST_DATA, ORDER_TEST_DATA, timeSimulator);
+//        DataManager dataManager = new DataManager(CATALOG_TEST_DATA, ORDER_TEST_DATA, timeSimulator);
+        DataManager dataManager = new DataManager(timeSimulator);
 
-        CatalogueTableModel catalogueTableModel = new CatalogueTableModel(CATALOG_TEST_DATA);
-        OrderTableModel orderTableModel = new OrderTableModel(ORDER_TEST_DATA);
+        CatalogueTableModel catalogueTableModel = new CatalogueTableModel(dataManager.getAllCatalogueData());
+        OrderTableModel orderTableModel = new OrderTableModel(dataManager.getAllOrders());
         JTable catalogueTable = new JTable(catalogueTableModel);
 
         catalogueTable.removeColumn(
@@ -191,12 +191,13 @@ public class MainWindow extends JFrame {
 
         submitOrderButton.addActionListener( e -> {
             Map<Integer, Integer> productCounts = new HashMap<>();
+            Order order = null;
             int catalogueTableModelRowCount = catalogueTableModel.getRowCount();
             for (int i = 0; i < catalogueTableModelRowCount; i++) {
                 productCounts.put(catalogueTable.convertRowIndexToModel(i), (Integer) catalogueTableModel.getValueAt(i, 4));
             }
             try {
-                dataManager.createOrder(formPanel.getFormData(), productCounts);
+                order = dataManager.createOrder(formPanel.getFormData(), productCounts);
             } catch (EmptyTextboxException ETexception) {
                 JOptionPane.showMessageDialog(null, "Please fill all the textfields.", "Empty textfield(s)", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -206,9 +207,15 @@ public class MainWindow extends JFrame {
             } catch (InvalidReturnDateException IRDException) {
                 JOptionPane.showMessageDialog(null, "Return date already passed. Please enter a valid one.", "Invalid return date", JOptionPane.ERROR_MESSAGE);
                 return;
+            } catch (DatabaseException ex) {
+                ex.printStackTrace();
             }
+            if (order != null) {
+                orderTableModel.addOrderToEntries(order);
+            }
+            catalogueTableModel.updateAvailableItems(dataManager.getAllCatalogueData());
+            catalogueTableModel.fireTableDataChanged();
             orderTableModel.fireTableRowsInserted(0,0);
-            //orderTableModel.fireTableRowsInserted(orderTableModel.getRowCount()-1, orderTableModel.getRowCount()-1);
             formPanel.clearTextFields();
             bottomToolBar.setVisible(false);
             JOptionPane.showMessageDialog(null, "Your order has been created!", "", JOptionPane.INFORMATION_MESSAGE);
@@ -247,7 +254,7 @@ public class MainWindow extends JFrame {
         EventQueue.invokeLater(() -> {
             try {
                 new MainWindow().setVisible(true);
-            } catch (IOException e) {
+            } catch (IOException | DatabaseException e) {
                 e.printStackTrace();
             }
         });

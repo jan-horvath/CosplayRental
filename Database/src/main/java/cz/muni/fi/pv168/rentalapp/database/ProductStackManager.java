@@ -67,9 +67,6 @@ public class ProductStackManager {
             }
         }
 
-        /*public void insertStoreProductStack(String name, ProductStack.Size size, double price, int stackSize) {
-
-        }*/
 
         private RowMapper<ProductStack> storeProductStackMapper = new RowMapper<ProductStack>() {
             @Override

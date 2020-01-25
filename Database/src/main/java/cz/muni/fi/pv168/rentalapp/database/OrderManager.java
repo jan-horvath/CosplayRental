@@ -93,7 +93,7 @@ public class OrderManager {
         return new Order(id, orderItems, email, fullName, phoneNumber, returnDate);
     }
 
-    public long insertOrder(List<ProductStack> productStacks, String email, String fullName, String phoneNumber, LocalDate returnDate) throws DatabaseException {
+    public Order insertOrder(List<ProductStack> productStacks, String email, String fullName, String phoneNumber, LocalDate returnDate) throws DatabaseException {
         SimpleJdbcInsert insertOrder = new SimpleJdbcInsert(jdbc).withTableName("orders").usingGeneratedKeyColumns("id");
         Map<String, Object> parameters = new HashMap<>(4);
         parameters.put("email", email);
@@ -104,8 +104,9 @@ public class OrderManager {
         long orderId = insertOrder.executeAndReturnKey(parameters).longValue();
 
         insertOrderedProductStacks(productStacks, orderId);
+        System.out.println("(Customer \" + fullName + \"): Order  containing " + productStacks.size() + " items was added to database.");
 
-        return orderId;
+        return new Order(orderId, productStacks, email, fullName, phoneNumber, returnDate);
     }
 
     private void insertOrderedProductStacks(List<ProductStack> productStacks, long orderId) throws DatabaseException {

@@ -3,6 +3,7 @@ package cz.muni.fi.pv168.rentalapp.business;
 import cz.muni.fi.pv168.rentalapp.business.Exceptions.EmptyTextboxException;
 import cz.muni.fi.pv168.rentalapp.business.Exceptions.InvalidReturnDateException;
 import cz.muni.fi.pv168.rentalapp.database.DataSourceCreator;
+import cz.muni.fi.pv168.rentalapp.database.DatabaseException;
 import cz.muni.fi.pv168.rentalapp.database.OrderManager;
 import cz.muni.fi.pv168.rentalapp.database.ProductStackManager;
 import cz.muni.fi.pv168.rentalapp.database.entities.Order;
@@ -23,22 +24,34 @@ public class DataManager {
     private List<ProductStack> productStacks;
     private List<Order> orders;
     private OrderManager orderManager;
+    private ProductStackManager productStackManager;
 
     private TimeSimulator timeSimulator;
 
-    public DataManager(List<ProductStack> productStacks, List<Order> orders, TimeSimulator timeSimulator) throws IOException {
+    public DataManager(List<ProductStack> productStacks, List<Order> orders, TimeSimulator timeSimulator) throws IOException, DatabaseException {
+        this(timeSimulator);
+
         this.productStacks = productStacks;
         this.orders = orders;
-        this.timeSimulator = timeSimulator;
-        // DB version: productStack and orders arguments do not exist at this point, must be loaded from database
-        //      - load all Orders, all StoreProductStacks
-        // DataManager passes loaded data to MainWindow, MainWindow visualizes them
-
-        DataSource dataSource = DataSourceCreator.getDataSource();
-        this.orderManager = new OrderManager(dataSource);
     }
 
-    public void createOrder(Map<String, String> formData, Map<Integer, Integer> productCounts) {
+    public DataManager(TimeSimulator timeSimulator) throws IOException, DatabaseException {
+        this.timeSimulator = timeSimulator;
+        DataSource dataSource = DataSourceCreator.getDataSource();
+        this.orderManager = new OrderManager(dataSource);
+        this.productStackManager = new ProductStackManager(dataSource);
+    }
+
+    public List<ProductStack> getAllCatalogueData() {
+        return productStackManager.getAllStoreProductStacks();
+    }
+
+    public List<Order> getAllOrders() throws DatabaseException {
+        return orderManager.getAllOrders();
+    }
+
+
+    public Order createOrder(Map<String, String> formData, Map<Integer, Integer> productCounts) throws DatabaseException {
         checkEmptyFormData(formData);
 
         LocalDate returnDate = LocalDate.parse(formData.get("returnDate"), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
@@ -47,16 +60,11 @@ public class DataManager {
         }
 
         String email = formData.get("email");
-        String creditCardNumber = formData.get("cardNumber");
         String fullName = formData.get("name");
         String phone = formData.get("phoneNumber");
 
         List<ProductStack> orderedItems = createOrderItems(productCounts);
-        Order desiredOrder = new Order(orderedItems, email, fullName, phone, returnDate);
-        // insert desiredOrder into ORDERS, desiredOrder obtains id (call setId() in OrderManager)
-        // insert orderedItems into ORDEREDPS using orderId that was assigned during order insertion into ORDERS
-        //          storeId should be assigned to catalogue product stacks from the point of loading DB into memory
-        orders.add(desiredOrder);
+        return orderManager.insertOrder(orderedItems, email, fullName, phone, returnDate);
     }
 
     private void checkEmptyFormData(Map<String, String> formData) {
@@ -67,16 +75,19 @@ public class DataManager {
         }
     }
 
-    private List<ProductStack> createOrderItems(Map<Integer, Integer> productCounts) {
+    private List<ProductStack> createOrderItems(Map<Integer, Integer> productCounts) throws DatabaseException {
         List<ProductStack> orderedItems = new ArrayList<>();
 
-        for (Map.Entry<Integer, Integer> productCount : productCounts.entrySet()) {
-            Integer stackSize = productCount.getValue();
-            if (stackSize > 0) {
-                ProductStack wantsToOrder = productStacks.get(productCount.getKey());
-                wantsToOrder.setStackSize(wantsToOrder.getStackSize() - stackSize);
-                orderedItems.add(new ProductStack(
-                        wantsToOrder.getName(), wantsToOrder.getSize(), wantsToOrder.getPrice(), stackSize));
+        for (Map.Entry<Integer, Integer> entry : productCounts.entrySet()) {
+            Integer orderedStackSize = entry.getValue();
+            if (orderedStackSize > 0) {
+                ProductStack storePS = productStackManager.getProductStackById(entry.getKey()+1);
+                storePS.setStackSize(storePS.getStackSize() - orderedStackSize);
+                productStackManager.updateStoreProductStack(storePS);
+                // assigned id will be overwritten at the point of storing orderedPS into orderedProductStacks table
+                // add new constructor with storeID only?
+                orderedItems.add(new ProductStack(1, storePS.getId(),
+                        storePS.getName(), storePS.getSize(), storePS.getPrice(), orderedStackSize));
             }
         }
         return orderedItems;
@@ -101,9 +112,7 @@ public class DataManager {
                         + " (" + returnPS.getSize() + "): was not found in the database.");
             }
         }
-
         orders.remove(orderIndex);
-//        OrderManager.deleteOrder(orderToRemove.getId());
     }
 
     public void checkReturnDates() {

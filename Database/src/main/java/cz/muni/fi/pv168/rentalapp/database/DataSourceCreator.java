@@ -57,7 +57,8 @@ public class DataSourceCreator {
         ));
         LocalDate date = LocalDate.of(2020, 11, 6);
 
-        long orderId = orderManager.insertOrder(prodStack, "email", "Radka", "777777", date);
+        Order order = orderManager.insertOrder(prodStack, "email", "Radka", "777777", date);
+        long orderId = order.getId();
 //        System.out.println(orderManager.getAllOrders().size());
 //        System.out.println(productStackManager.getAllOrderedProductStacks().size());
 //        orderManager.deleteOrder(orderId);
@@ -71,9 +72,6 @@ public class DataSourceCreator {
         productStackById.setStackSize(5);
         productStackManager.updateStoreProductStack(productStackById);
         System.out.println(productStackManager.getProductStackById(1));
-
-
-
     }
 }
 

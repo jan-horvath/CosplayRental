@@ -75,11 +75,15 @@ public class CatalogueTableModel extends AbstractTableModel  {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         if (columnIndex == Column.values().length) {
+            if ((Integer) aValue > entries.get(rowIndex).getStackSize()) {
+                piecesOrdered.set(rowIndex, (Integer) 0);
+            } else {
             piecesOrdered.set(rowIndex, (Integer) aValue);
+            }
         }
 
-        if ((Integer) aValue > entries.get(rowIndex).getStackSize()) {
-            piecesOrdered.set(rowIndex, (Integer) 0);
+        if (columnIndex == 3) {
+            entries.get(rowIndex).setStackSize((Integer) aValue);
         }
     }
 
@@ -100,6 +104,12 @@ public class CatalogueTableModel extends AbstractTableModel  {
     public void setAllAddToCartItemsToZero() {
         for (int i = 0; i < getRowCount(); i++) {
             setValueAt(0, i, getColumnCount()-1);
+        }
+    }
+
+    public void updateAvailableItems(List<ProductStack> storeProductStacks) {
+        for (int i = 0; i < getRowCount(); i++) {
+            setValueAt(storeProductStacks.get(i).getStackSize(), i, 3);
         }
     }
 }

@@ -59,4 +59,8 @@ public class OrderTableModel extends AbstractTableModel {
     public Class<?> getColumnClass(int columnIndex) {
         return Column.values()[columnIndex].columnClass;
     }
+
+    public void addOrderToEntries(Order order) {
+        this.entries.add(order);
+    }
 }
