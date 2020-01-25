@@ -22,13 +22,21 @@ public class OrderOverviewPane extends JEditorPane {
         StringBuilder sb = new StringBuilder();
 
         double sum = 0.0;
+
         for (ProductStack ps : productStacks) {
             if (ps.getStackSize() > 0) {
-                sb.append(ps.getName() + " (" + ps.getSize() + ") x" + ps.getStackSize() + "\n");
                 sum += ps.getPrice() * ps.getStackSize();
             }
         }
-        sb.append("Price: ").append(df2.format(sum));
+
+        sb.append("Price: ").append(df2.format(sum)).append("\n\n");
+
+        for (ProductStack ps : productStacks) {
+            if (ps.getStackSize() > 0) {
+                sb.append(ps.getName() + " (" + ps.getSize() + ") x" + ps.getStackSize() + "\n");
+            }
+        }
+
         setText(sb.toString());
     }
 

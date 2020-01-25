@@ -3,6 +3,7 @@ package cz.muni.fi.pv168.rentalapp.gui.panels;
 import cz.muni.fi.pv168.rentalapp.business.DataManager;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.OrderTableModel;
+import org.checkerframework.checker.units.qual.C;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,8 +33,11 @@ public class OrderListPanel extends JPanel {
         BoxLayout layout = new BoxLayout(orderDetailsPanel, BoxLayout.PAGE_AXIS);
         orderDetailsPanel.setLayout(layout);
 
-        orderDetailsPanel.add(new JLabel("Order details"));
+        JLabel label = new JLabel("Order details");
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        orderDetailsPanel.add(label);
         orderDetailsPanel.add(orderDetailsPane);
+        deleteOrderButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         orderDetailsPanel.add(deleteOrderButton);
 
         add(orderDetailsPanel);

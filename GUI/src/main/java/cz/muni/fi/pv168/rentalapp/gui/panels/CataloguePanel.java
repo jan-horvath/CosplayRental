@@ -40,9 +40,12 @@ public class CataloguePanel extends JPanel {
         BoxLayout layout = new BoxLayout(orderOverviewPanel, BoxLayout.PAGE_AXIS);
         orderOverviewPanel.setLayout(layout);
 
-        orderOverviewPanel.add(new JLabel("Order overview"));
+        JLabel label = new JLabel("Order overview");
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        orderOverviewPanel.add(label);
         orderOverviewPanel.add(orderOverviewPane);
         orderOverviewPanel.add(formPanel);
+        createOrderButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         orderOverviewPanel.add(createOrderButton);
 
         add(orderOverviewPanel);
