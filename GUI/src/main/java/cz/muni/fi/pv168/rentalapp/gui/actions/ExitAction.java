@@ -8,7 +8,7 @@ public class ExitAction extends AbstractAction {
     public ExitAction() {
         super("Exit", new ImageIcon(ExitAction.class.getResource("exitIcon.png")));
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
-        putValue(SHORT_DESCRIPTION, "Exit CoReS");
+        putValue(SHORT_DESCRIPTION, "Exit CoRe");
     }
 
     @Override

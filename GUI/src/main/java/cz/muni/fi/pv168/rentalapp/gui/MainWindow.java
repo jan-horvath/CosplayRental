@@ -95,7 +95,7 @@ public class MainWindow extends JFrame {
 
         GoToAction gotoListOrders = new GoToAction(() -> {
                 c1.show(cards, "Orders list");
-            }, "Orders list", "listOrdersIcon.png", KeyEvent.VK_4);
+            }, "Existing orders", "listOrdersIcon.png", KeyEvent.VK_4);
 
         JButton oneDayAdvanceButton = new JButton("+1 day");
         oneDayAdvanceButton.addActionListener(e -> {timeSimulator.advanceOneDay();});
