@@ -12,6 +12,7 @@ public class OrderOverviewPane extends JEditorPane {
 
     public OrderOverviewPane() {
         setText("Price: 0");
+        setEditable(false);
     }
 
     public void clearPane() {

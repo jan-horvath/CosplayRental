@@ -78,8 +78,9 @@ public class CatalogueTableModel extends AbstractTableModel  {
             piecesSelected.set(rowIndex, (Integer) aValue);
         }
 
-        if ((Integer) aValue > entries.get(rowIndex).getStackSize()) {
-            piecesSelected.set(rowIndex, (Integer) 0);
+        int stackSize = entries.get(rowIndex).getStackSize();
+        if ((Integer) aValue > stackSize) {
+            piecesSelected.set(rowIndex, stackSize);
         }
     }
 

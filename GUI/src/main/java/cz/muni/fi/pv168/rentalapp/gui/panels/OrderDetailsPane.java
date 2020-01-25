@@ -7,6 +7,10 @@ import javax.swing.*;
 
 public class OrderDetailsPane extends JEditorPane {
 
+    public OrderDetailsPane() {
+        setEditable(false);
+    }
+
     public void clearPane() {
         StringBuilder sb = new StringBuilder();
 
