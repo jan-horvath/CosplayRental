@@ -59,9 +59,13 @@ public class MainWindow extends JFrame {
                     "+444291912994", LocalDate.of(2019, 12, 22))
     ));
 
-    public MainWindow() {
+    public MainWindow() throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("CoRe: Cosplay Rental ©");
+
+        UIManager.LookAndFeelInfo lookAndFeel = UIManager.getInstalledLookAndFeels()[1];
+        System.out.println(lookAndFeel.getClassName());
+        UIManager.setLookAndFeel(lookAndFeel.getClassName());
 
         //Initialization
         TimeSimulator timeSimulator = new TimeSimulator();
@@ -126,11 +130,23 @@ public class MainWindow extends JFrame {
 
         setJMenuBar(menuBar);
 
-        //pack();
-        setSize(800, 500);
+//        pack();
+        setSize(1000, 500);
     }
 
     public static void main(String[] args) {
-        EventQueue.invokeLater(() -> new MainWindow().setVisible(true));
+        EventQueue.invokeLater(() -> {
+            try {
+                new MainWindow().setVisible(true);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (UnsupportedLookAndFeelException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

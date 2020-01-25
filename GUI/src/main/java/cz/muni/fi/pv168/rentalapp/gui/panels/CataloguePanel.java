@@ -33,6 +33,7 @@ public class CataloguePanel extends JPanel {
         orderTM = otm;
         catalogueTM = ctm;
         catalogueTable = new JTable(catalogueTM);
+        catalogueTable.getColumnModel().getColumn(0).setPreferredWidth(130);
         add(new JScrollPane(catalogueTable));
 
         JPanel orderOverviewPanel = new JPanel();
