@@ -104,7 +104,7 @@ public class OrderManager {
         long orderId = insertOrder.executeAndReturnKey(parameters).longValue();
 
         insertOrderedProductStacks(productStacks, orderId);
-        System.out.println("(Customer \" + fullName + \"): Order  containing " + productStacks.size() + " items was added to database.");
+        System.out.println("(Customer " + fullName + "): Order  containing " + productStacks.size() + " items was added to database.");
 
         return new Order(orderId, productStacks, email, fullName, phoneNumber, returnDate);
     }

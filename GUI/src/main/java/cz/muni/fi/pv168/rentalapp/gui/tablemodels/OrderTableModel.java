@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 public class OrderTableModel extends AbstractTableModel {
 
+
     private enum Column {
 
         PRODUCT_STACKS("Products", List.class, Order::getProductStacks),
@@ -61,6 +62,14 @@ public class OrderTableModel extends AbstractTableModel {
     }
 
     public void addOrderToEntries(Order order) {
-        this.entries.add(order);
+        entries.add(order);
+    }
+
+    public void removeEntry(int modelRow) {
+        entries.remove(modelRow);
+    }
+
+    public Order getEntryAtIndex(int index) {
+        return entries.get(index);
     }
 }

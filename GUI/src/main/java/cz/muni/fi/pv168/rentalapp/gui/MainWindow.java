@@ -162,6 +162,8 @@ public class MainWindow extends JFrame {
         });
         timeSimulator.addCallback(dataManager::checkReturnDates);
 
+
+
         returnOrderButton.addActionListener(e -> {
             int selectedRow = orderTable.getSelectedRow();
             if (selectedRow == -1) {
@@ -169,8 +171,14 @@ public class MainWindow extends JFrame {
                 return;
             }
             int modelRow = orderTable.convertRowIndexToModel(selectedRow);
-            dataManager.returnOrder(modelRow);
+            try {
+                dataManager.returnOrder(orderTableModel.getEntryAtIndex(modelRow).getId());
+            } catch (DatabaseException ex) {
+                ex.printStackTrace();
+            }
+            orderTableModel.removeEntry(modelRow);
             orderTableModel.fireTableRowsDeleted(modelRow, modelRow);
+            catalogueTableModel.updateAvailableItems(dataManager.getAllCatalogueData());
             catalogueTableModel.fireTableDataChanged();
         });
 

@@ -75,13 +75,13 @@ public class DataManager {
         }
     }
 
-    private List<ProductStack> createOrderItems(Map<Integer, Integer> productCounts) throws DatabaseException {
+    private List<ProductStack> createOrderItems(Map<Integer, Integer> productCounts) {
         List<ProductStack> orderedItems = new ArrayList<>();
 
         for (Map.Entry<Integer, Integer> entry : productCounts.entrySet()) {
             Integer orderedStackSize = entry.getValue();
             if (orderedStackSize > 0) {
-                ProductStack storePS = productStackManager.getProductStackById(entry.getKey()+1);
+                ProductStack storePS = productStackManager.getStoreProductStackById(entry.getKey()+1);
                 storePS.setStackSize(storePS.getStackSize() - orderedStackSize);
                 productStackManager.updateStoreProductStack(storePS);
                 // assigned id will be overwritten at the point of storing orderedPS into orderedProductStacks table
@@ -93,26 +93,16 @@ public class DataManager {
         return orderedItems;
     }
 
-    public void returnOrder(int orderIndex) {
-        Order orderToRemove = orders.get(orderIndex);
+    public void returnOrder(long orderId) throws DatabaseException {
+        Order orderToRemove = orderManager.getOrderById(orderId);
 
         for (ProductStack returnPS : orderToRemove.getProductStacks()) {
-            boolean wasFound = false;
-
-            for (ProductStack ps : productStacks) {
-                if (returnPS.equals(ps)) {
-                    wasFound = true;
-                    ps.setStackSize(ps.getStackSize() + returnPS.getStackSize());
-                    break;
-                }
-            }
-
-            if (!wasFound) {
-                throw new IllegalStateException("Product stack with name " + returnPS.getName()
-                        + " (" + returnPS.getSize() + "): was not found in the database.");
-            }
+            long storeID = returnPS.getStoreId();
+            ProductStack storePS = productStackManager.getStoreProductStackById(storeID);
+            storePS.setStackSize(storePS.getStackSize() + returnPS.getStackSize());
+            productStackManager.updateStoreProductStack(storePS);
         }
-        orders.remove(orderIndex);
+        orderManager.deleteOrder(orderId);
     }
 
     public void checkReturnDates() {
