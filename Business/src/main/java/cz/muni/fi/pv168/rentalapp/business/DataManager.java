@@ -105,11 +105,11 @@ public class DataManager {
         orderManager.deleteOrder(orderId);
     }
 
-    public void checkReturnDates() {
+    public void checkReturnDates() throws DatabaseException {
         int notReturnedOrders = 0;
         String message = "Customers that did not keep the return date (name, delay, ordered items):";
 
-        for (Order order : orders) {
+        for (Order order : orderManager.getAllOrders()) {
             long differenceInDays = ChronoUnit.DAYS.between(order.getReturnDate(), timeSimulator.getTime());
 
             if (differenceInDays > 0) {

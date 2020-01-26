@@ -1,5 +1,7 @@
 package cz.muni.fi.pv168.rentalapp.business;
 
+import cz.muni.fi.pv168.rentalapp.database.DatabaseException;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,7 @@ public class TimeSimulator {
         callbacks = new ArrayList<>();
     }
 
-    public void addCallback(Runnable r) {
+    public void addCallback(Runnable r) throws DatabaseException {
         callbacks.add(r);
     }
 

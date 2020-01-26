@@ -120,7 +120,15 @@ public class MainWindow extends JFrame {
         timeSimulator.addCallback(() -> {
             timeLabel.setText(dateFormat.format(timeSimulator.getTime()));
         });
-        timeSimulator.addCallback(dataManager::checkReturnDates);
+
+        timeSimulator.addCallback(() -> {
+            try {
+                dataManager.checkReturnDates();
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+            }
+        });
+
 
         returnOrderButton.addActionListener(e -> {
             int selectedRow = orderTable.getSelectedRow();
