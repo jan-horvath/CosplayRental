@@ -48,9 +48,6 @@ public class DataSourceCreator {
         OrderManager orderManager = new OrderManager(dataSource);
         ProductStackManager productStackManager = new ProductStackManager(dataSource);
 
-        // SQL tables: IDs begin with 1
-        // if orderId does not exist, getOrderById() returns null
-
         List<ProductStack> prodStack = new ArrayList<>(Arrays.asList(
                 new ProductStack(1 , 1, "Asterix helmet", ProductStack.Size.NA, 15.80, 1),
                 new ProductStack(1, 2, "Poseidon trident", ProductStack.Size.NA, 21.90, 1)
@@ -59,19 +56,12 @@ public class DataSourceCreator {
 
         Order order = orderManager.insertOrder(prodStack, "email", "Radka", "777777", date);
         long orderId = order.getId();
-//        System.out.println(orderManager.getAllOrders().size());
-//        System.out.println(productStackManager.getAllOrderedProductStacks().size());
-//        orderManager.deleteOrder(orderId);
-//        System.out.println(orderManager.getAllOrders().size());
-//        System.out.println(productStackManager.getAllOrderedProductStacks().size());
 
-        //System.out.println(productStackManager.getAllStoreProductStacks());
-
-        ProductStack productStackById = productStackManager.getProductStackById(1);
+        ProductStack productStackById = productStackManager.getStoreProductStackById(1);
         System.out.println(productStackById);
         productStackById.setStackSize(5);
         productStackManager.updateStoreProductStack(productStackById);
-        System.out.println(productStackManager.getProductStackById(1));
+        System.out.println(productStackManager.getStoreProductStackById(1));
     }
 }
 

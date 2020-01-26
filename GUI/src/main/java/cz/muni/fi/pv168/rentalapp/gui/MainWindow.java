@@ -24,45 +24,6 @@ import java.util.List;
 
 
 public class MainWindow extends JFrame {
-//
-//    private static List<ProductStack> CATALOG_TEST_DATA = new ArrayList<>(Arrays.asList(
-//            new ProductStack("Asterix helmet", ProductStack.Size.NA, 15.80, 3),
-//            new ProductStack("Poseidon trident", ProductStack.Size.NA, 21.90, 3),
-//            new ProductStack("Deadpool suit", ProductStack.Size.M,42.20, 4),
-//            new ProductStack("Witcher silver sword", ProductStack.Size.NA, 29, 0),
-//            new ProductStack("Portal gun", ProductStack.Size.NA, 42, 1),
-//            new ProductStack("BFG9000", ProductStack.Size.NA, 65, 0),
-//            new ProductStack("Ironman suit", ProductStack.Size.L, 120, 0),
-//            new ProductStack("Captain America suit", ProductStack.Size.L, 109, 0),
-//            new ProductStack("Batman suit", ProductStack.Size.S, 100, 0),
-//            new ProductStack("Batarang set", ProductStack.Size.NA, 25, 10)
-//    ));
-//
-//    private static List<ProductStack> ps1 = new ArrayList<>(Arrays.asList(
-//            new ProductStack("Witcher silver sword", ProductStack.Size.NA, 29, 3),
-//            new ProductStack("Portal gun", ProductStack.Size.NA, 42, 2),
-//            new ProductStack("BFG9000", ProductStack.Size.NA, 65, 1)
-//    ));
-//
-//    private static List<ProductStack> ps2 = new ArrayList<>(Arrays.asList(
-//            new ProductStack("Ironman suit", ProductStack.Size.L, 120, 1),
-//            new ProductStack("Captain America suit", ProductStack.Size.L, 109, 1)
-//    ));
-//
-//    private static List<ProductStack> ps3 = new ArrayList<>(Arrays.asList(
-//            new ProductStack("Batman suit", ProductStack.Size.S, 100, 1),
-//            new ProductStack("Batarang set", ProductStack.Size.NA, 25, 2)
-//    ));
-//
-//
-//    private static List<Order> ORDER_TEST_DATA = new ArrayList<>(Arrays.asList(
-//            new Order(ps1, "weaponreplica@enthusiast.org", "No Name",
-//                    "+658291912994", LocalDate.of(2019, 12, 20)),
-//            new Order(ps2, "fred.kirby@gmail.org", "Fred Kirby",
-//                    "+929123456994", LocalDate.of(2019, 12, 21)),
-//            new Order(ps3, "marc.blake@batmanfan.org", "Marc Blake",
-//                    "+444291912994", LocalDate.of(2019, 12, 22))
-//    ));
 
     public MainWindow() throws IOException, DatabaseException {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -72,7 +33,6 @@ public class MainWindow extends JFrame {
         FormPanel formPanel = new FormPanel();
 
         //Tables
-//        DataManager dataManager = new DataManager(CATALOG_TEST_DATA, ORDER_TEST_DATA, timeSimulator);
         DataManager dataManager = new DataManager(timeSimulator);
 
         CatalogueTableModel catalogueTableModel = new CatalogueTableModel(dataManager.getAllCatalogueData());
@@ -161,8 +121,6 @@ public class MainWindow extends JFrame {
             timeLabel.setText(dateFormat.format(timeSimulator.getTime()));
         });
         timeSimulator.addCallback(dataManager::checkReturnDates);
-
-
 
         returnOrderButton.addActionListener(e -> {
             int selectedRow = orderTable.getSelectedRow();
