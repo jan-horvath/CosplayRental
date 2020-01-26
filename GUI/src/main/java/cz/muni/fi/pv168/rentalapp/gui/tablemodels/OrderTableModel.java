@@ -4,6 +4,7 @@ import cz.muni.fi.pv168.rentalapp.business.entities.Order;
 
 import javax.swing.table.AbstractTableModel;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.function.Function;
 
@@ -48,7 +49,12 @@ public class OrderTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Order entry = entries.get(rowIndex);
-        return Column.values()[columnIndex].extractor.apply(entry);
+        Column column = Column.values()[columnIndex];
+        if (column == Column.RETURN_DATE) {
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            return ((LocalDate) column.extractor.apply(entry)).format(dtf);
+        }
+        return column.extractor.apply(entry);
     }
 
     @Override
