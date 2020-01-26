@@ -1,6 +1,7 @@
 package cz.muni.fi.pv168.rentalapp.gui.panels;
 
 import cz.muni.fi.pv168.rentalapp.business.DataManager;
+import cz.muni.fi.pv168.rentalapp.database.DatabaseException;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.OrderTableModel;
 import org.checkerframework.checker.units.qual.C;
@@ -65,9 +66,18 @@ public class OrderListPanel extends JPanel {
                 return;
             }
             int modelRow = orderTable.convertRowIndexToModel(selectedRow);
-            dataManager.returnOrder(modelRow);
+
+            try {
+                dataManager.returnOrder(orderTM.getEntryAtIndex(modelRow).getId());
+                orderTM.reloadData();
+                catalogueTM.reloadData();
+            } catch (DatabaseException ex) {
+                ex.printStackTrace();
+            }
+//            orderTM.removeEntry(modelRow);
             orderTM.fireTableRowsDeleted(modelRow, modelRow);
-            catalogueTM.fireTableDataChanged();
+
+//            catalogueTM.fireTableDataChanged();
             orderTable.clearSelection();
             orderDetailsPane.clearPane();
         });

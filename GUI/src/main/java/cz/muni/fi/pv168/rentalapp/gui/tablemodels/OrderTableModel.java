@@ -1,6 +1,8 @@
 package cz.muni.fi.pv168.rentalapp.gui.tablemodels;
 
-import cz.muni.fi.pv168.rentalapp.business.entities.Order;
+import cz.muni.fi.pv168.rentalapp.business.DataManager;
+import cz.muni.fi.pv168.rentalapp.database.DatabaseException;
+import cz.muni.fi.pv168.rentalapp.database.entities.Order;
 
 import javax.swing.table.AbstractTableModel;
 import java.time.LocalDate;
@@ -10,11 +12,11 @@ import java.util.function.Function;
 
 public class OrderTableModel extends AbstractTableModel {
 
+
     private enum Column {
 
         PRODUCT_STACKS("Products", List.class, Order::getProductStacks),
         EMAIL("Email", String.class, Order::getEmail),
-        CREDIT_CARD("Credit card number", String.class, Order::getCreditCardNumber),
         FULL_NAME("Name", String.class, Order::getFullName),
         PHONE_NUMBER("Phone", String.class, Order::getPhoneNumber),
         RETURN_DATE("Return date", LocalDate.class, Order::getReturnDate);
@@ -31,9 +33,11 @@ public class OrderTableModel extends AbstractTableModel {
     }
 
     private List<Order> entries;
+    private DataManager dataManager;
 
-    public OrderTableModel(List<Order> entries) {
-        this.entries = entries;
+    public OrderTableModel(DataManager dataManager) throws DatabaseException {
+        this.dataManager = dataManager;
+        reloadData();
     }
 
     @Override
@@ -69,5 +73,21 @@ public class OrderTableModel extends AbstractTableModel {
 
     public List<Order> getEntries() {
         return entries;
+    }
+
+    public void addOrderToEntries(Order order) {
+        entries.add(order);
+    }
+
+    public void removeEntry(int modelRow) {
+        entries.remove(modelRow);
+    }
+
+    public Order getEntryAtIndex(int index) {
+        return entries.get(index);
+    }
+
+    public void reloadData() throws DatabaseException {
+        this.entries = dataManager.getAllOrders();
     }
 }

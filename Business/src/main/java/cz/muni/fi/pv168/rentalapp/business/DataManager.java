@@ -2,10 +2,16 @@ package cz.muni.fi.pv168.rentalapp.business;
 
 import cz.muni.fi.pv168.rentalapp.business.Exceptions.EmptyTextboxException;
 import cz.muni.fi.pv168.rentalapp.business.Exceptions.InvalidReturnDateException;
-import cz.muni.fi.pv168.rentalapp.business.entities.Order;
-import cz.muni.fi.pv168.rentalapp.business.entities.ProductStack;
+import cz.muni.fi.pv168.rentalapp.database.DataSourceCreator;
+import cz.muni.fi.pv168.rentalapp.database.DatabaseException;
+import cz.muni.fi.pv168.rentalapp.database.OrderManager;
+import cz.muni.fi.pv168.rentalapp.database.ProductStackManager;
+import cz.muni.fi.pv168.rentalapp.database.entities.Order;
+import cz.muni.fi.pv168.rentalapp.database.entities.ProductStack;
 
+import javax.sql.DataSource;
 import javax.swing.*;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -17,17 +23,35 @@ import java.util.Map;
 public class DataManager {
     private List<ProductStack> productStacks;
     private List<Order> orders;
+    private OrderManager orderManager;
+    private ProductStackManager productStackManager;
 
     private TimeSimulator timeSimulator;
 
-    public DataManager(List<ProductStack> productStacks, List<Order> orders, TimeSimulator timeSimulator) {
+    public DataManager(List<ProductStack> productStacks, List<Order> orders, TimeSimulator timeSimulator) throws IOException, DatabaseException {
+        this(timeSimulator);
+
         this.productStacks = productStacks;
         this.orders = orders;
-        this.timeSimulator = timeSimulator;
-
     }
 
-    public void createOrderItems(Map<String, String> formData, Map<Integer, Integer> productCounts) {
+    public DataManager(TimeSimulator timeSimulator) throws IOException, DatabaseException {
+        this.timeSimulator = timeSimulator;
+        DataSource dataSource = DataSourceCreator.getDataSource();
+        this.orderManager = new OrderManager(dataSource);
+        this.productStackManager = new ProductStackManager(dataSource);
+    }
+
+    public List<ProductStack> getAllCatalogueData() {
+        return productStackManager.getAllStoreProductStacks();
+    }
+
+    public List<Order> getAllOrders() throws DatabaseException {
+        return orderManager.getAllOrders();
+    }
+
+
+    public Order createOrder(Map<String, String> formData, Map<Integer, Integer> productCounts) throws DatabaseException {
         checkEmptyFormData(formData);
 
         LocalDate returnDate = LocalDate.parse(formData.get("returnDate"), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
@@ -36,24 +60,11 @@ public class DataManager {
         }
 
         String email = formData.get("email");
-        String creditCardNumber = formData.get("cardNumber");
         String fullName = formData.get("name");
         String phone = formData.get("phoneNumber");
 
-        List<ProductStack> orderedItems = new ArrayList<>();
-
-        for (Map.Entry<Integer, Integer> productCount : productCounts.entrySet()) {
-            Integer stackSize = productCount.getValue();
-            if (stackSize > 0) {
-                ProductStack wantsToOrder = productStacks.get(productCount.getKey());
-                wantsToOrder.setStackSize(wantsToOrder.getStackSize() - stackSize);
-                orderedItems.add(new ProductStack(
-                        wantsToOrder.getName(), wantsToOrder.getSize(), wantsToOrder.getPrice(), stackSize));
-            }
-        }
-
-        Order desiredOrder = new Order(orderedItems, email, creditCardNumber, fullName, phone, returnDate);
-        orders.add(desiredOrder);
+        List<ProductStack> orderedItems = createOrderItems(productCounts);
+        return orderManager.insertOrder(orderedItems, email, fullName, phone, returnDate);
     }
 
     private void checkEmptyFormData(Map<String, String> formData) {
@@ -64,34 +75,41 @@ public class DataManager {
         }
     }
 
-    public void returnOrder(int orderIndex) {
-        Order orderToRemove = orders.get(orderIndex);
+    private List<ProductStack> createOrderItems(Map<Integer, Integer> productCounts) {
+        List<ProductStack> orderedItems = new ArrayList<>();
 
-        for (ProductStack returnPS : orderToRemove.getProductStacks()) {
-            boolean wasFound = false;
-
-            for (ProductStack ps : productStacks) {
-                if (returnPS.equals(ps)) {
-                    wasFound = true;
-                    ps.setStackSize(ps.getStackSize() + returnPS.getStackSize());
-                    break;
-                }
-            }
-
-            if (!wasFound) {
-                throw new IllegalStateException("Product stack with name " + returnPS.getName()
-                        + " (" + returnPS.getSize() + "): was not found in the database.");
+        for (Map.Entry<Integer, Integer> entry : productCounts.entrySet()) {
+            Integer orderedStackSize = entry.getValue();
+            if (orderedStackSize > 0) {
+                ProductStack storePS = productStackManager.getStoreProductStackById(entry.getKey()+1);
+                storePS.setStackSize(storePS.getStackSize() - orderedStackSize);
+                productStackManager.updateStoreProductStack(storePS);
+                // assigned id will be overwritten at the point of storing orderedPS into orderedProductStacks table
+                // add new constructor with storeID only?
+                orderedItems.add(new ProductStack(1, storePS.getId(),
+                        storePS.getName(), storePS.getSize(), storePS.getPrice(), orderedStackSize));
             }
         }
-
-        orders.remove(orderIndex);
+        return orderedItems;
     }
 
-    public void checkReturnDates() {
+    public void returnOrder(long orderId) throws DatabaseException {
+        Order orderToRemove = orderManager.getOrderById(orderId);
+
+        for (ProductStack returnPS : orderToRemove.getProductStacks()) {
+            long storeID = returnPS.getStoreId();
+            ProductStack storePS = productStackManager.getStoreProductStackById(storeID);
+            storePS.setStackSize(storePS.getStackSize() + returnPS.getStackSize());
+            productStackManager.updateStoreProductStack(storePS);
+        }
+        orderManager.deleteOrder(orderId);
+    }
+
+    public void checkReturnDates() throws DatabaseException {
         int notReturnedOrders = 0;
         String message = "Customers that did not keep the return date (name, delay, ordered items):";
 
-        for (Order order : orders) {
+        for (Order order : orderManager.getAllOrders()) {
             long differenceInDays = ChronoUnit.DAYS.between(order.getReturnDate(), timeSimulator.getTime());
 
             if (differenceInDays > 0) {

@@ -1,6 +1,7 @@
 package cz.muni.fi.pv168.rentalapp.gui.tablemodels;
 
-import cz.muni.fi.pv168.rentalapp.business.entities.ProductStack;
+import cz.muni.fi.pv168.rentalapp.business.DataManager;
+import cz.muni.fi.pv168.rentalapp.database.entities.ProductStack;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
@@ -12,9 +13,11 @@ public class CatalogueTableModel extends AbstractTableModel  {
 
     public List<ProductStack> entries;
     private List<Integer> piecesSelected;
+    private DataManager dataManager;
 
-    public CatalogueTableModel(List<ProductStack> entries) {
-        this.entries = entries;
+    public CatalogueTableModel(DataManager dataManager) {
+        this.dataManager = dataManager;
+        reloadData();
         this.piecesSelected = new ArrayList<>(Collections.nCopies(entries.size(), 0));
     }
 
@@ -75,17 +78,22 @@ public class CatalogueTableModel extends AbstractTableModel  {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         if (columnIndex == Column.values().length) {
-            piecesSelected.set(rowIndex, (Integer) aValue);
-        }
+            int availableStackSize = entries.get(rowIndex).getStackSize();
+            if ((int) aValue > availableStackSize) {
+                piecesSelected.set(rowIndex, availableStackSize);
+            } else {
+                if ((int) aValue < 0) {
+                    piecesSelected.set(rowIndex, 0);
+                } else {
+                    piecesSelected.set(rowIndex, (Integer) aValue);
+                }
+            }
 
-        int stackSize = entries.get(rowIndex).getStackSize();
-        if ((Integer) aValue > stackSize) {
-            piecesSelected.set(rowIndex, stackSize);
+        } else {
+            if (Column.values()[columnIndex] == Column.AVAILABLEITEMS) {
+                entries.get(rowIndex).setStackSize((Integer) aValue);
+            }
         }
-    }
-
-    public ProductStack getOrderedProductStack(int row) {
-        return entries.get(row);
     }
 
     public boolean areAllItemsZero() {
@@ -115,5 +123,9 @@ public class CatalogueTableModel extends AbstractTableModel  {
         }
 
         return selectedStacks;
+    }
+
+    public void reloadData() {
+        entries = dataManager.getAllCatalogueData();
     }
 }

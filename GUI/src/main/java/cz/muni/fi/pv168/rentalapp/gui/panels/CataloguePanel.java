@@ -3,6 +3,7 @@ package cz.muni.fi.pv168.rentalapp.gui.panels;
 import cz.muni.fi.pv168.rentalapp.business.DataManager;
 import cz.muni.fi.pv168.rentalapp.business.Exceptions.EmptyTextboxException;
 import cz.muni.fi.pv168.rentalapp.business.Exceptions.InvalidReturnDateException;
+import cz.muni.fi.pv168.rentalapp.database.DatabaseException;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.OrderTableModel;
 
@@ -82,7 +83,9 @@ public class CataloguePanel extends JPanel {
                 productCounts.put(catalogueTable.convertRowIndexToModel(i), (Integer) catalogueTM.getValueAt(i, 4));
             }
             try {
-                dataManager.createOrderItems(formPanel.getFormData(), productCounts);
+                dataManager.createOrder(formPanel.getFormData(), productCounts);
+                catalogueTM.reloadData();
+                orderTM.reloadData();
             } catch (EmptyTextboxException ETexception) {
                 JOptionPane.showMessageDialog(null, "Please fill all the textfields.", "Empty textfield(s)", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -92,8 +95,10 @@ public class CataloguePanel extends JPanel {
             } catch (InvalidReturnDateException IRDException) {
                 JOptionPane.showMessageDialog(null, "Return date already passed. Please enter a valid one.", "Invalid return date", JOptionPane.ERROR_MESSAGE);
                 return;
+            } catch (DatabaseException ex) {
+                ex.printStackTrace();
             }
-
+//            catalogueTM.fireTableDataChanged();
             orderTM.fireTableRowsInserted(0,0);
             formPanel.clearTextFields();
             catalogueTM.setAllAddToCartItemsToZero();

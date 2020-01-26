@@ -1,12 +1,10 @@
 package cz.muni.fi.pv168.rentalapp.gui.panels;
 
-import cz.muni.fi.pv168.rentalapp.business.entities.Order;
-import cz.muni.fi.pv168.rentalapp.business.entities.ProductStack;
+import cz.muni.fi.pv168.rentalapp.database.entities.Order;
+import cz.muni.fi.pv168.rentalapp.database.entities.ProductStack;
 
 import javax.swing.*;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 public class OrderDetailsPane extends JEditorPane {
 
@@ -20,7 +18,6 @@ public class OrderDetailsPane extends JEditorPane {
         sb.append("Full name: \n");
         sb.append("Email: \n");
         sb.append("Phone number: \n");
-        sb.append("Credit card number: \n");
         sb.append("Return date: \n");
 
         setText(sb.toString());
@@ -33,7 +30,6 @@ public class OrderDetailsPane extends JEditorPane {
         sb.append("Full name: ").append(order.getFullName()).append("\n");
         sb.append("Email: ").append(order.getEmail()).append("\n");
         sb.append("Phone number: ").append(order.getPhoneNumber()).append("\n");
-        sb.append("Credit card number: ").append(order.getCreditCardNumber()).append("\n");
         sb.append("Return date: ").append(order.getReturnDate().format(dtf)).append("\n\n").append("Items:\n");
 
         for (ProductStack ps : order.getProductStacks()) {

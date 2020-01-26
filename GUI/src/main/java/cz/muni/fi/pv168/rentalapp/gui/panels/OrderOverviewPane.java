@@ -1,6 +1,6 @@
 package cz.muni.fi.pv168.rentalapp.gui.panels;
 
-import cz.muni.fi.pv168.rentalapp.business.entities.ProductStack;
+import cz.muni.fi.pv168.rentalapp.database.entities.ProductStack;
 
 import javax.swing.*;
 import java.text.DecimalFormat;
