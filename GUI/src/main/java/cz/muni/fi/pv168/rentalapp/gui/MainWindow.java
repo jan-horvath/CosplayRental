@@ -17,7 +17,8 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
 public class MainWindow extends JFrame {
-    public MainWindow() throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException, IOException, DatabaseException {
+    public MainWindow() throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException,
+            IllegalAccessException, IOException, DatabaseException {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("CoRe: Cosplay Rental ©");
 
