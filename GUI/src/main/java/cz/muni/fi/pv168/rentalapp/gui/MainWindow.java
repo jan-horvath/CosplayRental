@@ -29,7 +29,6 @@ public class MainWindow extends JFrame {
     private CardLayout cards;
     private JPanel mainPanel;
     private JToolBar toolBar;
-    private JMenuBar menuBar;
 
     private void initialize() throws DatabaseException, IOException {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -109,7 +108,7 @@ public class MainWindow extends JFrame {
     }
 
     private void createMenuBar() {
-        menuBar = new JMenuBar();
+        JMenuBar menuBar = new JMenuBar();
 
         JMenu fileMenu = new JMenu("File");
         fileMenu.add(new ExitAction());
