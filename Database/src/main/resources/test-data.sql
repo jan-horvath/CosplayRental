@@ -3,9 +3,9 @@
 INSERT INTO ORDERS
 (EMAIL, FULLNAME, PHONENUMBER, RETURNDATE)
 VALUES
-('weaponreplica@enthusiast.org', 'No Name', '+658291912994', '2019-12-20'),
-('fred.kirby@gmail.org', 'Fred Kirby', '+929123456994', '2019-12-21'),
-('marc.blake@batmanfan.org', 'Marc Blake', '+444291912994', '2019-12-22');
+('weaponreplica@enthusiast.org', 'No Name', '+658291912994', '2020-02-05'),
+('fred.kirby@gmail.org', 'Fred Kirby', '+929123456994', '2020-01-31'),
+('marc.blake@batmanfan.org', 'Marc Blake', '+444291912994', '2020-02-07');
 
 INSERT INTO STOREPRODUCTSTACKS
 (NAME, SIZE, PRICE, STACKSIZE)

@@ -55,8 +55,8 @@ public class MainWindow extends JFrame {
 
         //Actions
         GoToAction gotoCatalogue = new GoToAction(() -> {
-                c1.show(cards, "Catalogue");
-            }, "Catalogue", "catalogueIcon.png", KeyEvent.VK_2);
+            c1.show(cards, "Catalogue");
+        }, "Catalogue", "catalogueIcon.png", KeyEvent.VK_2);
 
         GoToAction gotoListOrders = new GoToAction(() -> {
                 c1.show(cards, "Orders list");
@@ -72,8 +72,8 @@ public class MainWindow extends JFrame {
         //Top toolbar
         JToolBar topToolBar = new JToolBar();
         add(topToolBar, BorderLayout.BEFORE_FIRST_LINE);
-        topToolBar.add(gotoCatalogue);
-        topToolBar.add(gotoListOrders);
+        topToolBar.add(new JButton(gotoCatalogue));
+        topToolBar.add(new JButton(gotoListOrders));
         topToolBar.add(Box.createHorizontalGlue());
         topToolBar.add(timeLabel);
         topToolBar.add(Box.createHorizontalGlue());
