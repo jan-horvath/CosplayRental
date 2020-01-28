@@ -1,12 +1,12 @@
 package cz.muni.fi.pv168.rentalapp.gui.panels;
 
 import cz.muni.fi.pv168.rentalapp.business.DataManager;
-import cz.muni.fi.pv168.rentalapp.business.Exceptions.EmptyTextboxException;
-import cz.muni.fi.pv168.rentalapp.business.Exceptions.InvalidReturnDateException;
+import cz.muni.fi.pv168.rentalapp.business.Exceptions.*;
 import cz.muni.fi.pv168.rentalapp.database.DatabaseException;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.OrderTableModel;
 
+import javax.naming.InvalidNameException;
 import javax.swing.*;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
@@ -83,16 +83,34 @@ public class CataloguePanel extends JPanel {
                 productCounts.put(catalogueTable.convertRowIndexToModel(i), (Integer) catalogueTM.getValueAt(i, 4));
             }
             try {
-                dataManager.createOrder(formPanel.getFormData(), productCounts);
+                Map<String, String> formData = formPanel.getFormData();
+                dataManager.createOrder(formData, productCounts);
                 catalogueTM.reloadData();
                 orderTM.reloadData();
-            } catch (EmptyTextboxException ETexception) {
+            } catch (EmptyTextboxException ex) {
                 JOptionPane.showMessageDialog(null, "Please fill all the textfields.", "Empty textfield(s)", JOptionPane.ERROR_MESSAGE);
                 return;
-            } catch (DateTimeParseException DTPexception) {
+            } catch (OneNameOnlyException ex) {
+                JOptionPane.showMessageDialog(null, "Please enter your full name", "One-word name", JOptionPane.ERROR_MESSAGE);
+                return;
+            } catch (InvalidNameException ex) {
+                JOptionPane.showMessageDialog(null, "Given name does not begin with capital letters or contains non alphabetic characters.", "Invalid name pattern", JOptionPane.ERROR_MESSAGE);
+                return;
+            } catch (ParticularNameTooShortException ex) {
+                JOptionPane.showMessageDialog(null, "Name or surname contains only one character. Please enter a valid one.", "Name/surname is too short", JOptionPane.ERROR_MESSAGE);
+                return;
+            } catch (InvalidEmailAddressException ex) {
+                JOptionPane.showMessageDialog(null, "Given email address can't exist. Please enter a valid one.", "Invalid email addres pattern", JOptionPane.ERROR_MESSAGE);
+                return;
+            } catch (WhiteCharPhoneNumberException ex) {
+                JOptionPane.showMessageDialog(null, "Given phone number contains spaces or tabulators. Please delete them.", "White chars in phone number", JOptionPane.ERROR_MESSAGE);
+            } catch (InvalidPhoneNumberException ex) {
+                JOptionPane.showMessageDialog(null, "Given phone number does not contain 12 digits or contains non-digit characters.", "Invalid phone number", JOptionPane.ERROR_MESSAGE);
+                return;
+            } catch (DateTimeParseException ex) {
                 JOptionPane.showMessageDialog(null, "Please enter the return date in the specified format (dd.MM.YYYY)", "Wrong date format", JOptionPane.ERROR_MESSAGE);
                 return;
-            } catch (InvalidReturnDateException IRDException) {
+            } catch (InvalidReturnDateException ex) {
                 JOptionPane.showMessageDialog(null, "Return date already passed. Please enter a valid one.", "Invalid return date", JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (DatabaseException ex) {
