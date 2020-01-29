@@ -2,7 +2,6 @@ package cz.muni.fi.pv168.rentalapp.gui;
 
 import cz.muni.fi.pv168.rentalapp.business.DataManager;
 import cz.muni.fi.pv168.rentalapp.business.TimeSimulator;
-import cz.muni.fi.pv168.rentalapp.database.DatabaseException;
 import cz.muni.fi.pv168.rentalapp.gui.actions.ExitAction;
 import cz.muni.fi.pv168.rentalapp.gui.actions.GoToAction;
 import cz.muni.fi.pv168.rentalapp.gui.panels.CataloguePanel;
@@ -30,7 +29,7 @@ public class MainWindow extends JFrame {
     private JPanel mainPanel;
     private JToolBar toolBar;
 
-    private void initialize() throws DatabaseException, IOException {
+    private void initialize() throws IOException {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("CoRe: Cosplay Rental ©");
 
@@ -56,35 +55,29 @@ public class MainWindow extends JFrame {
     }
 
     private void createGoToActions() {
-        gotoCatalogue = new GoToAction(() -> {
-            cards.show(mainPanel, "Catalogue");
-        }, "Catalogue", "catalogueIcon.png", KeyEvent.VK_2);
+        gotoCatalogue = new GoToAction(() -> cards.show(mainPanel, "Catalogue"),
+                "Catalogue", "catalogueIcon.png", KeyEvent.VK_2);
 
-        gotoListOrders = new GoToAction(() -> {
-            cards.show(mainPanel, "Orders list");
-        }, "Existing orders", "listOrdersIcon.png", KeyEvent.VK_4);
+        gotoListOrders = new GoToAction(() -> cards.show(mainPanel, "Orders list"),
+                "Existing orders", "listOrdersIcon.png", KeyEvent.VK_4);
     }
 
     private void createTimeLabel() {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         JLabel timeLabel = new JLabel(dateFormat.format(timeSimulator.getTime()));
-        timeSimulator.addCallback(() -> {
-            timeLabel.setText(dateFormat.format(timeSimulator.getTime()));
-        });
-        timeSimulator.addCallback(() -> {
-            dataManager.checkReturnDates();
-        });
+        timeSimulator.addCallback(() -> timeLabel.setText(dateFormat.format(timeSimulator.getTime())));
+        timeSimulator.addCallback(() -> dataManager.checkReturnDates());
 
         toolBar.add(timeLabel);
     }
 
     private void createTimeManipulatingButtons() {
         JButton oneDayAdvanceButton = new JButton("+1 day");
-        oneDayAdvanceButton.addActionListener(e -> {timeSimulator.advanceOneDay();});
+        oneDayAdvanceButton.addActionListener(e -> timeSimulator.advanceOneDay());
         JButton oneWeekAdvanceButton = new JButton("+1 week");
-        oneWeekAdvanceButton.addActionListener(e -> {timeSimulator.advanceOneWeek();});
+        oneWeekAdvanceButton.addActionListener(e -> timeSimulator.advanceOneWeek());
         JButton fourWeeksAdvanceButton = new JButton("+4 weeks");
-        fourWeeksAdvanceButton.addActionListener(e -> {timeSimulator.advanceFourWeeks();});
+        fourWeeksAdvanceButton.addActionListener(e -> timeSimulator.advanceFourWeeks());
 
         toolBar.add(oneDayAdvanceButton);
         toolBar.add(oneWeekAdvanceButton);
@@ -121,7 +114,7 @@ public class MainWindow extends JFrame {
     }
 
     public MainWindow() throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException,
-            IllegalAccessException, IOException, DatabaseException {
+            IllegalAccessException, IOException {
 
         initialize();
 
@@ -144,7 +137,6 @@ public class MainWindow extends JFrame {
                 new MainWindow().setVisible(true);
             } catch (ClassNotFoundException
                     | IOException
-                    | DatabaseException
                     | IllegalAccessException
                     | InstantiationException
                     | UnsupportedLookAndFeelException e) {

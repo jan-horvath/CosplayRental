@@ -38,7 +38,7 @@ public class DataManager {
         return productStackManager.getAllStoreProductStacks();
     }
 
-    public List<Order> getAllOrders() throws DatabaseException {
+    public List<Order> getAllOrders() {
         return orderManager.getAllOrders();
     }
     
@@ -89,7 +89,7 @@ public class DataManager {
         return orderedItems;
     }
 
-    public void returnOrder(long orderId) throws DatabaseException {
+    public void returnOrder(long orderId) {
         Order orderToRemove = orderManager.getOrderById(orderId);
 
         for (ProductStack returnPS : orderToRemove.getProductStacks()) {
@@ -103,7 +103,7 @@ public class DataManager {
 
     public void checkReturnDates() {
         int notReturnedOrders = 0;
-        String message = "Customers that did not keep the return date (name, delay, ordered items):";
+        StringBuilder message = new StringBuilder("Customers that did not keep the return date (name, delay, ordered items):");
 
         for (Order order : orderManager.getAllOrders()) {
             long differenceInDays = ChronoUnit.DAYS.between(order.getReturnDate(), timeSimulator.getTime());
@@ -117,22 +117,21 @@ public class DataManager {
                         System.err.println(order.getFullName() + "'s order is " + differenceInDays/7 +
                                 " week(s) past its return date. Notification email has been sent to " + order.getEmail());
                     }
-                    message +=  createNotReturnedOrderCustomerData(order, differenceInDays);
+                    message.append(createNotReturnedOrderCustomerData(order, differenceInDays));
                     notReturnedOrders++;
                 }
             }
         }
         if (notReturnedOrders > 0) {
-            JOptionPane.showMessageDialog(null, message, "Not Returned Orders",
+            JOptionPane.showMessageDialog(null, message.toString(), "Not Returned Orders",
                     JOptionPane.ERROR_MESSAGE);
-            return;
         }
     }
 
     private String createNotReturnedOrderCustomerData(Order order, long differenceInDays) {
-        String notReturnedItems = "";
+        StringBuilder notReturnedItems = new StringBuilder();
         for (ProductStack ps : order.getProductStacks()) {
-            notReturnedItems += "\n    " + ps.getName() + ", " + ps.getStackSize() + " piece(s)";
+            notReturnedItems.append("\n    ").append(ps.getName()).append(", ").append(ps.getStackSize()).append(" piece(s)");
         }
         return "\n" + order.getFullName() + " (" + differenceInDays + " days)" + ":" + notReturnedItems;
     }

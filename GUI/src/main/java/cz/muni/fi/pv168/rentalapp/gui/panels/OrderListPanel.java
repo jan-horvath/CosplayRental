@@ -68,24 +68,24 @@ public class OrderListPanel extends JPanel {
         deleteOrderButton.addActionListener(e -> {
             int selectedRow = orderTable.getSelectedRow();
             if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(null, "Please select order that needs to be returned.",
+                JOptionPane.showMessageDialog(null,
+                        "Please select order that needs to be returned.",
                         "No order selected", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            int choice = JOptionPane.showConfirmDialog(null, "Do you really want to delete this order?");
+            int choice = JOptionPane.showConfirmDialog(null,
+                    "Do you really want to delete this order?");
             // 0=yes, 1=no, 2=cancel
 
             if (choice == 0) {
                 int modelRow = orderTable.convertRowIndexToModel(selectedRow);
 
-                try {
-                    dataManager.returnOrder(orderTM.getEntryAtIndex(modelRow).getId());
-                    orderTM.reloadData();
-                    catalogueTM.reloadData();
-                } catch (DatabaseException ex) {
-                    ex.printStackTrace();
-                }
+
+                dataManager.returnOrder(orderTM.getEntryAtIndex(modelRow).getId());
+                orderTM.reloadData();
+                catalogueTM.reloadData();
+
                 orderTM.fireTableRowsDeleted(modelRow, modelRow);
                 orderTable.clearSelection();
                 orderDetailsPane.clearPane();

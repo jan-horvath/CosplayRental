@@ -33,7 +33,8 @@ public class OrderDetailsPane extends JEditorPane {
         sb.append("Return date: ").append(order.getReturnDate().format(dtf)).append("\n\n").append("Items:\n");
 
         for (ProductStack ps : order.getProductStacks()) {
-            sb.append(ps.getName()).append("(").append(ps.getSize()).append(") x").append(ps.getStackSize()).append("\n");
+            sb.append(ps.getName()).append("(").append(ps.getSize()).append(") x").append(ps.getStackSize())
+                    .append("\n");
         }
 
         setText(sb.toString());

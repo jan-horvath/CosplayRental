@@ -35,7 +35,7 @@ public class OrderTableModel extends AbstractTableModel {
     private List<Order> entries;
     private DataManager dataManager;
 
-    public OrderTableModel(DataManager dataManager) throws DatabaseException {
+    public OrderTableModel(DataManager dataManager) {
         this.dataManager = dataManager;
         reloadData();
     }
@@ -79,7 +79,7 @@ public class OrderTableModel extends AbstractTableModel {
         return entries.get(index);
     }
 
-    public void reloadData() throws DatabaseException {
+    public void reloadData() {
         this.entries = dataManager.getAllOrders();
     }
 }

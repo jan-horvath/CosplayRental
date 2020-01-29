@@ -14,13 +14,10 @@ import java.util.List;
 import java.util.Map;
 
 public class OrderManager {
-
-    private DataSource dataSource;
     private ProductStackManager productStackManager;
     private JdbcTemplate jdbc;
 
     public OrderManager(DataSource dataSource) {
-        this.dataSource = dataSource;
         this.productStackManager = new ProductStackManager(dataSource);
         this.jdbc = new JdbcTemplate(dataSource);
     }
@@ -35,7 +32,8 @@ public class OrderManager {
 
     public Order insertOrder(List<ProductStack> productStacks, String email, String fullName, String phoneNumber,
                              LocalDate returnDate) throws DatabaseException {
-        SimpleJdbcInsert insertOrder = new SimpleJdbcInsert(jdbc).withTableName("rentOrder").usingGeneratedKeyColumns("id");
+        SimpleJdbcInsert insertOrder = new SimpleJdbcInsert(jdbc).withTableName("rentOrder")
+                .usingGeneratedKeyColumns("id");
         Map<String, Object> parameters = new HashMap<>(4);
         parameters.put("email", email);
         parameters.put("fullname", fullName);
@@ -76,18 +74,14 @@ public class OrderManager {
         return jdbc.query("SELECT * FROM orderedproductstack WHERE orderid = ?", orderedProductStackMapper, orderId);
     }
 
-    private RowMapper<Order> orderMapper = new RowMapper<Order>() {
-        @Override
-        public Order mapRow(ResultSet rs, int rowNum) throws SQLException {
-            long id = rs.getLong("id");
-            String email = rs.getString("email");
-            String fullName = rs.getString("fullname");
-            String phoneNumber = rs.getString("phonenumber");
-            LocalDate returnDate = rs.getDate("returndate").toLocalDate();
-            List<ProductStack> orderProductStacks = null;
-            orderProductStacks = getOrderedProductStacksByOrderId(id);
-            return new Order(id, orderProductStacks, email, fullName, phoneNumber, returnDate);
-        }
+    private RowMapper<Order> orderMapper = (rs, rowNum) -> {
+        long id = rs.getLong("id");
+        String email = rs.getString("email");
+        String fullName = rs.getString("fullname");
+        String phoneNumber = rs.getString("phonenumber");
+        LocalDate returnDate = rs.getDate("returndate").toLocalDate();
+        List<ProductStack> orderProductStacks = getOrderedProductStacksByOrderId(id);
+        return new Order(id, orderProductStacks, email, fullName, phoneNumber, returnDate);
     };
 
     private RowMapper<ProductStack> orderedProductStackMapper = new RowMapper<ProductStack>() {

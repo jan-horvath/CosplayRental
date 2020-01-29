@@ -34,7 +34,8 @@ public class OrderOverviewPane extends JEditorPane {
 
         for (ProductStack ps : productStacks) {
             if (ps.getStackSize() > 0) {
-                sb.append(ps.getName() + " (" + ps.getSize() + ") x" + ps.getStackSize() + "\n");
+                sb.append(ps.getName()).append(" (").append(ps.getSize()).append(") x").append(ps.getStackSize())
+                        .append("\n");
             }
         }
 

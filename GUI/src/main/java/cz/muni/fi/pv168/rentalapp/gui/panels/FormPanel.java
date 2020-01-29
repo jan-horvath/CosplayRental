@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class FormPanel extends JPanel {
 
-    public List<JTextField> textFields = new ArrayList<>();
+    private List<JTextField> textFields = new ArrayList<>();
 
 
     public FormPanel() {

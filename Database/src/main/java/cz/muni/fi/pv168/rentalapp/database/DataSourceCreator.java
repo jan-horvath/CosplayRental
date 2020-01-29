@@ -30,8 +30,6 @@ public class DataSourceCreator {
 
     /**
      * Runs database layer. Mainly for tests.
-     * @param args
-     * @throws IOException
      */
     public static void main(String[] args) throws IOException {
         getDataSource();

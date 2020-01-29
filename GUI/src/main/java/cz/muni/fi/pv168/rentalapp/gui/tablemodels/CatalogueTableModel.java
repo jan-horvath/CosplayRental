@@ -11,7 +11,7 @@ import java.util.Collections;
 
 public class CatalogueTableModel extends AbstractTableModel  {
 
-    public List<ProductStack> entries;
+    private List<ProductStack> entries;
     private List<Integer> piecesSelected;
     private DataManager dataManager;
 
@@ -101,6 +101,7 @@ public class CatalogueTableModel extends AbstractTableModel  {
         for (Integer i : piecesSelected) {
             if (i > 0) {
                 allZero = false;
+                break;
             }
         }
         return allZero;
