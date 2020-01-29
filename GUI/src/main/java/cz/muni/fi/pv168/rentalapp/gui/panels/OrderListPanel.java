@@ -2,7 +2,7 @@ package cz.muni.fi.pv168.rentalapp.gui.panels;
 
 import cz.muni.fi.pv168.rentalapp.business.DataManager;
 import cz.muni.fi.pv168.rentalapp.database.DatabaseException;
-//import cz.muni.fi.pv168.rentalapp.gui.renderers.ReturnDatesRenderer;
+import cz.muni.fi.pv168.rentalapp.gui.renderers.ReturnDatesRenderer;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.OrderTableModel;
 
@@ -31,7 +31,7 @@ public class OrderListPanel extends JPanel {
         orderTable.removeColumn(orderTable.getColumnModel().getColumn(0));
         dataManager.getTimeSimulator().addCallback(() -> orderTM.fireTableDataChanged());
         TableColumn returnDates = orderTable.getColumnModel().getColumn(3);
-//        returnDates.setCellRenderer(new ReturnDatesRenderer(dataManager.getTimeSimulator()));
+        returnDates.setCellRenderer(new ReturnDatesRenderer(dataManager.getTimeSimulator()));
         orderTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         add(new JScrollPane(orderTable));
