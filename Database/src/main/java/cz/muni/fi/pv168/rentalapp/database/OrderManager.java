@@ -33,7 +33,8 @@ public class OrderManager {
         return jdbc.queryForObject("SELECT * FROM rentOrder WHERE id = ?", orderMapper, id);
     }
 
-    public Order insertOrder(List<ProductStack> productStacks, String email, String fullName, String phoneNumber, LocalDate returnDate) throws DatabaseException {
+    public Order insertOrder(List<ProductStack> productStacks, String email, String fullName, String phoneNumber,
+                             LocalDate returnDate) throws DatabaseException {
         SimpleJdbcInsert insertOrder = new SimpleJdbcInsert(jdbc).withTableName("rentOrder").usingGeneratedKeyColumns("id");
         Map<String, Object> parameters = new HashMap<>(4);
         parameters.put("email", email);
@@ -43,13 +44,15 @@ public class OrderManager {
         long orderId = insertOrder.executeAndReturnKey(parameters).longValue();
 
         insertOrderedProductStacks(productStacks, orderId);
-        System.out.println("(Customer " + fullName + "): Order  containing " + productStacks.size() + " items was added to database.");
+        System.out.println("(Customer " + fullName + "): Order  containing " + productStacks.size() +
+                " items was added to database.");
 
         return new Order(orderId, productStacks, email, fullName, phoneNumber, returnDate);
     }
 
     private void insertOrderedProductStacks(List<ProductStack> productStacks, long orderId) throws DatabaseException {
-        SimpleJdbcInsert insertOrderedPS = new SimpleJdbcInsert(jdbc).withTableName("orderedproductstack").usingGeneratedKeyColumns("id");
+        SimpleJdbcInsert insertOrderedPS =
+                new SimpleJdbcInsert(jdbc).withTableName("orderedproductstack").usingGeneratedKeyColumns("id");
         Map<String, Object> parameters = new HashMap<>(4);
 
         for (ProductStack ps : productStacks) {
@@ -59,7 +62,8 @@ public class OrderManager {
 
             int rowsAffected = insertOrderedPS.execute(parameters);
             if (rowsAffected != 1) {
-                throw new DatabaseException("One affected row expected, got " + rowsAffected + " rows affected during adding products into OrderedProductStackTable.");
+                throw new DatabaseException("One affected row expected, got " + rowsAffected +
+                        " rows affected during adding products into OrderedProductStackTable.");
             }
         }
     }
@@ -93,7 +97,8 @@ public class OrderManager {
             long storeId = rs.getLong("storeid");
             int stackSize = rs.getInt("stacksize");
             ProductStack storePS = productStackManager.getStoreProductStackById(storeId);
-            return new ProductStack(orderedPSid, storeId, storePS.getName(), storePS.getSize(), storePS.getPrice(), stackSize);
+            return new ProductStack(orderedPSid, storeId, storePS.getName(), storePS.getSize(), storePS.getPrice(),
+                    stackSize);
         }
     };
 }

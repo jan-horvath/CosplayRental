@@ -72,11 +72,7 @@ public class MainWindow extends JFrame {
             timeLabel.setText(dateFormat.format(timeSimulator.getTime()));
         });
         timeSimulator.addCallback(() -> {
-            try {
-                dataManager.checkReturnDates();
-            } catch (DatabaseException e) {
-                e.printStackTrace();
-            }
+            dataManager.checkReturnDates();
         });
 
         toolBar.add(timeLabel);
@@ -95,7 +91,7 @@ public class MainWindow extends JFrame {
         toolBar.add(fourWeeksAdvanceButton);
     }
 
-    private void createToolbar() throws DatabaseException {
+    private void createToolbar() {
         toolBar = new JToolBar();
 
         toolBar.add(new JButton(gotoCatalogue));

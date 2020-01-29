@@ -19,7 +19,8 @@ public class Order {
         this.phoneNumber = phoneNumber;
         this.returnDate = returnDate;
     }
-    public Order(long id, List<ProductStack> productStacks, String email, String fullName, String phoneNumber, LocalDate returnDate) {
+    public Order(long id, List<ProductStack> productStacks, String email, String fullName, String phoneNumber,
+                 LocalDate returnDate) {
         this(productStacks, email, fullName, phoneNumber, returnDate);
         this.id = id;
     }

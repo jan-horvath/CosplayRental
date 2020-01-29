@@ -46,7 +46,8 @@ public class DataManager {
         return this.timeSimulator;
     }
 
-    public Order createOrder(Map<String, String> formData, Map<Integer, Integer> productCounts) throws DatabaseException, InvalidNameException {
+    public Order createOrder(Map<String, String> formData, Map<Integer, Integer> productCounts)
+            throws DatabaseException, InvalidNameException {
         checkEmptyFormData(formData);
 
         String fullName = formData.get("name");
@@ -100,7 +101,7 @@ public class DataManager {
         orderManager.deleteOrder(orderId);
     }
 
-    public void checkReturnDates() throws DatabaseException {
+    public void checkReturnDates() {
         int notReturnedOrders = 0;
         String message = "Customers that did not keep the return date (name, delay, ordered items):";
 
@@ -110,9 +111,11 @@ public class DataManager {
             if (differenceInDays > 0) {
                 if (differenceInDays == 3 || differenceInDays % 7 == 0) {
                     if (differenceInDays == 3) {
-                        System.err.println(order.getFullName() + "'s order is 3 days past its return date. Notification email has been sent to " + order.getEmail());
+                        System.err.println(order.getFullName() + "'s order is 3 days past its return date. " +
+                                "Notification email has been sent to " + order.getEmail());
                     } else {
-                        System.err.println(order.getFullName() + "'s order is " + differenceInDays/7 + " week(s) past its return date. Notification email has been sent to " + order.getEmail());
+                        System.err.println(order.getFullName() + "'s order is " + differenceInDays/7 +
+                                " week(s) past its return date. Notification email has been sent to " + order.getEmail());
                     }
                     message +=  createNotReturnedOrderCustomerData(order, differenceInDays);
                     notReturnedOrders++;
@@ -120,7 +123,8 @@ public class DataManager {
             }
         }
         if (notReturnedOrders > 0) {
-            JOptionPane.showMessageDialog(null, message, "Not Returned Orders", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, message, "Not Returned Orders",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
     }

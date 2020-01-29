@@ -72,7 +72,8 @@ public class CataloguePanel extends JPanel {
     private void addCreateOrderButtonListener() {
         createOrderButton.addActionListener(e -> {
             if (catalogueTM.areAllItemsZero()) {
-                JOptionPane.showMessageDialog(null, "Please select items, you wish to rent, by entering a number into the last column", "No items selected", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Please select items, you wish to rent, " +
+                        "by entering a number into the last column", "No items selected", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -80,7 +81,8 @@ public class CataloguePanel extends JPanel {
             int catalogueTableModelRowCount = catalogueTM.getRowCount();
 
             for (int i = 0; i < catalogueTableModelRowCount; i++) {
-                productCounts.put(catalogueTable.convertRowIndexToModel(i), (Integer) catalogueTM.getValueAt(i, 4));
+                productCounts.put(catalogueTable.convertRowIndexToModel(i),
+                        (Integer) catalogueTM.getValueAt(i, 4));
             }
 
             try {
@@ -90,30 +92,42 @@ public class CataloguePanel extends JPanel {
                 orderTM.reloadData();
 
             } catch (EmptyTextboxException ex) {
-                JOptionPane.showMessageDialog(null, "Please fill all the textfields.", "Empty textfield(s)", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Please fill all the textfields.",
+                        "Empty textfield(s)", JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (OneNameOnlyException ex) {
-                JOptionPane.showMessageDialog(null, "Please enter your full name", "One-word name", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Please enter your full name",
+                        "One-word name", JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (InvalidNameException ex) {
-                JOptionPane.showMessageDialog(null, "Particular names does not begin with capital letters, contain only one letter contain non alphabetic characters.", "Invalid name pattern", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,
+                        "Particular names does not begin with capital letters, contain only one letter or " +
+                                "contain non alphabetic characters.", "Invalid name pattern",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (ParticularNameTooShortException ex) {
-                JOptionPane.showMessageDialog(null, "Name or surname contains only one character. Please enter a valid one.", "Name/surname is too short", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Name or surname contains only one character." +
+                        " Please enter a valid one.", "Name/surname is too short", JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (InvalidEmailAddressException ex) {
-                JOptionPane.showMessageDialog(null, "Given email address can't exist. Please enter a valid one.", "Invalid email addres pattern", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Given email address can't exist. " +
+                        "Please enter a valid one.", "Invalid email addres pattern", JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (WhiteCharPhoneNumberException ex) {
-                JOptionPane.showMessageDialog(null, "Given phone number contains spaces or tabulators. Please delete them.", "White chars in phone number", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Given phone number contains spaces or " +
+                        "tabulators. Please delete them.", "White chars in phone number", JOptionPane.ERROR_MESSAGE);
             } catch (InvalidPhoneNumberException ex) {
-                JOptionPane.showMessageDialog(null, "Given phone number does not follow '+000111222333' pattern. Please enter a valid one.", "Invalid phone number", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Given phone number does not follow " +
+                        "'+000111222333' pattern. Please enter a valid one.", "Invalid phone number",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (DateTimeParseException ex) {
-                JOptionPane.showMessageDialog(null, "Please enter the return date in the specified format (dd.MM.YYYY)", "Wrong date format", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Please enter the return date in the " +
+                        "specified format (dd.MM.YYYY)", "Wrong date format", JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (InvalidReturnDateException ex) {
-                JOptionPane.showMessageDialog(null, "Return date already passed. Please enter a valid one.", "Invalid return date", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Return date already passed. Please enter " +
+                        "a valid one.", "Invalid return date", JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (DatabaseException ex) {
                 ex.printStackTrace();
@@ -123,7 +137,8 @@ public class CataloguePanel extends JPanel {
             catalogueTM.setAllAddToCartItemsToZero();
             orderOverviewPane.clearPane();
 
-            JOptionPane.showMessageDialog(null, "Your order has been created!", "", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Your order has been created!", "",
+                    JOptionPane.INFORMATION_MESSAGE);
         });
     }
 }

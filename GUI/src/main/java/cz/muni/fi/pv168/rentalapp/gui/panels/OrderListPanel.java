@@ -68,7 +68,8 @@ public class OrderListPanel extends JPanel {
         deleteOrderButton.addActionListener(e -> {
             int selectedRow = orderTable.getSelectedRow();
             if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(null, "Please select order that needs to be returned.", "No order selected", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Please select order that needs to be returned.",
+                        "No order selected", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 

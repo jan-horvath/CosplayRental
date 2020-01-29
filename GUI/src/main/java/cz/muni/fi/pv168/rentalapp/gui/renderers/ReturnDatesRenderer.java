@@ -19,7 +19,8 @@ public class ReturnDatesRenderer extends JLabel implements TableCellRenderer {
     }
 
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                                                   int row, int column) {
         LocalDate returnDate = LocalDate.parse((String) value, formatter);
         if (returnDate.isBefore(timeSimulator.getTime())) {
             setBackground(new Color(255, 50, 50));

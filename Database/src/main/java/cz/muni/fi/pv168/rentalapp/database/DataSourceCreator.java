@@ -6,7 +6,6 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import javax.sql.DataSource;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Properties;
 
 public class DataSourceCreator {
@@ -34,7 +33,7 @@ public class DataSourceCreator {
      * @param args
      * @throws IOException
      */
-    public static void main(String[] args) throws IOException, DatabaseException, SQLException {
+    public static void main(String[] args) throws IOException {
         getDataSource();
     }
 }
