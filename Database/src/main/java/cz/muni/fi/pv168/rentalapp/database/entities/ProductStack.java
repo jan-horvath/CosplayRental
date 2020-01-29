@@ -1,7 +1,5 @@
 package cz.muni.fi.pv168.rentalapp.database.entities;
 
-import java.util.Objects;
-
 public class ProductStack {
 
     public enum Size {
@@ -57,20 +55,6 @@ public class ProductStack {
 
     public void setStackSize(int stackSize) {
         this.stackSize = stackSize;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ProductStack that = (ProductStack) o;
-        return name.equals(that.name) &&
-                size == that.size;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, size);
     }
 
     @Override

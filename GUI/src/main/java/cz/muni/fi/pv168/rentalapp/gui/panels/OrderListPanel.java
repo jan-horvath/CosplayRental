@@ -5,7 +5,6 @@ import cz.muni.fi.pv168.rentalapp.database.DatabaseException;
 //import cz.muni.fi.pv168.rentalapp.gui.renderers.ReturnDatesRenderer;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.OrderTableModel;
-import org.checkerframework.checker.units.qual.C;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
@@ -86,10 +85,7 @@ public class OrderListPanel extends JPanel {
                 } catch (DatabaseException ex) {
                     ex.printStackTrace();
                 }
-//            orderTM.removeEntry(modelRow);
                 orderTM.fireTableRowsDeleted(modelRow, modelRow);
-
-//            catalogueTM.fireTableDataChanged();
                 orderTable.clearSelection();
                 orderDetailsPane.clearPane();
             }

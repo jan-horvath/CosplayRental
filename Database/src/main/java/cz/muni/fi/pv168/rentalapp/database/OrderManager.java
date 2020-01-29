@@ -25,11 +25,11 @@ public class OrderManager {
         this.jdbc = new JdbcTemplate(dataSource);
     }
 
-    public List<Order> getAllOrders() throws DatabaseException {
+    public List<Order> getAllOrders() {
         return jdbc.query("SELECT * FROM rentOrder", orderMapper);
     }
 
-    public Order getOrderById(long id) throws DatabaseException {
+    public Order getOrderById(long id) {
         return jdbc.queryForObject("SELECT * FROM rentOrder WHERE id = ?", orderMapper, id);
     }
 
@@ -68,7 +68,7 @@ public class OrderManager {
         jdbc.update("DELETE FROM rentOrder WHERE id=?", orderId);
     }
 
-    private List<ProductStack> getOrderedProductStacksByOrderId(long orderId) throws DatabaseException {
+    private List<ProductStack> getOrderedProductStacksByOrderId(long orderId) {
         return jdbc.query("SELECT * FROM orderedproductstack WHERE orderid = ?", orderedProductStackMapper, orderId);
     }
 
@@ -81,11 +81,7 @@ public class OrderManager {
             String phoneNumber = rs.getString("phonenumber");
             LocalDate returnDate = rs.getDate("returndate").toLocalDate();
             List<ProductStack> orderProductStacks = null;
-            try {
-                orderProductStacks = getOrderedProductStacksByOrderId(id);
-            } catch (DatabaseException e) {
-                e.printStackTrace();
-            }
+            orderProductStacks = getOrderedProductStacksByOrderId(id);
             return new Order(id, orderProductStacks, email, fullName, phoneNumber, returnDate);
         }
     };

@@ -27,7 +27,7 @@ public class DataManager {
 
     private TimeSimulator timeSimulator;
 
-    public DataManager(TimeSimulator timeSimulator) throws IOException, DatabaseException {
+    public DataManager(TimeSimulator timeSimulator) throws IOException {
         this.timeSimulator = timeSimulator;
         DataSource dataSource = DataSourceCreator.getDataSource();
         this.orderManager = new OrderManager(dataSource);

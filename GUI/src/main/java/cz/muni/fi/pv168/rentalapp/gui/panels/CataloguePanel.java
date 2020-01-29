@@ -118,7 +118,6 @@ public class CataloguePanel extends JPanel {
             } catch (DatabaseException ex) {
                 ex.printStackTrace();
             }
-//            catalogueTM.fireTableDataChanged();
             orderTM.fireTableRowsInserted(0,0);
             formPanel.clearTextFields();
             catalogueTM.setAllAddToCartItemsToZero();

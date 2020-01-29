@@ -40,7 +40,8 @@ public class MainWindow extends JFrame {
         orderTableModel = new OrderTableModel(dataManager);
     }
 
-    private void setLookAndFeel(int i) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
+    private void setLookAndFeel(int i) throws ClassNotFoundException, UnsupportedLookAndFeelException,
+            InstantiationException, IllegalAccessException {
         UIManager.LookAndFeelInfo lookAndFeel = UIManager.getInstalledLookAndFeels()[1];
         UIManager.setLookAndFeel(lookAndFeel.getClassName());
     }
@@ -64,7 +65,7 @@ public class MainWindow extends JFrame {
         }, "Existing orders", "listOrdersIcon.png", KeyEvent.VK_4);
     }
 
-    private void createTimeLabel() throws DatabaseException {
+    private void createTimeLabel() {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         JLabel timeLabel = new JLabel(dateFormat.format(timeSimulator.getTime()));
         timeSimulator.addCallback(() -> {
