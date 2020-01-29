@@ -137,4 +137,8 @@ public class DataManager {
         }
         return "\n" + order.getFullName() + " (" + differenceInDays + " days)" + ":" + notReturnedItems;
     }
+
+    public TimeSimulator getTimeSimulator() {
+        return timeSimulator;
+    }
 }
