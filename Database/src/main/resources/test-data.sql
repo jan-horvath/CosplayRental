@@ -1,13 +1,13 @@
 -- test-data.sql
 
-INSERT INTO ORDERS
+INSERT INTO RentOrder
 (EMAIL, FULLNAME, PHONENUMBER, RETURNDATE)
 VALUES
 ('weaponreplica@enthusiast.org', 'No Name', '+658291912994', '2020-02-05'),
 ('fred.kirby@gmail.org', 'Fred Kirby', '+929123456994', '2020-01-31'),
 ('marc.blake@batmanfan.org', 'Marc Blake', '+444291912994', '2020-02-07');
 
-INSERT INTO STOREPRODUCTSTACKS
+INSERT INTO StoreProductStack
 (NAME, SIZE, PRICE, STACKSIZE)
 VALUES
 ('Asterix helmet', 'NA', 15.80, 3),
@@ -21,7 +21,7 @@ VALUES
 ('Batman suit', 'S', 100, 0),
 ('Batarang set', 'NA', 25, 10);
 
-INSERT INTO ORDEREDPRODUCTSTACKS
+INSERT INTO OrderedProductStack
 (ORDERID, STOREID, STACKSIZE) VALUES
  (1, 4, 3),
  (1, 5, 2),

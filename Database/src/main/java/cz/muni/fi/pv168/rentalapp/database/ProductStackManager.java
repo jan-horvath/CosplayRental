@@ -19,15 +19,15 @@ public class ProductStackManager {
     }
 
     public List<ProductStack> getAllStoreProductStacks() {
-        return jdbc.query("SELECT * FROM storeproductstacks", storeProductStackMapper);
+        return jdbc.query("SELECT * FROM storeproductstack", storeProductStackMapper);
     }
 
     public ProductStack getStoreProductStackById(long id) {
-        return jdbc.queryForObject("SELECT * FROM storeproductstacks WHERE id = ?", storeProductStackMapper, id);
+        return jdbc.queryForObject("SELECT * FROM storeproductstack WHERE id = ?", storeProductStackMapper, id);
     }
 
     public void updateStoreProductStack(ProductStack ps) {
-        jdbc.update("UPDATE storeproductstacks set name=?, size=?, price=?, stacksize=? where id=?",
+        jdbc.update("UPDATE storeproductstack set name=?, size=?, price=?, stacksize=? where id=?",
                 ps.getName(), ps.getSize().toString(), ps.getPrice(), ps.getStackSize(), ps.getId());
     }
 

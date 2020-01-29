@@ -1,6 +1,6 @@
 -- schema-javadb.sql
 -- DDL commands for JavaDB/Derby
-CREATE TABLE Orders (
+CREATE TABLE RentOrder (
   id       INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   email   VARCHAR(50),
   fullname VARCHAR(50),
@@ -8,7 +8,7 @@ CREATE TABLE Orders (
   returndate DATE
 );
 
-CREATE TABLE StoreProductStacks (
+CREATE TABLE StoreProductStack (
   id      INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   name VARCHAR(100),
   size VARCHAR(5),
@@ -16,9 +16,9 @@ CREATE TABLE StoreProductStacks (
   stackSize INT
 );
 
-CREATE TABLE OrderedProductStacks (
+CREATE TABLE OrderedProductStack (
   id     INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  orderId INT REFERENCES Orders (id) ON DELETE CASCADE,
-  storeId INT REFERENCES StoreProductStacks (id),
+  orderId INT REFERENCES RentOrder (id) ON DELETE CASCADE,
+  storeId INT REFERENCES StoreProductStack (id),
   stackSize INT
 );

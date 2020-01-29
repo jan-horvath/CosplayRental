@@ -26,15 +26,15 @@ public class OrderManager {
     }
 
     public List<Order> getAllOrders() throws DatabaseException {
-        return jdbc.query("SELECT * FROM orders", orderMapper);
+        return jdbc.query("SELECT * FROM rentOrder", orderMapper);
     }
 
     public Order getOrderById(long id) throws DatabaseException {
-        return jdbc.queryForObject("SELECT * FROM orders WHERE id = ?", orderMapper, id);
+        return jdbc.queryForObject("SELECT * FROM rentOrder WHERE id = ?", orderMapper, id);
     }
 
     public Order insertOrder(List<ProductStack> productStacks, String email, String fullName, String phoneNumber, LocalDate returnDate) throws DatabaseException {
-        SimpleJdbcInsert insertOrder = new SimpleJdbcInsert(jdbc).withTableName("orders").usingGeneratedKeyColumns("id");
+        SimpleJdbcInsert insertOrder = new SimpleJdbcInsert(jdbc).withTableName("rentOrder").usingGeneratedKeyColumns("id");
         Map<String, Object> parameters = new HashMap<>(4);
         parameters.put("email", email);
         parameters.put("fullname", fullName);
@@ -49,7 +49,7 @@ public class OrderManager {
     }
 
     private void insertOrderedProductStacks(List<ProductStack> productStacks, long orderId) throws DatabaseException {
-        SimpleJdbcInsert insertOrderedPS = new SimpleJdbcInsert(jdbc).withTableName("orderedproductstacks").usingGeneratedKeyColumns("id");
+        SimpleJdbcInsert insertOrderedPS = new SimpleJdbcInsert(jdbc).withTableName("orderedproductstack").usingGeneratedKeyColumns("id");
         Map<String, Object> parameters = new HashMap<>(4);
 
         for (ProductStack ps : productStacks) {
@@ -65,11 +65,11 @@ public class OrderManager {
     }
 
     public void deleteOrder(Long orderId) {
-        jdbc.update("DELETE FROM orders WHERE id=?", orderId);
+        jdbc.update("DELETE FROM rentOrder WHERE id=?", orderId);
     }
 
     private List<ProductStack> getOrderedProductStacksByOrderId(long orderId) throws DatabaseException {
-        return jdbc.query("SELECT * FROM orderedproductstacks WHERE orderid = ?", orderedProductStackMapper, orderId);
+        return jdbc.query("SELECT * FROM orderedproductstack WHERE orderid = ?", orderedProductStackMapper, orderId);
     }
 
     private RowMapper<Order> orderMapper = new RowMapper<Order>() {
