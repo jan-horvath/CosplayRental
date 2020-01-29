@@ -58,4 +58,5 @@ public class FormPanel extends JPanel {
         formData.put("returnDate", textFields.get(3).getText());
         return formData;
     }
+
 }
