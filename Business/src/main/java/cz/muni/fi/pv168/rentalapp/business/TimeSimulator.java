@@ -1,7 +1,5 @@
 package cz.muni.fi.pv168.rentalapp.business;
 
-import cz.muni.fi.pv168.rentalapp.database.DatabaseException;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

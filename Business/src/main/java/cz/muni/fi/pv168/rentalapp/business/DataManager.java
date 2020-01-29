@@ -22,19 +22,10 @@ import java.util.regex.Pattern;
 
 
 public class DataManager {
-    private List<ProductStack> productStacks;
-    private List<Order> orders;
     private OrderManager orderManager;
     private ProductStackManager productStackManager;
 
     private TimeSimulator timeSimulator;
-
-    public DataManager(List<ProductStack> productStacks, List<Order> orders, TimeSimulator timeSimulator) throws IOException, DatabaseException {
-        this(timeSimulator);
-
-        this.productStacks = productStacks;
-        this.orders = orders;
-    }
 
     public DataManager(TimeSimulator timeSimulator) throws IOException, DatabaseException {
         this.timeSimulator = timeSimulator;
@@ -90,8 +81,6 @@ public class DataManager {
                 ProductStack storePS = productStackManager.getStoreProductStackById(entry.getKey()+1);
                 storePS.setStackSize(storePS.getStackSize() - orderedStackSize);
                 productStackManager.updateStoreProductStack(storePS);
-                // assigned id will be overwritten at the point of storing orderedPS into orderedProductStacks table
-                // add new constructor with storeID only?
                 orderedItems.add(new ProductStack(1, storePS.getId(),
                         storePS.getName(), storePS.getSize(), storePS.getPrice(), orderedStackSize));
             }
@@ -175,7 +164,7 @@ public class DataManager {
 
         for (String name : names) {
             if (name != null && (name.length() < 2)) {
-                throw new InvalidNameException();
+                throw new ParticularNameTooShortException();
             }
         }
     }

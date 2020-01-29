@@ -5,11 +5,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProductStackManager {
@@ -33,18 +30,6 @@ public class ProductStackManager {
         jdbc.update("UPDATE storeproductstacks set name=?, size=?, price=?, stacksize=? where id=?",
                 ps.getName(), ps.getSize().toString(), ps.getPrice(), ps.getStackSize(), ps.getId());
     }
-
-    // used in OrderManager in getOrderedPSByOrderId() method
-    public RowMapper<ProductStack> orderedProductStackMapper = new RowMapper<ProductStack>() {
-        @Override
-        public ProductStack mapRow(ResultSet rs, int i) throws SQLException {
-            long orderedPSid = rs.getLong("id");
-            long storeId = rs.getLong("storeid");
-            int stackSize = rs.getInt("stacksize");
-            ProductStack storePS = getStoreProductStackById(storeId);
-            return new ProductStack(orderedPSid, storeId, storePS.getName(), storePS.getSize(), storePS.getPrice(), stackSize);
-        }
-    };
 
     private RowMapper<ProductStack> storeProductStackMapper = new RowMapper<ProductStack>() {
         @Override

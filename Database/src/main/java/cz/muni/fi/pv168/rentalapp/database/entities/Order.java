@@ -28,9 +28,6 @@ public class Order {
         return id;
     }
 
-    public void setId(long nid) {
-        this.id = nid;
-    }
     public List<ProductStack> getProductStacks() {
         return productStacks;
     }
@@ -49,9 +46,5 @@ public class Order {
 
     public LocalDate getReturnDate() {
         return returnDate;
-    }
-
-    public void setReturnDate(LocalDate returnDate) {
-        this.returnDate = returnDate;
     }
 }

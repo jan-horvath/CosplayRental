@@ -75,14 +75,6 @@ public class OrderTableModel extends AbstractTableModel {
         return entries;
     }
 
-    public void addOrderToEntries(Order order) {
-        entries.add(order);
-    }
-
-    public void removeEntry(int modelRow) {
-        entries.remove(modelRow);
-    }
-
     public Order getEntryAtIndex(int index) {
         return entries.get(index);
     }

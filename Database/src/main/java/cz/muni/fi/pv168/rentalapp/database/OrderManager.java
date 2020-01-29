@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +39,6 @@ public class OrderManager {
         parameters.put("email", email);
         parameters.put("fullname", fullName);
         parameters.put("phonenumber", phoneNumber);
-        // LocalDate returnDate is already parsed to ISO_LOCAL pattern in DataManager.createOrder()
         parameters.put("returndate", Date.valueOf(returnDate));
         long orderId = insertOrder.executeAndReturnKey(parameters).longValue();
 
@@ -71,7 +69,7 @@ public class OrderManager {
     }
 
     private List<ProductStack> getOrderedProductStacksByOrderId(long orderId) throws DatabaseException {
-        return jdbc.query("SELECT * FROM orderedproductstacks WHERE orderid = ?", productStackManager.orderedProductStackMapper, orderId);
+        return jdbc.query("SELECT * FROM orderedproductstacks WHERE orderid = ?", orderedProductStackMapper, orderId);
     }
 
     private RowMapper<Order> orderMapper = new RowMapper<Order>() {
@@ -89,6 +87,17 @@ public class OrderManager {
                 e.printStackTrace();
             }
             return new Order(id, orderProductStacks, email, fullName, phoneNumber, returnDate);
+        }
+    };
+
+    private RowMapper<ProductStack> orderedProductStackMapper = new RowMapper<ProductStack>() {
+        @Override
+        public ProductStack mapRow(ResultSet rs, int i) throws SQLException {
+            long orderedPSid = rs.getLong("id");
+            long storeId = rs.getLong("storeid");
+            int stackSize = rs.getInt("stacksize");
+            ProductStack storePS = productStackManager.getStoreProductStackById(storeId);
+            return new ProductStack(orderedPSid, storeId, storePS.getName(), storePS.getSize(), storePS.getPrice(), stackSize);
         }
     };
 }

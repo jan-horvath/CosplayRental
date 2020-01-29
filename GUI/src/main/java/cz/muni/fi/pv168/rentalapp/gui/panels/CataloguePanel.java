@@ -96,7 +96,7 @@ public class CataloguePanel extends JPanel {
                 JOptionPane.showMessageDialog(null, "Please enter your full name", "One-word name", JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (InvalidNameException ex) {
-                JOptionPane.showMessageDialog(null, "Given name does not begin with capital letters or contains non alphabetic characters.", "Invalid name pattern", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Particular names does not begin with capital letters, contain only one letter contain non alphabetic characters.", "Invalid name pattern", JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (ParticularNameTooShortException ex) {
                 JOptionPane.showMessageDialog(null, "Name or surname contains only one character. Please enter a valid one.", "Name/surname is too short", JOptionPane.ERROR_MESSAGE);
@@ -107,7 +107,7 @@ public class CataloguePanel extends JPanel {
             } catch (WhiteCharPhoneNumberException ex) {
                 JOptionPane.showMessageDialog(null, "Given phone number contains spaces or tabulators. Please delete them.", "White chars in phone number", JOptionPane.ERROR_MESSAGE);
             } catch (InvalidPhoneNumberException ex) {
-                JOptionPane.showMessageDialog(null, "Given phone number does not contain 12 digits or contains non-digit characters.", "Invalid phone number", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Given phone number does not follow '+000111222333' pattern. Please enter a valid one.", "Invalid phone number", JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (DateTimeParseException ex) {
                 JOptionPane.showMessageDialog(null, "Please enter the return date in the specified format (dd.MM.YYYY)", "Wrong date format", JOptionPane.ERROR_MESSAGE);
