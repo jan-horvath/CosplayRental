@@ -17,20 +17,54 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
 public class MainWindow extends JFrame {
-    public MainWindow() throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException, IOException, DatabaseException {
+
+    private TimeSimulator timeSimulator;
+    private DataManager dataManager;
+    private CatalogueTableModel catalogueTableModel;
+    private OrderTableModel orderTableModel;
+
+    private GoToAction gotoCatalogue;
+    private GoToAction gotoListOrders;
+
+    private CardLayout cards;
+    private JPanel mainPanel;
+    private JToolBar toolBar;
+
+    private void initialize() throws DatabaseException, IOException {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("CoRe: Cosplay Rental ©");
 
+        timeSimulator = new TimeSimulator();
+        dataManager = new DataManager(timeSimulator);
+        catalogueTableModel = new CatalogueTableModel(dataManager);
+        orderTableModel = new OrderTableModel(dataManager);
+    }
+
+    private void setLookAndFeel(int i) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
         UIManager.LookAndFeelInfo lookAndFeel = UIManager.getInstalledLookAndFeels()[1];
-        System.out.println(lookAndFeel.getClassName());
         UIManager.setLookAndFeel(lookAndFeel.getClassName());
+    }
 
-        //Initialization
-        TimeSimulator timeSimulator = new TimeSimulator();
-        DataManager dataManager = new DataManager(timeSimulator);
-        CatalogueTableModel catalogueTableModel = new CatalogueTableModel(dataManager);
-        OrderTableModel orderTableModel = new OrderTableModel(dataManager);
+    private void createMainPanel() {
+        cards = new CardLayout();
+        mainPanel = new JPanel(cards);
 
+        add(mainPanel);
+        mainPanel.add(new CataloguePanel(catalogueTableModel,  orderTableModel, dataManager), "Catalogue");
+        mainPanel.add(new OrderListPanel(catalogueTableModel, orderTableModel, dataManager), "Orders list");
+    }
+
+    private void createGoToActions() {
+        gotoCatalogue = new GoToAction(() -> {
+            cards.show(mainPanel, "Catalogue");
+        }, "Catalogue", "catalogueIcon.png", KeyEvent.VK_2);
+
+        gotoListOrders = new GoToAction(() -> {
+            cards.show(mainPanel, "Orders list");
+        }, "Existing orders", "listOrdersIcon.png", KeyEvent.VK_4);
+    }
+
+    private void createTimeLabel() throws DatabaseException {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         JLabel timeLabel = new JLabel(dateFormat.format(timeSimulator.getTime()));
         timeSimulator.addCallback(() -> {
@@ -44,23 +78,10 @@ public class MainWindow extends JFrame {
             }
         });
 
-        //Cards
-        CardLayout c1 = new CardLayout();
-        JPanel cards = new JPanel(c1);
-        add(cards);
+        toolBar.add(timeLabel);
+    }
 
-        cards.add(new CataloguePanel(catalogueTableModel,  orderTableModel, dataManager), "Catalogue");
-        cards.add(new OrderListPanel(catalogueTableModel, orderTableModel, dataManager), "Orders list");
-
-        //Actions
-        GoToAction gotoCatalogue = new GoToAction(() -> {
-                c1.show(cards, "Catalogue");
-            }, "Catalogue", "catalogueIcon.png", KeyEvent.VK_2);
-
-        GoToAction gotoListOrders = new GoToAction(() -> {
-                c1.show(cards, "Orders list");
-            }, "Existing orders", "listOrdersIcon.png", KeyEvent.VK_4);
-
+    private void createTimeManipulatingButtons() {
         JButton oneDayAdvanceButton = new JButton("+1 day");
         oneDayAdvanceButton.addActionListener(e -> {timeSimulator.advanceOneDay();});
         JButton oneWeekAdvanceButton = new JButton("+1 week");
@@ -68,19 +89,27 @@ public class MainWindow extends JFrame {
         JButton fourWeeksAdvanceButton = new JButton("+4 weeks");
         fourWeeksAdvanceButton.addActionListener(e -> {timeSimulator.advanceFourWeeks();});
 
-        //Top toolbar
-        JToolBar topToolBar = new JToolBar();
-        add(topToolBar, BorderLayout.BEFORE_FIRST_LINE);
-        topToolBar.add(gotoCatalogue);
-        topToolBar.add(gotoListOrders);
-        topToolBar.add(Box.createHorizontalGlue());
-        topToolBar.add(timeLabel);
-        topToolBar.add(Box.createHorizontalGlue());
-        topToolBar.add(oneDayAdvanceButton);
-        topToolBar.add(oneWeekAdvanceButton);
-        topToolBar.add(fourWeeksAdvanceButton);
+        toolBar.add(oneDayAdvanceButton);
+        toolBar.add(oneWeekAdvanceButton);
+        toolBar.add(fourWeeksAdvanceButton);
+    }
 
-        //Menubar
+    private void createToolbar() throws DatabaseException {
+        toolBar = new JToolBar();
+
+        toolBar.add(new JButton(gotoCatalogue));
+        toolBar.add(new JButton(gotoListOrders));
+        toolBar.add(Box.createHorizontalGlue());
+        createTimeLabel();
+        toolBar.add(Box.createHorizontalGlue());
+        createTimeManipulatingButtons();
+
+        add(toolBar, BorderLayout.BEFORE_FIRST_LINE);
+    }
+
+    private void createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+
         JMenu fileMenu = new JMenu("File");
         fileMenu.add(new ExitAction());
 
@@ -88,13 +117,27 @@ public class MainWindow extends JFrame {
         gotoMenu.add(gotoCatalogue);
         gotoMenu.add(gotoListOrders);
 
-        JMenuBar menuBar = new JMenuBar();
         menuBar.add(fileMenu);
         menuBar.add(gotoMenu);
 
         setJMenuBar(menuBar);
+    }
 
-//        pack();
+    public MainWindow() throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException,
+            IllegalAccessException, IOException, DatabaseException {
+
+        initialize();
+
+        setLookAndFeel(1);
+
+        createMainPanel();
+
+        createGoToActions();
+
+        createToolbar();
+
+        createMenuBar();
+
         setSize(1000, 500);
     }
 

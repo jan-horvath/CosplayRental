@@ -10,7 +10,6 @@ import java.util.HashMap;
 public class FormPanel extends JPanel {
 
     public List<JTextField> textFields = new ArrayList<>();
-    private List<JLabel> labels = new ArrayList<>();
 
 
     public FormPanel() {
@@ -18,6 +17,7 @@ public class FormPanel extends JPanel {
         BoxLayout boxlayout = new BoxLayout(this, BoxLayout.Y_AXIS);
         setLayout(boxlayout);
 
+        List<JLabel> labels = new ArrayList<>();
         labels.add(new JLabel("Your name & surname:"));
         JTextField nameField = new JTextField();
         textFields.add(nameField);
@@ -25,10 +25,6 @@ public class FormPanel extends JPanel {
         labels.add(new JLabel("E-mail adress:"));
         JTextField emailField = new JTextField();
         textFields.add(emailField);
-
-        labels.add(new JLabel("Credit card number:"));
-        JTextField cardField = new JTextField();
-        textFields.add(cardField);
 
         labels.add(new JLabel("Phone number:"));
         JTextField phoneField = new JTextField();
@@ -58,9 +54,8 @@ public class FormPanel extends JPanel {
         Map<String, String> formData = new HashMap<>();
         formData.put("name", textFields.get(0).getText());
         formData.put("email", textFields.get(1).getText());
-        formData.put("cardNumber", textFields.get(2).getText());
-        formData.put("phoneNumber", textFields.get(3).getText());
-        formData.put("returnDate", textFields.get(4).getText());
+        formData.put("phoneNumber", textFields.get(2).getText());
+        formData.put("returnDate", textFields.get(3).getText());
         return formData;
     }
 

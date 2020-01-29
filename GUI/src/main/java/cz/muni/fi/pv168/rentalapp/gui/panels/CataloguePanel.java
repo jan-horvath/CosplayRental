@@ -82,11 +82,13 @@ public class CataloguePanel extends JPanel {
             for (int i = 0; i < catalogueTableModelRowCount; i++) {
                 productCounts.put(catalogueTable.convertRowIndexToModel(i), (Integer) catalogueTM.getValueAt(i, 4));
             }
+
             try {
                 Map<String, String> formData = formPanel.getFormData();
                 dataManager.createOrder(formData, productCounts);
                 catalogueTM.reloadData();
                 orderTM.reloadData();
+
             } catch (EmptyTextboxException ex) {
                 JOptionPane.showMessageDialog(null, "Please fill all the textfields.", "Empty textfield(s)", JOptionPane.ERROR_MESSAGE);
                 return;

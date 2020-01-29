@@ -15,7 +15,7 @@ public class TimeSimulator {
         callbacks = new ArrayList<>();
     }
 
-    public void addCallback(Runnable r) throws DatabaseException {
+    public void addCallback(Runnable r) {
         callbacks.add(r);
     }
 

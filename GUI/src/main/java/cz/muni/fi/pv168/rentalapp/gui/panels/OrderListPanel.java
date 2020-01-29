@@ -2,11 +2,13 @@ package cz.muni.fi.pv168.rentalapp.gui.panels;
 
 import cz.muni.fi.pv168.rentalapp.business.DataManager;
 import cz.muni.fi.pv168.rentalapp.database.DatabaseException;
+import cz.muni.fi.pv168.rentalapp.gui.renderers.ReturnDatesRenderer;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.CatalogueTableModel;
 import cz.muni.fi.pv168.rentalapp.gui.tablemodels.OrderTableModel;
 import org.checkerframework.checker.units.qual.C;
 
 import javax.swing.*;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 
 public class OrderListPanel extends JPanel {
@@ -25,9 +27,14 @@ public class OrderListPanel extends JPanel {
         dataManager = dm;
         orderTM = otm;
         catalogueTM = ctm;
+
         orderTable = new JTable(orderTM);
         orderTable.removeColumn(orderTable.getColumnModel().getColumn(0));
+        dataManager.getTimeSimulator().addCallback(() -> orderTM.fireTableDataChanged());
+        TableColumn returnDates = orderTable.getColumnModel().getColumn(3);
+        returnDates.setCellRenderer(new ReturnDatesRenderer(dataManager.getTimeSimulator()));
         orderTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
         add(new JScrollPane(orderTable));
 
         JPanel orderDetailsPanel = new JPanel();
@@ -65,21 +72,27 @@ public class OrderListPanel extends JPanel {
                 JOptionPane.showMessageDialog(null, "Please select order that needs to be returned.", "No order selected", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            int modelRow = orderTable.convertRowIndexToModel(selectedRow);
 
-            try {
-                dataManager.returnOrder(orderTM.getEntryAtIndex(modelRow).getId());
-                orderTM.reloadData();
-                catalogueTM.reloadData();
-            } catch (DatabaseException ex) {
-                ex.printStackTrace();
-            }
+            int choice = JOptionPane.showConfirmDialog(null, "Do you really want to delete this order?");
+            // 0=yes, 1=no, 2=cancel
+
+            if (choice == 0) {
+                int modelRow = orderTable.convertRowIndexToModel(selectedRow);
+
+                try {
+                    dataManager.returnOrder(orderTM.getEntryAtIndex(modelRow).getId());
+                    orderTM.reloadData();
+                    catalogueTM.reloadData();
+                } catch (DatabaseException ex) {
+                    ex.printStackTrace();
+                }
 //            orderTM.removeEntry(modelRow);
-            orderTM.fireTableRowsDeleted(modelRow, modelRow);
+                orderTM.fireTableRowsDeleted(modelRow, modelRow);
 
 //            catalogueTM.fireTableDataChanged();
-            orderTable.clearSelection();
-            orderDetailsPane.clearPane();
+                orderTable.clearSelection();
+                orderDetailsPane.clearPane();
+            }
         });
     }
 }

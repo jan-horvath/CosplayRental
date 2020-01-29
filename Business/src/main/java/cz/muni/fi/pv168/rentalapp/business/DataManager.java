@@ -50,7 +50,10 @@ public class DataManager {
     public List<Order> getAllOrders() throws DatabaseException {
         return orderManager.getAllOrders();
     }
-
+    
+    public TimeSimulator getTimeSimulator() {
+        return this.timeSimulator;
+    }
 
     public Order createOrder(Map<String, String> formData, Map<Integer, Integer> productCounts) throws DatabaseException, InvalidNameException {
         checkEmptyFormData(formData);
